@@ -9,7 +9,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "electron": "electron ."
   },
   "repository": {
     "type": "git",
@@ -31,11 +32,13 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.0",
+    "@react-native-community/checkbox": "^0.5.12",
     "@react-navigation/bottom-tabs": "^6.0.5",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",
     "expo": "~44.0.0",
     "expo-asset": "~8.4.4",
+    "expo-checkbox": "~2.0.0",
     "expo-constants": "~13.0.0",
     "expo-font": "~10.0.4",
     "expo-linking": "~3.0.0",
@@ -51,10 +54,12 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@expo/electron-adapter": "^0.0.55",
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.64.12",
-    "jest-expo": "~44.0.1",
+    "electron": "^17.1.2",
     "jest": "^26.6.3",
+    "jest-expo": "~44.0.1",
     "react-test-renderer": "17.0.1",
     "typescript": "~4.3.5"
   }
