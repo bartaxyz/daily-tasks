@@ -55,6 +55,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@expo/electron-adapter": "^0.0.55",
+    "@expo/webpack-config": "^0.16.19",
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.64.12",
     "electron": "^17.1.2",
