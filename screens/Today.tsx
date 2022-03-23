@@ -2,7 +2,7 @@ import Constants from "expo-constants";
 import { Platform, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { Section, Task, Typography, Button, Tag } from "../components";
+import { Section, Task, Typography, Button, Tag, Tabs } from "../components";
 
 export const Today = () => {
   const versionTag = <Tag>v0.0.1 Beta</Tag>;
@@ -14,7 +14,7 @@ export const Today = () => {
       <View
         style={{
           flex: 1,
-          paddingTop: Platform.OS !== "web" ? 24 : 14,
+          paddingTop: Platform.OS !== "web" ? 24 : 0,
         }}
       >
         {Platform.OS !== "android" && (
@@ -22,28 +22,21 @@ export const Today = () => {
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
-              marginRight: 24,
-              marginLeft: 24,
+              margin: 8,
             }}
           >
             <View style={{ opacity: 0 }}>{versionTag}</View>
 
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: "rgba(0, 0, 0, 0.05)",
-                  width: 124 * 2,
-                  borderRadius: 6,
-                  borderWidth: 1,
-                }}
-              >
-                <Button style={{ width: 124 }}>Backlog</Button>
-                <Button style={{ width: 124 }}>Today</Button>
-              </View>
-            </View>
+            <Tabs
+              tabs={[
+                {
+                  label: "Backlog",
+                },
+                {
+                  label: "Today",
+                },
+              ]}
+            />
 
             {versionTag}
           </View>
@@ -59,9 +52,7 @@ export const Today = () => {
             }}
           >
             <Typography.Title>Overdue</Typography.Title>
-            <Button variant="primary" onPress={() => {}}>
-              Finish Overdue
-            </Button>
+            <Button onPress={() => {}}>Finish Overdue</Button>
           </View>
 
           <Task>Wash the dishes</Task>
