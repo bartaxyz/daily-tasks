@@ -8,6 +8,7 @@ const colors = {
 };
 
 export const defaultTheme = {
+  name: "default",
   colors: {
     /** Overall Colors */
     primary: colors.primary,
@@ -44,7 +45,26 @@ export const defaultTheme = {
     },
     section: {
       background: colors.background.default,
-      separator: rgba("#000000", 0.12),
+      separator: rgba("#000000", 0.1),
+    },
+    tabs: {
+      background: "transparent",
+      backgroundHover: rgba("#000000", 0.05),
+      border: rgba("#000000", 0.05),
+      borderHover: "transparent",
+
+      separator: {
+        background: rgba("#000000", 0.05),
+      },
+
+      button: {
+        background: "transparent",
+        backgroundSelected: rgba("#000000", 0.05),
+        backgroundActive: rgba("#000000", 0.15),
+        foreground: "#717171",
+        foregroundSelected: "#484848",
+        foregroundActive: "#454545",
+      },
     },
   },
 };
