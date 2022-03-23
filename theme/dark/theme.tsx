@@ -3,12 +3,13 @@ import { defaultTheme } from "../default/theme";
 
 const colors = {
   background: {
-    default: "#282828",
+    default: "#201F1E",
   },
 };
 
 export const darkTheme: typeof defaultTheme = {
   ...defaultTheme,
+  name: "dark",
   colors: {
     ...defaultTheme.colors,
     background: {
@@ -41,8 +42,26 @@ export const darkTheme: typeof defaultTheme = {
     },
     section: {
       ...defaultTheme.colors.section,
-      background: colors.background.default,
-      separator: rgba("#FFFFFF", 0.15),
+      background: rgba(colors.background.default, 0.5),
+      separator: rgba("#FFFFFF", 0.05),
+    },
+    tabs: {
+      ...defaultTheme.colors.tabs,
+      backgroundHover: rgba("#FFFFFF", 0.05),
+      border: rgba("#FFFFFF", 0.05),
+
+      separator: {
+        background: rgba("#FFFFFF", 0.05),
+      },
+
+      button: {
+        ...defaultTheme.colors.tabs.button,
+        backgroundSelected: rgba("#FFFFFF", 0.05),
+        backgroundActive: rgba("#FFFFFF", 0.15),
+        foreground: "#A3A3A2",
+        foregroundSelected: "#EAEBEB",
+        foregroundActive: "#EAEBEB",
+      },
     },
   },
 };
