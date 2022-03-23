@@ -90,7 +90,7 @@ const Root = styled.Pressable<{
   padding: 0 14px;
   justify-content: center;
   align-items: center;
-  border-radius: 6px;
+  border-radius: 5px;
   background-color: ${({ pressed, variant, theme }) =>
     pressed
       ? variant === "primary"
@@ -99,18 +99,20 @@ const Root = styled.Pressable<{
       : variant === "primary"
       ? theme.colors.button.background.primary
       : theme.colors.button.background.secondary};
-  // border-width: ${StyleSheet.hairlineWidth};
+  border-width: ${StyleSheet.hairlineWidth};
   border-color: rgba(0, 0, 0, 0.12);
 
   border-top-width: 1px;
-  border-top-color: ${({ variant }) =>
-    variant === "secondary" ? "#5D5D5D" : "transparent"};
+  border-top-color: ${({ theme, variant }) =>
+    theme.name === "dark" && variant === "secondary"
+      ? "#5D5D5D"
+      : "rgba(0, 0, 0, 0.05)"};
 `;
 
 const Label = styled(Typography.Button.Label)<{
   variant: ButtonProps["variant"];
 }>`
-  margin-top: -2px;
+  margin-top: -3px;
   letter-spacing: -0.25px;
   color: ${({ variant, theme }) =>
     variant === "primary"
