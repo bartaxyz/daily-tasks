@@ -1,10 +1,12 @@
 import React from "react";
+import { View } from "react-native";
 import styled, { useTheme } from "styled-components/native";
 import { SectionContent, SectionContentProps } from "./SectionContent";
 import { SectionSeparator, SectionSeparatorProps } from "./SectionSeparator";
 
 export interface SectionProps {
-  separator: "top" | "bottom" | "vertical" | "around";
+  separator: "none" | "top" | "bottom" | "vertical" | "around";
+  hasBackground?: boolean;
 }
 
 export const Section: React.FC<SectionProps> & {
@@ -12,9 +14,13 @@ export const Section: React.FC<SectionProps> & {
   Separator: React.FC<SectionSeparatorProps>;
 } = (props) => {
   const theme = useTheme();
-  const { separator } = props;
+  const { separator, hasBackground = true } = props;
 
-  const background = <Background theme={theme} {...props} />;
+  const background = hasBackground ? (
+    <Background theme={theme} {...props} />
+  ) : (
+    <View {...props} />
+  );
 
   console.log({ theme });
 
