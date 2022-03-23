@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   GestureResponderEvent,
   Platform,
-  Pressable,
   PressableProps,
   StyleSheet,
 } from "react-native";
