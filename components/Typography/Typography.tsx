@@ -10,7 +10,7 @@ export interface TypographyProps extends TextProps {
 const StyledText: React.FC<TypographyProps> = ({
   children,
   fontWeight = "normal",
-  fontSize = 14,
+  fontSize = 13,
   textTransform = "none",
   style,
   ...props
@@ -21,7 +21,7 @@ const StyledText: React.FC<TypographyProps> = ({
     <Text
       style={[
         {
-          // fontFamily: "-apple-system, BlinkMacSystemFont, sans-serif",
+          fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont",
           fontWeight,
           fontSize,
           textTransform,
@@ -44,7 +44,7 @@ const Title: React.FC<TypographyProps> = ({ ...props }) => (
   />
 );
 const Body: React.FC<TypographyProps> = ({ ...props }) => (
-  <StyledText fontSize={14} {...props} />
+  <StyledText fontSize={13} {...props} />
 );
 
 const ButtonLabel: React.FC<TypographyProps> = ({ ...props }) => (
