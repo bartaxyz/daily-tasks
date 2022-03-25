@@ -1,0 +1,22 @@
+diff --git a/node_modules/react-native-tab-view/src/PagerViewAdapter.tsx b/node_modules/react-native-tab-view/src/PagerViewAdapter.tsx
+index b858cb4..f715f5c 100644
+--- a/node_modules/react-native-tab-view/src/PagerViewAdapter.tsx
++++ b/node_modules/react-native-tab-view/src/PagerViewAdapter.tsx
+@@ -63,7 +63,7 @@ export default function PagerViewAdapter<T extends Route>({
+       (route: { key: string }) => route.key === key
+     );
+ 
+-    pagerRef.current?.setPage(index);
++    pagerRef.current?.setPageWithoutAnimation(index);
+   }, []);
+ 
+   React.useEffect(() => {
+@@ -72,7 +72,7 @@ export default function PagerViewAdapter<T extends Route>({
+     }
+ 
+     if (indexRef.current !== index) {
+-      pagerRef.current?.setPage(index);
++      pagerRef.current?.setPageWithoutAnimation(index);
+     }
+   }, [keyboardDismissMode, index]);
+ 
