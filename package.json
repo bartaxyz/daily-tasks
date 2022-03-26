@@ -27,7 +27,7 @@
   "bugs": {
     "url": "https://github.com/bartaxyz/daily-tasks/issues"
   },
-  "homepage": "https://github.com/bartaxyz/daily-tasks#readme",
+  "homepage": "/",
   "jest": {
     "preset": "jest-expo"
   },
