@@ -17,8 +17,8 @@ export const darkTheme: typeof defaultTheme = {
       default: colors.background.default,
     },
     text: {
-      ...defaultTheme.colors.text,
       default: "#FFFFFF",
+      secondary: rgba("#FFFFFF", 0.5),
     },
 
     /** Component Colors */
@@ -27,6 +27,7 @@ export const darkTheme: typeof defaultTheme = {
       background: {
         ...defaultTheme.colors.button.background,
         secondary: "#565656",
+        secondaryPressed: "#72706F",
       },
       label: {
         ...defaultTheme.colors.button.label,
@@ -36,19 +37,23 @@ export const darkTheme: typeof defaultTheme = {
     checkbox: {
       ...defaultTheme.colors.checkbox,
       unchecked: {
-        ...defaultTheme.colors.checkbox.unchecked,
         outline: rgba("#FFFFFF", 0.5),
+        tick: rgba("#FFFFFF", 0.5),
+      },
+      checked: {
+        outline: rgba("#FFFFFF", 0),
+        tick: "#FFFFFF",
       },
     },
     section: {
       ...defaultTheme.colors.section,
       background: rgba(colors.background.default, 0.5),
-      separator: rgba("#FFFFFF", 0.05),
+      separator: rgba("#FFFFFF", 0.1),
     },
     tabs: {
       ...defaultTheme.colors.tabs,
       backgroundHover: rgba("#FFFFFF", 0.05),
-      border: rgba("#FFFFFF", 0.05),
+      border: rgba("#FFFFFF", 0.1),
 
       separator: {
         background: rgba("#FFFFFF", 0.05),
