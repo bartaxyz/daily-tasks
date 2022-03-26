@@ -1,11 +1,17 @@
 import { useNavigation } from "@react-navigation/native";
 import { View } from "react-native";
-import { TextInput } from "react-native-paper";
 import { useTheme } from "styled-components/native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { Button, Section, Typography } from "../../components";
+import {
+  Button,
+  Section,
+  Typography,
+  TextInput,
+  Spacer,
+} from "../../components";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../db/useAuth";
+import { useElectron } from "../../utils/useElectron";
 
 export const LogInScreen = () => {
   const { navigate } = useNavigation();
@@ -15,6 +21,15 @@ export const LogInScreen = () => {
   const [password, setPassword] = useState("");
 
   const { user } = useAuth();
+
+  const { electron } = useElectron();
+
+  useEffect(() => {
+    if (!electron) return;
+    const { BrowserWindow } = electron;
+
+    console.log(electron);
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -52,29 +67,19 @@ export const LogInScreen = () => {
       <Section.Content inset="M">
         <Typography.Title textAlign="center">Login</Typography.Title>
 
-        <View style={{ marginTop: 16, marginBottom: 12 }}>
-          <Typography.Body color={colors.text.secondary}>Email</Typography.Body>
-          <TextInput
-            value={email}
-            dense={true}
-            mode="outlined"
-            activeOutlineColor={colors.primary}
-            outlineColor={colors.text.secondary}
-            autoComplete={false}
-            onChange={(event) => setEmail(event.nativeEvent.text)}
-          />
-        </View>
+        <Spacer height={16} />
 
-        <Typography.Body color={colors.text.secondary}>
-          Password
-        </Typography.Body>
         <TextInput
+          label="Email"
+          value={email}
+          onChange={(event) => setEmail(event.nativeEvent.text)}
+        />
+
+        <Spacer height={12} />
+
+        <TextInput
+          label="Password"
           value={password}
-          dense={true}
-          mode="outlined"
-          activeOutlineColor={colors.primary}
-          outlineColor={colors.text.secondary}
-          autoComplete="password"
           secureTextEntry={true}
           onChange={(event) => setPassword(event.nativeEvent.text)}
         />

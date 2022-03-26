@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Animated, View } from "react-native";
 import { useTheme } from "styled-components/native";
-import { Button, Section, Tabs, Tag, Task, Typography } from "../../components";
-import { Toolbar } from "../../components/Toolbar";
+import {
+  Button,
+  Section,
+  Tabs,
+  Tag,
+  Task,
+  Typography,
+  Toolbar,
+} from "../../components";
 import { useData } from "../../db/DataProvider";
 import { isElectron } from "../../utils/platform";
 

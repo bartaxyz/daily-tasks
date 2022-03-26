@@ -2,9 +2,14 @@ import { useNavigation } from "@react-navigation/native";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
-import { TextInput } from "react-native-paper";
 import { useTheme } from "styled-components/native";
-import { Button, Section, Typography } from "../../components";
+import {
+  Button,
+  Section,
+  Typography,
+  TextInput,
+  Spacer,
+} from "../../components";
 import { useAuth } from "../../db/useAuth";
 
 export const SignUpScreen = () => {
@@ -52,29 +57,19 @@ export const SignUpScreen = () => {
       <Section.Content inset="M">
         <Typography.Title textAlign="center">Sign Up</Typography.Title>
 
-        <View style={{ marginTop: 16, marginBottom: 12 }}>
-          <Typography.Body color={colors.text.secondary}>Email</Typography.Body>
-          <TextInput
-            value={email}
-            dense={true}
-            mode="outlined"
-            activeOutlineColor={colors.primary}
-            outlineColor={colors.text.secondary}
-            autoComplete={false}
-            onChange={(event) => setEmail(event.nativeEvent.text)}
-          />
-        </View>
+        <Spacer height={16} />
 
-        <Typography.Body color={colors.text.secondary}>
-          Password
-        </Typography.Body>
         <TextInput
+          label="Email"
+          value={email}
+          onChange={(event) => setEmail(event.nativeEvent.text)}
+        />
+
+        <Spacer height={12} />
+
+        <TextInput
+          label="Password"
           value={password}
-          dense={true}
-          mode="outlined"
-          activeOutlineColor={colors.primary}
-          outlineColor={colors.text.secondary}
-          autoComplete="password"
           secureTextEntry={true}
           onChange={(event) => setPassword(event.nativeEvent.text)}
         />

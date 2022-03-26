@@ -67,6 +67,13 @@ export const defaultTheme = {
         foregroundActive: "#454545",
       },
     },
+    textInput: {
+      background: rgba("#000000", 0.1),
+      foreground: "#000000",
+      label: {
+        foreground: rgba("#000000", 0.5),
+      }
+    },
     toolbar: {
       button: {
         background: "transparent",

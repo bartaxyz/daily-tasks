@@ -68,7 +68,13 @@ export const darkTheme: typeof defaultTheme = {
         foregroundActive: "#EAEBEB",
       },
     },
-
+    textInput: {
+      background: rgba("#FFFFFF", 0.1),
+      foreground: "#FFFFFF",
+      label: {
+        foreground: rgba("#FFFFFF", 0.5),
+      },
+    },
     toolbar: {
       button: {
         ...defaultTheme.colors.toolbar.button,

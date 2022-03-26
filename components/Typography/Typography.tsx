@@ -76,6 +76,10 @@ const TaskLabel: React.FC<TypographyProps> = ({ ...props }) => (
   <Body {...props} />
 );
 
+const TextInputLabel: React.FC<TypographyProps> = ({ ...props }) => (
+  <Body {...props} />
+);
+
 export const Typography: React.FC<TypographyProps> & {
   Title: React.FC<TypographyProps>;
   Body: React.FC<TypographyProps>;
@@ -87,6 +91,9 @@ export const Typography: React.FC<TypographyProps> & {
     Label: React.FC<TypographyProps>;
   };
   Task: {
+    Label: React.FC<TypographyProps>;
+  };
+  TextInput: {
     Label: React.FC<TypographyProps>;
   };
 } = ({ children }) => <Text>{children}</Text>;
@@ -105,4 +112,8 @@ Typography.Tag = {
 
 Typography.Task = {
   Label: TaskLabel,
+};
+
+Typography.TextInput = {
+  Label: TextInputLabel,
 };
