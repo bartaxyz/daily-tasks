@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Animated, View } from "react-native";
+import { useTheme } from "styled-components/native";
 import { Button, Section, Tabs, Tag, Task, Typography } from "../../components";
 import { Toolbar } from "../../components/Toolbar";
 import { useData } from "../../db/DataProvider";
+import { isElectron } from "../../utils/platform";
 
 export const TabBar = ({ state, descriptors, navigation, position }: any) => {
   const { overdueTasks } = useData();
+  const { colors } = useTheme();
   const [animatedValue] = useState(new Animated.Value(1));
   const [maxHeight, setMaxHeight] = useState(100);
   const duration = 200;
@@ -69,7 +72,11 @@ export const TabBar = ({ state, descriptors, navigation, position }: any) => {
   );
 
   return (
-    <React.Fragment>
+    <View
+      style={{
+        backgroundColor: isElectron ? "transparent" : colors.background.default,
+      }}
+    >
       <Toolbar>
         <View style={{ opacity: 0 }}>{versionTag}</View>
 
@@ -125,6 +132,6 @@ export const TabBar = ({ state, descriptors, navigation, position }: any) => {
       </Animated.View>
 
       <Section.Separator />
-    </React.Fragment>
+    </View>
   );
 };
