@@ -27,6 +27,7 @@ export const Task: React.FC<TaskProps> = ({
   onValueChange,
   onStatusChange,
 }) => {
+  const {colors} = useTheme();
   const [focused, setFocused] = useState(false);
   const [value, setValue] = useState("");
   const [textInputHeight, setTextInputHeight] = useState(0);
@@ -97,7 +98,8 @@ export const Task: React.FC<TaskProps> = ({
               paddingTop: 7,
               paddingLeft: 0,
               height: textInputHeight,
-              fontSize: 13
+              fontSize: 13,
+              color: colors.text.default
             },
             Platform.select({ web: { outlineWidth: 0 } as any }),
           ]}
