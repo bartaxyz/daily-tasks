@@ -1,4 +1,4 @@
-import { rgba } from "polished";
+import { lighten, rgba } from "polished";
 
 const colors = {
   primary: "#3685F9",
@@ -18,15 +18,16 @@ export const defaultTheme = {
     },
     text: {
       default: "#000000",
+      secondary: rgba("#000000", 0.5),
     },
 
     /** Component Colors */
     button: {
       background: {
         primary: colors.primary,
-        primaryPressed: rgba(colors.primary, 0.5),
+        primaryPressed: lighten(0.075)(colors.primary),
         secondary: "#FFFFFF",
-        secondaryPressed: "#72706F",
+        secondaryPressed: "#DDD",
       },
       label: {
         primary: "#FFFFFF",
@@ -40,17 +41,17 @@ export const defaultTheme = {
       },
       checked: {
         outline: rgba("#272727", 0),
-        tick: colors.primary,
+        tick: rgba("#272727", 0.5),
       },
     },
     section: {
-      background: colors.background.default,
+      background: rgba(colors.background.default, 0.1),
       separator: rgba("#000000", 0.1),
     },
     tabs: {
       background: "transparent",
       backgroundHover: rgba("#000000", 0.05),
-      border: rgba("#000000", 0.05),
+      border: rgba("#000000", 0.1),
       borderHover: "transparent",
 
       separator: {
