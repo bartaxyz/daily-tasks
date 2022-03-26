@@ -30,9 +30,7 @@ function createMainWindow() {
   }
 
   if (isDevelopment) {
-    browserWindow.loadURL(
-      `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`
-    );
+    browserWindow.loadURL(`http://localhost:3000`);
   } else {
     browserWindow.loadURL(
       formatUrl({
@@ -77,7 +75,7 @@ app.on("ready", () => {
   mainWindow = createMainWindow();
 
   mainWindow.webContents.on("did-finish-load", () => {
-    let code = `
+    let code = /* js */ `
       document.body.style.webkitFontSmoothing = 'antialiased';
 
       document.body.style.userSelect = 'none';
@@ -92,6 +90,13 @@ app.on("ready", () => {
       div.style.webkitAppRegion = 'drag';
 
       document.body.appendChild(div);
+
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "/renderer.js";
+      document.head.appendChild(script)
+
+      ;0
     `;
     mainWindow.webContents.executeJavaScript(code);
   });
