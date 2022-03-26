@@ -35,10 +35,6 @@ export const TodayScreen = () => {
               </Task>
             ))}
 
-            {/* <Task status="done">Do the laundry</Task>
-            <Task>Do the homework for biology class</Task>
-            <Task status="done">Do the laundry</Task>
-            <Task>Do the homework for biology class</Task> */}
             <Task variant="add">Add task</Task>
           </View>
 

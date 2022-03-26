@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
+import { TextInput, TextInputProps } from "react-native";
 import styled, { useTheme } from "styled-components/native";
 import { Svg, Path } from "react-native-svg";
+import { debounce } from "lodash";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { Typography } from "../Typography";
-import { TextInput } from "react-native";
 
 export interface TaskProps {
   children?: string;
@@ -16,8 +17,32 @@ export const Task: React.FC<TaskProps> = ({
   variant = "normal",
   status,
 }) => {
+  const [focused, setFocused] = useState(false);
+  const [value, setValue] = useState("");
+
+  const onChangeHandlerDebounced = (inputValue: string) => {
+    // Update value
+    // Send request
+  };
+
+  const debounceCallback = useCallback(
+    debounce(onChangeHandlerDebounced, 1000),
+    []
+  );
+
+  const onChangeHandler: TextInputProps["onChange"] = (event) => {
+    setValue(event.nativeEvent.text);
+    debounceCallback(event.nativeEvent.text);
+  };
+
   return (
-    <Root variant={variant} status={status}>
+    <Root
+      variant={variant}
+      status={status}
+      onPress={() => {
+        setFocused(true);
+      }}
+    >
       <CheckboxRoot>
         {variant === "normal" ? (
           <Checkbox checked={status === "done"} />
@@ -26,17 +51,20 @@ export const Task: React.FC<TaskProps> = ({
         )}
       </CheckboxRoot>
 
-      {/* <TextInput value="boo"></TextInput> */}
-      <Typography.Task.Label
-        textDecorationLine={status === "done" ? "line-through" : "none"}
-      >
-        {children}
-      </Typography.Task.Label>
+      {variant === "normal" && !focused ? (
+        <Typography.Task.Label
+          textDecorationLine={status === "done" ? "line-through" : "none"}
+        >
+          {children}
+        </Typography.Task.Label>
+      ) : (
+        <TextInput value={value} onChange={onChangeHandler}></TextInput>
+      )}
     </Root>
   );
 };
 
-const Root = styled.View<Pick<TaskProps, "status" | "variant">>`
+const Root = styled.Pressable<Pick<TaskProps, "status" | "variant">>`
   padding: 12px;
   flex-direction: row;
   align-items: center;

@@ -68,5 +68,16 @@ export const darkTheme: typeof defaultTheme = {
         foregroundActive: "#EAEBEB",
       },
     },
+
+    toolbar: {
+      button: {
+        ...defaultTheme.colors.toolbar.button,
+        backgroundHover: rgba("#FFFFFF", 0.05),
+        backgroundActive: rgba("#FFFFFF", 0.15),
+        foreground: "#A3A3A2",
+        foregroundHover: "#EAEBEB",
+        foregroundActive: "#EAEBEB",
+      },
+    },
   },
 };

@@ -67,6 +67,16 @@ export const defaultTheme = {
         foregroundActive: "#454545",
       },
     },
+    toolbar: {
+      button: {
+        background: "transparent",
+        backgroundHover: rgba("#000000", 0.05),
+        backgroundActive: rgba("#000000", 0.15),
+        foreground: "#717171",
+        foregroundHover: "#717171",
+        foregroundActive: "#454545",
+      },
+    },
   },
 };
 

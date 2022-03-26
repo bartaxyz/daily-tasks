@@ -41,7 +41,7 @@ interface RootProps {
 }
 const Root = styled.View<RootProps>`
   height: ${TAB_HEIGHT}px;
-  width: 240px; /* temporary */
+  width: 180px; /* temporary */
   flex-direction: row;
   justify-content: space-around;
   justify-items: stretch;

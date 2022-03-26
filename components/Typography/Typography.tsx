@@ -60,6 +60,9 @@ const Title: React.FC<TypographyProps> = ({ ...props }) => (
 const Body: React.FC<TypographyProps> = ({ ...props }) => (
   <StyledText fontSize={13} {...props} />
 );
+const Caption: React.FC<TypographyProps> = ({ ...props }) => (
+  <Body {...props} fontSize={11} />
+);
 
 const ButtonLabel: React.FC<TypographyProps> = ({ ...props }) => (
   <Body fontWeight="500" {...props} />
@@ -76,6 +79,7 @@ const TaskLabel: React.FC<TypographyProps> = ({ ...props }) => (
 export const Typography: React.FC<TypographyProps> & {
   Title: React.FC<TypographyProps>;
   Body: React.FC<TypographyProps>;
+  Caption: React.FC<TypographyProps>;
   Button: {
     Label: React.FC<TypographyProps>;
   };
@@ -89,6 +93,7 @@ export const Typography: React.FC<TypographyProps> & {
 
 Typography.Title = Title;
 Typography.Body = Body;
+Typography.Caption = Caption;
 
 Typography.Button = {
   Label: ButtonLabel,
