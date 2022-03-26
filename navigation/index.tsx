@@ -1,50 +1,28 @@
 import * as React from "react";
-import {
-  NavigationContainer,
-  DefaultTheme,
-  DarkTheme,
-} from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { ColorSchemeName } from "react-native";
+import { NavigationContainer, Theme } from "@react-navigation/native";
+import { ColorSchemeName, View } from "react-native";
 
-import { RootStackParamList } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
+import { RootStack } from "./RootStack";
 
-export default function Navigation({
+const theme: Theme = {
+  dark: false,
+  colors: {
+    primary: "transparent",
+    background: "transparent",
+    card: "transparent",
+    text: "transparent",
+    border: "transparent",
+    notification: "transparent",
+  },
+};
+
+export const Navigation = ({
   colorScheme,
 }: {
   colorScheme: ColorSchemeName;
-}) {
-  return (
-    <NavigationContainer
-      linking={LinkingConfiguration}
-      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-    >
-      <RootNavigator />
-    </NavigationContainer>
-  );
-}
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
-
-function RootNavigator() {
-  return (
-    <Stack.Navigator>
-      {/*       
-      <Stack.Screen
-        name="Root"
-        component={BottomTabNavigator}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="NotFound"
-        component={NotFoundScreen}
-        options={{ title: "Oops!" }}
-      />
-      <Stack.Group screenOptions={{ presentation: "modal" }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group>
-      */}
-    </Stack.Navigator>
-  );
-}
+}) => (
+  <NavigationContainer linking={LinkingConfiguration} theme={theme}>
+    <RootStack />
+  </NavigationContainer>
+);
