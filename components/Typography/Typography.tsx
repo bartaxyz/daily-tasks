@@ -5,6 +5,10 @@ export interface TypographyProps extends TextProps {
   fontWeight?: "normal" | "500" | "bold";
   fontSize?: number;
   textTransform?: "none" | "uppercase" | "capitalize" | "lowercase";
+  textDecorationLine?: "none" | "underline" | "line-through";
+  textDecorationStyle?: "solid" | "double" | "dotted" | "dashed";
+  textAlign?: "left" | "center" | "right";
+  color?: string;
 }
 
 const StyledText: React.FC<TypographyProps> = ({
@@ -12,6 +16,10 @@ const StyledText: React.FC<TypographyProps> = ({
   fontWeight = "normal",
   fontSize = 13,
   textTransform = "none",
+  textDecorationLine,
+  textDecorationStyle,
+  textAlign,
+  color,
   style,
   ...props
 }) => {
@@ -21,11 +29,17 @@ const StyledText: React.FC<TypographyProps> = ({
     <Text
       style={[
         {
-          fontFamily: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont",
+          fontFamily: Platform.select({
+            web: "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont",
+            default: undefined,
+          }),
           fontWeight,
           fontSize,
           textTransform,
-          color: colors.text.default,
+          textDecorationLine,
+          textDecorationStyle,
+          textAlign,
+          color: color || colors.text.default,
         },
         style,
       ]}
