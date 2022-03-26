@@ -1,3 +1,4 @@
+import React from "react";
 import { Checkbox as RNPCheckbox } from "react-native-paper";
 import {
   Animated,
@@ -6,7 +7,8 @@ import {
   PressableProps,
   View,
 } from "react-native";
-import styled from "styled-components/native";
+import styled, { useTheme } from "styled-components/native";
+import { Svg, Path } from "react-native-svg";
 
 Animated.createAnimatedComponent(Pressable);
 
@@ -23,7 +25,11 @@ export const Checkbox: React.FC<CheckboxProps> = ({ checked, ...props }) => {
     );
   }
 
-  return <Root checked={checked} {...props} />;
+  return (
+    <React.Fragment>
+      {checked ? <Check /> : <Root checked={checked} {...props} />}
+    </React.Fragment>
+  );
 };
 
 const Root = styled.Pressable<{ checked: boolean }>`
@@ -33,4 +39,24 @@ const Root = styled.Pressable<{ checked: boolean }>`
   border-color: ${({ theme }) => theme.colors.checkbox.unchecked.outline};
   opacity: 0.5;
   border-width: 1px;
+`;
+
+const CheckIcon = ({ ...props }) => {
+  const { colors } = useTheme();
+  return (
+    <Svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <Path
+        d="M2 8L6 12L14 4"
+        stroke={colors.checkbox.checked.tick}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+};
+
+const Check = styled(CheckIcon)`
+  width: 16px;
+  height: 16px;
+  position: relative;
 `;
