@@ -6,4 +6,5 @@ export interface TaskData {
   body: string;
   owned_by: string;
   status: "none" | "done" | "error";
+  displayed_after: string;
 }

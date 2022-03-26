@@ -17,6 +17,7 @@ export const DataContext = createContext<DataContextValue>({
   createTask: async () => {},
   updateTaskBody: async () => {},
   updateTaskStatus: async () => {},
+  deleteTask: async () => {},
   tasksSynced: false,
 });
 

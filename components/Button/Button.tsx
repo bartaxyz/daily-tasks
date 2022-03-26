@@ -98,7 +98,7 @@ const Root = styled.Pressable<{
       : variant === "primary"
       ? theme.colors.button.background.primary
       : theme.colors.button.background.secondary};
-  border-width: ${StyleSheet.hairlineWidth};
+  border-width: 1px;
   border-color: rgba(0, 0, 0, 0.12);
 
   border-top-width: 1px;

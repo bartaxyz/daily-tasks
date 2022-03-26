@@ -9,6 +9,7 @@ import {
   Timestamp,
   addDoc,
   orderBy,
+  deleteDoc,
 } from "firebase/firestore";
 import { firestore } from "../firebase";
 import { useAuth } from "./useAuth";
@@ -24,16 +25,17 @@ export const useTasks = () => {
 
     const q = query(
       collection(firestore, "tasks"),
-      where("owned_by", "==", user.uid),
-      orderBy("assigned_date", "asc")
+      where("owned_by", "==", user.uid)
     );
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const tasks: TaskData[] = [];
 
-      console.log({querySnapshot});
+      console.log({
+        hasPendingWrites: querySnapshot.metadata.hasPendingWrites,
+      });
 
-      setTasksSynced(!querySnapshot.metadata.fromCache);
+      setTasksSynced(!querySnapshot.metadata.hasPendingWrites);
 
       querySnapshot.forEach((doc) => {
         console.log(doc.data());
@@ -44,7 +46,9 @@ export const useTasks = () => {
         });
       });
 
-      setTasks(tasks);
+      setTasks(
+        tasks.sort((a, b) => a.assigned_date.seconds - b.assigned_date.seconds)
+      );
     });
 
     return () => {
@@ -91,5 +95,18 @@ export const useTasks = () => {
     );
   };
 
-  return { tasks, createTask, updateTaskBody, updateTaskStatus, tasksSynced };
+  const deleteTask = async ({ id }: Pick<TaskData, "id">) => {
+    if (!user) return;
+
+    await deleteDoc(doc(firestore, "tasks", id));
+  };
+
+  return {
+    tasks,
+    tasksSynced,
+    createTask,
+    updateTaskBody,
+    updateTaskStatus,
+    deleteTask,
+  };
 };

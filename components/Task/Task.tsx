@@ -14,6 +14,8 @@ export interface TaskProps {
   onTaskPress?: () => void;
   onValueChange?: (text: string) => void;
   onStatusChange?: (status: "none" | "done" | "error") => void;
+  onDelete?: () => void;
+  onEnterPress?: () => void;
 }
 
 const addTaskPlaceholderText = "Add a task";
@@ -26,8 +28,10 @@ export const Task: React.FC<TaskProps> = ({
   onTaskPress,
   onValueChange,
   onStatusChange,
+  onDelete,
+  onEnterPress,
 }) => {
-  const {colors} = useTheme();
+  const { colors } = useTheme();
   const [focused, setFocused] = useState(false);
   const [value, setValue] = useState("");
   const [textInputHeight, setTextInputHeight] = useState(0);
@@ -50,6 +54,22 @@ export const Task: React.FC<TaskProps> = ({
 
     setValue(text);
     debounceCallback(text);
+  };
+
+  const onKeyPressHandler: TextInputProps["onKeyPress"] = (event) => {
+    const { key } = event.nativeEvent;
+
+    console.log(event);
+
+    if (key === "Backspace") {
+      if (value.length === 0) {
+        onDelete && onDelete();
+      }
+    }
+
+    if (key === "Enter") {
+      onEnterPress && onEnterPress();
+    }
   };
 
   const onFocus = () => {
@@ -86,6 +106,7 @@ export const Task: React.FC<TaskProps> = ({
         <TextInput
           value={value}
           onChange={onChangeHandler}
+          onKeyPress={onKeyPressHandler}
           multiline={true}
           editable={editable}
           onFocus={onFocus}
@@ -99,7 +120,7 @@ export const Task: React.FC<TaskProps> = ({
               paddingLeft: 0,
               height: textInputHeight,
               fontSize: 13,
-              color: colors.text.default
+              color: colors.text.default,
             },
             Platform.select({ web: { outlineWidth: 0 } as any }),
           ]}

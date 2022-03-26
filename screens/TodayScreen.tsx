@@ -13,6 +13,7 @@ export const TodayScreen = () => {
     updateTaskBody,
     updateTaskStatus,
     createTask,
+    deleteTask,
     tasksSynced,
   } = useData();
 
@@ -101,6 +102,9 @@ export const TodayScreen = () => {
                   }}
                   onStatusChange={(status) => {
                     updateTaskStatus({ id, status });
+                  }}
+                  onDelete={() => {
+                    deleteTask({ id });
                   }}
                 >
                   {body}

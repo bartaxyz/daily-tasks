@@ -16,6 +16,7 @@ function createMainWindow() {
       contextIsolation: false,
       enableRemoteModule: true,
     },
+    width: 440,
     minWidth: 440,
     maxWidth: 640,
     minHeight: 440,
