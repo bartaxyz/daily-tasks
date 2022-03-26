@@ -15,10 +15,9 @@ export const Task: React.FC<TaskProps> = ({
   children,
   variant = "normal",
   status,
-  ...props
 }) => {
   return (
-    <Root variant={variant}>
+    <Root variant={variant} status={status}>
       <CheckboxRoot>
         {variant === "normal" ? (
           <Checkbox checked={status === "done"} />
@@ -28,16 +27,21 @@ export const Task: React.FC<TaskProps> = ({
       </CheckboxRoot>
 
       {/* <TextInput value="boo"></TextInput> */}
-      <Typography.Task.Label>{children}</Typography.Task.Label>
+      <Typography.Task.Label
+        textDecorationLine={status === "done" ? "line-through" : "none"}
+      >
+        {children}
+      </Typography.Task.Label>
     </Root>
   );
 };
 
-const Root = styled.View<{ variant: TaskProps["variant"] }>`
+const Root = styled.View<Pick<TaskProps, "status" | "variant">>`
   padding: 12px;
   flex-direction: row;
   align-items: center;
-  opacity: ${({ variant }) => (variant === "normal" ? 1 : 0.25)};
+  opacity: ${({ variant, status }) =>
+    variant === "add" || status === "done" ? 0.25 : 1};
 `;
 
 const CheckboxRoot = styled.View`
