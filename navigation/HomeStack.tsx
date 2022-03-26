@@ -15,7 +15,11 @@ const Tab = createMaterialTopTabNavigator<MainTabsParamList>();
 
 export const HomeStack = () => (
   <DataProvider>
-    <Tab.Navigator initialRouteName="Today" tabBar={TabBar}>
+    <Tab.Navigator
+      initialRouteName="Today"
+      tabBar={TabBar}
+      screenOptions={{ swipeEnabled: false }}
+    >
       <Tab.Screen name="Backlog" component={BacklogScreen} />
       <Tab.Screen name="Today" component={TodayScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />

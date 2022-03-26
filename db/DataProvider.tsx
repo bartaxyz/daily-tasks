@@ -4,18 +4,24 @@ import { createContext, useContext } from "react";
 import { TaskData } from "./types";
 import { useTasks } from "./useTasks";
 
-export const DataContext = createContext<{
+interface DataContextValue extends ReturnType<typeof useTasks> {
   tasks: TaskData[];
   overdueTasks: TaskData[];
   todayTasks: TaskData[];
-}>({
+}
+
+export const DataContext = createContext<DataContextValue>({
   tasks: [],
   overdueTasks: [],
   todayTasks: [],
+  createTask: async () => {},
+  updateTaskBody: async () => {},
+  updateTaskStatus: async () => {},
+  tasksSynced: false,
 });
 
 export const DataProvider: React.FC = ({ children }) => {
-  const { tasks } = useTasks();
+  const { tasks, ...taskMethods } = useTasks();
 
   const transformedTasks = tasks.map((task) => ({
     ...task,
@@ -31,7 +37,9 @@ export const DataProvider: React.FC = ({ children }) => {
   );
 
   return (
-    <DataContext.Provider value={{ tasks, overdueTasks, todayTasks }}>
+    <DataContext.Provider
+      value={{ tasks, overdueTasks, todayTasks, ...taskMethods }}
+    >
       {children}
     </DataContext.Provider>
   );

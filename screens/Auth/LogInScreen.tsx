@@ -5,6 +5,7 @@ import { useTheme } from "styled-components/native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { Button, Section, Typography } from "../../components";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../db/useAuth";
 
 export const LogInScreen = () => {
   const { navigate } = useNavigation();
@@ -13,13 +14,13 @@ export const LogInScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const { user } = useAuth();
+
   useEffect(() => {
-    getAuth().onAuthStateChanged((user) => {
-      if (user) {
-        navigate("Home" as any);
-      }
-    });
-  }, []);
+    if (user) {
+      navigate("Home" as any);
+    }
+  }, [user]);
 
   const authenticate = () => {
     const auth = getAuth();
@@ -55,7 +56,6 @@ export const LogInScreen = () => {
           <Typography.Body color={colors.text.secondary}>Email</Typography.Body>
           <TextInput
             value={email}
-            style={{ backgroundColor: "transparent", color: "white" }}
             dense={true}
             mode="outlined"
             activeOutlineColor={colors.primary}
@@ -70,7 +70,6 @@ export const LogInScreen = () => {
         </Typography.Body>
         <TextInput
           value={password}
-          style={{ backgroundColor: "transparent", color: "white" }}
           dense={true}
           mode="outlined"
           activeOutlineColor={colors.primary}

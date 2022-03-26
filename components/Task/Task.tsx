@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import { TextInput, TextInputProps } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { Platform, TextInput, TextInputProps } from "react-native";
 import styled, { useTheme } from "styled-components/native";
 import { Svg, Path } from "react-native-svg";
 import { debounce } from "lodash";
@@ -7,22 +7,36 @@ import { Checkbox } from "../Checkbox/Checkbox";
 import { Typography } from "../Typography";
 
 export interface TaskProps {
+  editable?: boolean;
   children?: string;
   variant?: "normal" | "add";
   status?: "none" | "done" | "error";
+  onTaskPress?: () => void;
+  onValueChange?: (text: string) => void;
+  onStatusChange?: (status: "none" | "done" | "error") => void;
 }
 
+const addTaskPlaceholderText = "Add a task";
+
 export const Task: React.FC<TaskProps> = ({
+  editable = true,
   children,
   variant = "normal",
   status,
+  onTaskPress,
+  onValueChange,
+  onStatusChange,
 }) => {
   const [focused, setFocused] = useState(false);
   const [value, setValue] = useState("");
+  const [textInputHeight, setTextInputHeight] = useState(0);
 
-  const onChangeHandlerDebounced = (inputValue: string) => {
-    // Update value
-    // Send request
+  useEffect(() => {
+    setValue(children || "");
+  }, [children]);
+
+  const onChangeHandlerDebounced = (text: string) => {
+    if (onValueChange) onValueChange(text);
   };
 
   const debounceCallback = useCallback(
@@ -31,8 +45,23 @@ export const Task: React.FC<TaskProps> = ({
   );
 
   const onChangeHandler: TextInputProps["onChange"] = (event) => {
-    setValue(event.nativeEvent.text);
-    debounceCallback(event.nativeEvent.text);
+    const { text } = event.nativeEvent;
+
+    setValue(text);
+    debounceCallback(text);
+  };
+
+  const onFocus = () => {
+    setFocused(true);
+  };
+
+  const onBlur = () => {
+    setFocused(false);
+  };
+
+  const onCheckboxChange = (checked: boolean) => {
+    console.log({ checked });
+    if (onStatusChange) onStatusChange(checked ? "done" : "none");
   };
 
   return (
@@ -41,38 +70,79 @@ export const Task: React.FC<TaskProps> = ({
       status={status}
       onPress={() => {
         setFocused(true);
+        if (onTaskPress) onTaskPress();
       }}
     >
       <CheckboxRoot>
         {variant === "normal" ? (
-          <Checkbox checked={status === "done"} />
+          <Checkbox checked={status === "done"} onChange={onCheckboxChange} />
         ) : (
           <AddSign />
         )}
       </CheckboxRoot>
 
-      {variant === "normal" && !focused ? (
+      {editable && variant !== "add" ? (
+        <TextInput
+          value={value}
+          onChange={onChangeHandler}
+          multiline={true}
+          editable={editable}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          style={[
+            {
+              flex: 1,
+              textDecorationLine: status === "done" ? "line-through" : "none",
+              padding: 8,
+              paddingTop: 7,
+              paddingLeft: 0,
+              height: textInputHeight,
+              fontSize: 13
+            },
+            Platform.select({ web: { outlineWidth: 0 } as any }),
+          ]}
+          onContentSizeChange={(event) => {
+            setTextInputHeight(event.nativeEvent.contentSize.height);
+          }}
+        />
+      ) : (
+        <Typography.Task.Label
+          style={{ padding: 8, paddingTop: 7, paddingLeft: 0 }}
+          textDecorationLine={status === "done" ? "line-through" : "none"}
+        >
+          {variant === "add" ? addTaskPlaceholderText : children}
+        </Typography.Task.Label>
+      )}
+
+      {/* {variant === "normal" && !focused ? (
         <Typography.Task.Label
           textDecorationLine={status === "done" ? "line-through" : "none"}
         >
           {children}
         </Typography.Task.Label>
       ) : (
-        <TextInput value={value} onChange={onChangeHandler}></TextInput>
-      )}
+        <TextInput
+          value={value}
+          onChange={onChangeHandler}
+          onBlur={onBlur}
+        />
+      )} */}
     </Root>
   );
 };
 
 const Root = styled.Pressable<Pick<TaskProps, "status" | "variant">>`
-  padding: 12px;
+  padding: 8px;
+  padding-top: 0;
+  padding-bottom: 8px;
   flex-direction: row;
-  align-items: center;
+  align-items: start;
   opacity: ${({ variant, status }) =>
     variant === "add" || status === "done" ? 0.25 : 1};
 `;
 
 const CheckboxRoot = styled.View`
+  margin: 8px;
   margin-right: 12px;
 `;
 

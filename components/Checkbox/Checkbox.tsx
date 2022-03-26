@@ -14,6 +14,7 @@ Animated.createAnimatedComponent(Pressable);
 
 export interface CheckboxProps extends PressableProps {
   checked: boolean;
+  onChange: (checked: boolean) => void;
 }
 
 export const Checkbox: React.FC<CheckboxProps> = ({ checked, ...props }) => {
@@ -25,14 +26,20 @@ export const Checkbox: React.FC<CheckboxProps> = ({ checked, ...props }) => {
     );
   }
 
+  const onPress = () => {
+    props.onChange(!checked);
+  };
+
   return (
-    <React.Fragment>
-      {checked ? <Check /> : <Root checked={checked} {...props} />}
-    </React.Fragment>
+    <Root onPress={onPress} {...props}>
+      {checked ? <Check /> : <Unchecked checked={checked} />}
+    </Root>
   );
 };
 
-const Root = styled.Pressable<{ checked: boolean }>`
+const Root = styled.Pressable``;
+
+const Unchecked = styled.View<{ checked: boolean }>`
   width: 16px;
   height: 16px;
   border-radius: 50px;

@@ -17,6 +17,7 @@ function createMainWindow() {
       enableRemoteModule: true,
     },
     minWidth: 440,
+    maxWidth: 640,
     minHeight: 440,
     vibrancy: "sidebar",
     transparent: true,
