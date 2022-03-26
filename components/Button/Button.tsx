@@ -68,7 +68,7 @@ export const Button: React.FC<ButtonProps> = ({
       onPressIn={onPressInHandler}
       onPressOut={onPressOutHandler}
       style={{
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.025,
         shadowRadius: 0.5,
         shadowColor: variant === "secondary" ? foreground : background,
         shadowOffset: { height: 1.5, width: 0 },
@@ -85,7 +85,7 @@ const Root = styled.Pressable<{
   variant: ButtonProps["variant"];
   pressed: boolean;
 }>`
-  height: 20px;
+  height: 22px;
   padding: 0 14px;
   justify-content: center;
   align-items: center;
