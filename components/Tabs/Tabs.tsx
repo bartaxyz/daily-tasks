@@ -6,6 +6,8 @@ import { Typography } from "../Typography";
 
 export interface Tab {
   label: string;
+  selected?: boolean;
+  onPress?: () => void;
 }
 
 export interface TabsProps {
@@ -19,11 +21,11 @@ export const Tabs: React.FC<TabsProps> = ({ tabs }) => {
   return (
     <Root ref={ref} hover={hover}>
       <Background hover={hover} />
-      {tabs.map(({ label }, index) => (
+      {tabs.map(({ label, selected, onPress }, index) => (
         <React.Fragment key={label}>
           {index > 0 && <TabSeparator />}
 
-          <TabButton selected={index === 0} hover={hover}>
+          <TabButton selected={!!selected} hover={hover} onPress={onPress}>
             {label}
           </TabButton>
         </React.Fragment>
@@ -64,12 +66,23 @@ interface TabButtonProps extends PressableProps {
   selected: boolean;
 }
 
-const TabButton: React.FC<TabButtonProps> = ({ children, hover, selected }) => {
+const TabButton: React.FC<TabButtonProps> = ({
+  children,
+  hover,
+  selected,
+  ...props
+}) => {
   const ref = useRef<View>(null);
   const active = useActive(ref);
 
   return (
-    <TabButtonRoot ref={ref} hover={hover} active={active} selected={selected}>
+    <TabButtonRoot
+      ref={ref}
+      hover={hover}
+      active={active}
+      selected={selected}
+      {...props}
+    >
       <TabButtonLabel hover={hover} active={active} selected={selected}>
         {children}
       </TabButtonLabel>
