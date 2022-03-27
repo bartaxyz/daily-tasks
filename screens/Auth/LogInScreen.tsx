@@ -12,6 +12,20 @@ import {
 import { useEffect, useState } from "react";
 import { useAuth } from "../../db/useAuth";
 import { useElectron } from "../../utils/useElectron";
+import { ActivityIndicator } from "react-native-paper";
+
+const errorCodeMessages: { [key: string]: string } = {
+  "auth/invalid-email": "Invalid email address",
+  "auth/user-disabled": "User is disabled",
+  "auth/user-not-found": "User not found",
+  "auth/wrong-password": "Wrong password",
+  /** Sign up error message */
+  "auth/email-already-in-use": "Email is already in use",
+};
+
+export const getErrorMessageFromCode = (code: string = "") => {
+  return errorCodeMessages[code] || "Unknown error";
+};
 
 export const LogInScreen = () => {
   const { navigate } = useNavigation();
@@ -24,6 +38,9 @@ export const LogInScreen = () => {
 
   const { electron } = useElectron();
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<{ code: string; message: string }>();
+
   useEffect(() => {
     if (!electron) return;
     const { BrowserWindow } = electron;
@@ -31,29 +48,50 @@ export const LogInScreen = () => {
     console.log(electron);
   }, []);
 
+  const onLogin = async () => {
+    setLoading(false);
+    navigate("Home" as any);
+  };
+
   useEffect(() => {
     if (user) {
-      navigate("Home" as any);
+      onLogin();
     }
   }, [user]);
 
   const authenticate = () => {
+    setLoading(true);
+
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
-
-        console.log(user);
-        // ...
+        onLogin();
       })
-      .catch((error) => {
+      .catch((error: { code: string; message: string }) => {
+        setError(error);
         const errorCode = error.code;
         const errorMessage = error.message;
 
         console.error(error);
+        setLoading(false);
       });
   };
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colors.background.default,
+          flex: 1,
+        }}
+      >
+        <ActivityIndicator size={20} color={colors.text.secondary} />
+      </View>
+    );
+  }
 
   return (
     <View
@@ -87,10 +125,19 @@ export const LogInScreen = () => {
         <View
           style={{
             marginTop: 24,
+            marginBottom: 12,
             flexDirection: "row",
-            justifyContent: "flex-end",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
+          <Typography.Caption
+            color={colors.text.error}
+            style={{ marginRight: 8 }}
+          >
+            {getErrorMessageFromCode(error?.code)}
+          </Typography.Caption>
+
           <Button onPress={authenticate}>Log In</Button>
         </View>
       </Section.Content>

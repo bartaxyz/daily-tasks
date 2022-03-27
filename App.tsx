@@ -1,4 +1,5 @@
 import { ThemeProvider } from "styled-components/native";
+import "react-native-gesture-handler";
 
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";

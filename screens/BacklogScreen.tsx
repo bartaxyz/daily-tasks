@@ -23,11 +23,7 @@ export const BacklogScreen = () => {
           style={{ margin: 12 }}
           textAlign="center"
         >
-          {/* Your backlog is empty. */}
-          Backlog is not implemented yet.
-        </Typography.Body>
-        <Typography.Body color={colors.text.secondary} textAlign="center">
-          Stay tuned!
+          Your backlog is empty.
         </Typography.Body>
       </Section.Content>
     </Section>

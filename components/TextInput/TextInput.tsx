@@ -23,7 +23,7 @@ const Label = styled(Typography.TextInput.Label)`
 `;
 
 const Input = styled.TextInput`
-  height: 22px;
+  height: 28px;
   border-radius: 5px;
   background: ${({ theme }) => theme.colors.textInput.background};
   color: ${({ theme }) => theme.colors.textInput.foreground};

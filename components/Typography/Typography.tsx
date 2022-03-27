@@ -77,7 +77,7 @@ const TaskLabel: React.FC<TypographyProps> = ({ ...props }) => (
 );
 
 const TextInputLabel: React.FC<TypographyProps> = ({ ...props }) => (
-  <Body {...props} />
+  <Caption {...props} />
 );
 
 export const Typography: React.FC<TypographyProps> & {

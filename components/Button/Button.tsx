@@ -1,3 +1,4 @@
+import { rgba } from "polished";
 import { useState } from "react";
 import {
   GestureResponderEvent,
@@ -71,7 +72,7 @@ export const Button: React.FC<ButtonProps> = ({
         shadowOpacity: 0.025,
         shadowRadius: 0.5,
         shadowColor: variant === "secondary" ? foreground : background,
-        shadowOffset: { height: 1.5, width: 0 },
+        shadowOffset: { height: variant === 'secondary' ? 5 : 1.5, width: 0 },
       }}
       {...props}
     >
@@ -99,7 +100,7 @@ const Root = styled.Pressable<{
       ? theme.colors.button.background.primary
       : theme.colors.button.background.secondary};
   border-width: 1px;
-  border-color: rgba(0, 0, 0, 0.12);
+  border-color: ${({variant}) => rgba(0, 0, 0, variant === 'secondary' ? 0.12 : 0.05)};
 
   border-top-width: 1px;
   border-top-color: ${({ theme, variant }) =>

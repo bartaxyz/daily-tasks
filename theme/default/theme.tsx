@@ -19,6 +19,7 @@ export const defaultTheme = {
     text: {
       default: "#000000",
       secondary: rgba("#000000", 0.5),
+      error: "#FF0000",
     },
 
     /** Component Colors */
@@ -68,7 +69,7 @@ export const defaultTheme = {
       },
     },
     textInput: {
-      background: rgba("#000000", 0.1),
+      background: rgba("#000000", 0.05),
       foreground: "#000000",
       label: {
         foreground: rgba("#000000", 0.5),
