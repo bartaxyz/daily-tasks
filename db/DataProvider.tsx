@@ -1,6 +1,6 @@
 import { isBefore, isFuture, isToday, secondsToMilliseconds } from "date-fns";
 import { Timestamp } from "firebase/firestore";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { TaskData } from "./types";
 import { useTasks } from "./useTasks";
 
@@ -18,6 +18,7 @@ export const DataContext = createContext<DataContextValue>({
   updateTaskBody: async () => {},
   updateTaskStatus: async () => {},
   deleteTask: async () => {},
+  updateTaskAssignedDate: async () => {},
   tasksSynced: false,
 });
 
@@ -30,8 +31,21 @@ export const DataProvider: React.FC = ({ children }) => {
   }));
 
   const overdueTasks = transformedTasks.filter(
-    (task) => !(isToday(task.assignedDate) || isFuture(task.assignedDate))
+    (task) =>
+      !(isToday(task.assignedDate) || isFuture(task.assignedDate)) &&
+      task.status !== "done"
   );
+
+  useEffect(() => {
+    /**
+     * Remove all empty overdue tasks
+     */
+    overdueTasks.forEach(({ id, body }) => {
+      if (!body) {
+        taskMethods.deleteTask({ id });
+      }
+    });
+  }, [overdueTasks]);
 
   const todayTasks = transformedTasks.filter(
     (task) => isToday(task.assignedDate) || isFuture(task.assignedDate)

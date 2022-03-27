@@ -31,14 +31,9 @@ export const useTasks = () => {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const tasks: TaskData[] = [];
 
-      console.log({
-        hasPendingWrites: querySnapshot.metadata.hasPendingWrites,
-      });
-
       setTasksSynced(!querySnapshot.metadata.hasPendingWrites);
 
       querySnapshot.forEach((doc) => {
-        console.log(doc.data());
         const data = doc.data() as TaskData;
         tasks.push({
           ...data,
@@ -56,7 +51,7 @@ export const useTasks = () => {
     };
   }, [user]);
 
-  const createTask = async ({ body }: Pick<TaskData, "body">) => {
+  const createTask = async ({ body = "" }: Partial<TaskData>) => {
     if (!user) return;
 
     await addDoc(collection(firestore, "tasks"), {
@@ -71,8 +66,6 @@ export const useTasks = () => {
     id,
     body,
   }: Pick<TaskData, "id" | "body">) => {
-    if (!user) return;
-
     await setDoc(
       doc(firestore, "tasks", id),
       {
@@ -95,9 +88,20 @@ export const useTasks = () => {
     );
   };
 
-  const deleteTask = async ({ id }: Pick<TaskData, "id">) => {
-    if (!user) return;
+  const updateTaskAssignedDate = async ({
+    id,
+    assigned_date,
+  }: Pick<TaskData, "id" | "assigned_date">) => {
+    await setDoc(
+      doc(firestore, "tasks", id),
+      {
+        assigned_date: assigned_date,
+      },
+      { merge: true }
+    );
+  };
 
+  const deleteTask = async ({ id }: Pick<TaskData, "id">) => {
     await deleteDoc(doc(firestore, "tasks", id));
   };
 
@@ -107,6 +111,7 @@ export const useTasks = () => {
     createTask,
     updateTaskBody,
     updateTaskStatus,
+    updateTaskAssignedDate,
     deleteTask,
   };
 };

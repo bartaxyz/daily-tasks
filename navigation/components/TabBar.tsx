@@ -13,11 +13,13 @@ import {
 import { useData } from "../../db/DataProvider";
 import { isElectron } from "../../utils/platform";
 
+const displayItemCount = 2;
+
 export const TabBar = ({ state, descriptors, navigation, position }: any) => {
   const { overdueTasks } = useData();
   const { colors } = useTheme();
   const [animatedValue] = useState(new Animated.Value(0));
-  const [maxHeight, setMaxHeight] = useState(100);
+  const [maxHeight, setMaxHeight] = useState(0);
   const duration = 200;
 
   useEffect(() => {
@@ -104,47 +106,56 @@ export const TabBar = ({ state, descriptors, navigation, position }: any) => {
             outputRange: [0, maxHeight],
           }),
         }}
-        onLayout={(event) => {
-          const height = event.nativeEvent.layout.height;
-          if (maxHeight < height) {
-            setMaxHeight(height);
-          }
-        }}
       >
-        <Animated.View
-          style={{
-            opacity: animatedValue.interpolate({
-              inputRange: [0, 0.1, 1],
-              outputRange: [0, 1, 1],
-            }),
+        <View
+          onLayout={(event) => {
+            const height = event.nativeEvent.layout.height;
+            if (maxHeight < height) {
+              setMaxHeight(height);
+            }
           }}
         >
-          <Section.Separator />
-        </Animated.View>
-
-        <Section.Content inset="S">
-          <View
+          <Animated.View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingBottom: 12,
+              opacity: animatedValue.interpolate({
+                inputRange: [0, 0.1, 1],
+                outputRange: [0, 1, 1],
+              }),
             }}
           >
-            <Typography.Title>Overdue</Typography.Title>
-            <Button variant="primary" onPress={() => {}}>
-              Finish Overdue
-            </Button>
-          </View>
+            <Section.Separator />
+          </Animated.View>
 
-          <View style={{ opacity: 0.5 }}>
-            {overdueTasks.map(({ body, id }) => (
-              <Task key={id} editable={false}>
-                {body}
-              </Task>
-            ))}
-          </View>
-        </Section.Content>
+          <Section.Content inset="S">
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBottom: 12,
+              }}
+            >
+              <Typography.Title>Overdue</Typography.Title>
+              <Button variant="primary" onPress={() => {}}>
+                Finish Overdue
+              </Button>
+            </View>
+
+            <View style={{ opacity: 0.5 }}>
+              {overdueTasks.slice(0, displayItemCount).map(({ body, id }) => (
+                <Task key={id} editable={false}>
+                  {body}
+                </Task>
+              ))}
+
+              {overdueTasks.length - displayItemCount > 0 ? (
+                <Task variant="more" editable={false}>
+                  {`${overdueTasks.length - displayItemCount} more tasks`}
+                </Task>
+              ) : null}
+            </View>
+          </Section.Content>
+        </View>
       </Animated.View>
 
       <Section.Separator />

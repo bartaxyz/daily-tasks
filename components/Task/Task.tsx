@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Platform, TextInput, TextInputProps } from "react-native";
 import styled, { useTheme } from "styled-components/native";
 import { Svg, Path } from "react-native-svg";
@@ -9,13 +9,15 @@ import { Typography } from "../Typography";
 export interface TaskProps {
   editable?: boolean;
   children?: string;
-  variant?: "normal" | "add";
+  variant?: "normal" | "add" | "more";
   status?: "none" | "done" | "error";
   onTaskPress?: () => void;
   onValueChange?: (text: string) => void;
   onStatusChange?: (status: "none" | "done" | "error") => void;
   onDelete?: () => void;
   onEnterPress?: () => void;
+  onOrderUp?: () => void;
+  onOrderDown?: () => void;
 }
 
 const addTaskPlaceholderText = "Add a task";
@@ -30,11 +32,14 @@ export const Task: React.FC<TaskProps> = ({
   onStatusChange,
   onDelete,
   onEnterPress,
+  onOrderUp,
+  onOrderDown,
 }) => {
   const { colors } = useTheme();
   const [focused, setFocused] = useState(false);
   const [value, setValue] = useState("");
   const [textInputHeight, setTextInputHeight] = useState(0);
+  const keyboardShortcutMode = useRef<"none" | "ordering">("none");
 
   useEffect(() => {
     setValue(children || "");
@@ -45,7 +50,7 @@ export const Task: React.FC<TaskProps> = ({
   };
 
   const debounceCallback = useCallback(
-    debounce(onChangeHandlerDebounced, 1000),
+    debounce(onChangeHandlerDebounced, 250),
     []
   );
 
@@ -59,7 +64,19 @@ export const Task: React.FC<TaskProps> = ({
   const onKeyPressHandler: TextInputProps["onKeyPress"] = (event) => {
     const { key } = event.nativeEvent;
 
-    console.log(event);
+    if (key === "Alt") {
+      keyboardShortcutMode.current = "ordering";
+    }
+    if (keyboardShortcutMode.current === "ordering") {
+      if (key === "Alt") {
+      } else if (key === "ArrowUp") {
+        if (onOrderUp) onOrderUp();
+      } else if (key === "ArrowDown") {
+        if (onOrderDown) onOrderDown();
+      } else {
+        keyboardShortcutMode.current = "none";
+      }
+    }
 
     if (key === "Backspace") {
       if (value.length === 0) {
@@ -68,6 +85,7 @@ export const Task: React.FC<TaskProps> = ({
     }
 
     if (key === "Enter") {
+      event.preventDefault();
       onEnterPress && onEnterPress();
     }
   };
@@ -81,7 +99,6 @@ export const Task: React.FC<TaskProps> = ({
   };
 
   const onCheckboxChange = (checked: boolean) => {
-    console.log({ checked });
     if (onStatusChange) onStatusChange(checked ? "done" : "none");
   };
 
@@ -97,14 +114,16 @@ export const Task: React.FC<TaskProps> = ({
       <CheckboxRoot>
         {variant === "normal" ? (
           <Checkbox checked={status === "done"} onChange={onCheckboxChange} />
-        ) : (
+        ) : variant === "add" ? (
           <AddSign />
+        ) : (
+          <MoreSign />
         )}
       </CheckboxRoot>
 
-      {editable && variant !== "add" ? (
+      {editable && variant !== "add" && variant !== "more" ? (
         <TextInput
-          value={value}
+          value={value.replace(/\n/g, "")}
           onChange={onChangeHandler}
           onKeyPress={onKeyPressHandler}
           multiline={true}
@@ -116,10 +135,9 @@ export const Task: React.FC<TaskProps> = ({
               flex: 1,
               textDecorationLine: status === "done" ? "line-through" : "none",
               padding: 8,
-              paddingTop: 7,
               paddingLeft: 0,
               height: textInputHeight,
-              fontSize: 13,
+              fontSize: 12,
               color: colors.text.default,
             },
             Platform.select({ web: { outlineWidth: 0 } as any }),
@@ -130,7 +148,8 @@ export const Task: React.FC<TaskProps> = ({
         />
       ) : (
         <Typography.Task.Label
-          style={{ padding: 8, paddingTop: 7, paddingLeft: 0 }}
+          style={{ padding: 8, paddingLeft: 0 }}
+          fontSize={12}
           textDecorationLine={status === "done" ? "line-through" : "none"}
         >
           {variant === "add" ? addTaskPlaceholderText : children}
@@ -184,6 +203,32 @@ const AddIcon = ({ ...props }) => {
 };
 
 const AddSign = styled(AddIcon)`
+  width: 16px;
+  height: 16px;
+  position: relative;
+`;
+
+const MoreIcon = ({ ...props }) => {
+  const { colors } = useTheme();
+  return (
+    <Svg width="20" height="20" viewBox="0 0 20 20" fill="none" {...props}>
+      <Path
+        d="M5 10C5 10.5523 4.55228 11 4 11C3.44772 11 3 10.5523 3 10C3 9.44772 3.44772 9 4 9C4.55228 9 5 9.44772 5 10Z"
+        fill={colors.checkbox.unchecked.outline}
+      />
+      <Path
+        d="M11 10C11 10.5523 10.5523 11 10 11C9.44772 11 9 10.5523 9 10C9 9.44772 9.44772 9 10 9C10.5523 9 11 9.44772 11 10Z"
+        fill={colors.checkbox.unchecked.outline}
+      />
+      <Path
+        d="M17 10C17 10.5523 16.5523 11 16 11C15.4477 11 15 10.5523 15 10C15 9.44772 15.4477 9 16 9C16.5523 9 17 9.44772 17 10Z"
+        fill={colors.checkbox.unchecked.outline}
+      />
+    </Svg>
+  );
+};
+
+const MoreSign = styled(MoreIcon)`
   width: 16px;
   height: 16px;
   position: relative;

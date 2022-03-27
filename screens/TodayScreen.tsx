@@ -1,4 +1,6 @@
+import { startOfToday } from "date-fns";
 import Constants from "expo-constants";
+import { Timestamp } from "firebase/firestore";
 import React, { useState } from "react";
 import { ActivityIndicator, Animated, ScrollView, View } from "react-native";
 import { Svg, Path } from "react-native-svg";
@@ -13,6 +15,7 @@ export const TodayScreen = () => {
     updateTaskBody,
     updateTaskStatus,
     createTask,
+    updateTaskAssignedDate,
     deleteTask,
     tasksSynced,
   } = useData();
@@ -34,6 +37,70 @@ export const TodayScreen = () => {
       useNativeDriver: true,
     }).start();
   }
+
+  const onOrderUp = (id: string, index: number) => {
+    if (index === 0) return;
+
+    let assignedDate = 0;
+
+    if (index === 1) {
+      /**
+       * Finds time between of previous task and start of the day
+       */
+      const previousTask = tasks[index - 1];
+      const startOfTheDay = +startOfToday();
+      const delta =
+        (previousTask.assigned_date.toMillis() - +startOfToday()) / 2;
+      assignedDate = startOfTheDay + delta;
+    } else {
+      /**
+       * Finds time between previous two tasks
+       */
+      const previousTaskFirst = tasks[index - 2];
+      const previousTaskSecond = tasks[index - 1];
+      const delta =
+        (previousTaskSecond.assigned_date.toMillis() -
+          previousTaskFirst.assigned_date.toMillis()) /
+        2;
+      assignedDate = previousTaskFirst.assigned_date.toMillis() + delta;
+    }
+
+    updateTaskAssignedDate({
+      id,
+      assigned_date: Timestamp.fromMillis(assignedDate),
+    });
+  };
+  const onOrderDown = (id: string, index: number) => {
+    if (index === tasks.length - 1) return;
+
+    let assignedDate = 0;
+
+    if (index === tasks.length - 2) {
+      /**
+       * Finds time between of next task and end of the day
+       */
+      const nextTask = tasks[index + 1];
+      const endOfTheDay = +startOfToday() + 86400000;
+      const delta = (endOfTheDay - nextTask.assigned_date.toMillis()) / 2;
+      assignedDate = nextTask.assigned_date.toMillis() + delta;
+    } else {
+      /**
+       * Finds time between next two tasks
+       */
+      const nextTaskFirst = tasks[index + 1];
+      const nextTaskSecond = tasks[index + 2];
+      const delta =
+        (nextTaskSecond.assigned_date.toMillis() -
+          nextTaskFirst.assigned_date.toMillis()) /
+        2;
+      assignedDate = nextTaskFirst.assigned_date.toMillis() + delta;
+    }
+
+    updateTaskAssignedDate({
+      id,
+      assigned_date: Timestamp.fromMillis(assignedDate),
+    });
+  };
 
   return (
     <React.Fragment>
@@ -93,19 +160,16 @@ export const TodayScreen = () => {
                 {/* <Button onPress={() => {}}>Finish Today</Button> */}
               </View>
 
-              {tasks.map(({ status, body, id }) => (
+              {tasks.map(({ status, body, id }, index) => (
                 <Task
                   key={id}
                   status={status}
-                  onValueChange={(body) => {
-                    updateTaskBody({ id, body });
-                  }}
-                  onStatusChange={(status) => {
-                    updateTaskStatus({ id, status });
-                  }}
-                  onDelete={() => {
-                    deleteTask({ id });
-                  }}
+                  onValueChange={(body) => updateTaskBody({ id, body })}
+                  onStatusChange={(status) => updateTaskStatus({ id, status })}
+                  onDelete={() => deleteTask({ id })}
+                  onEnterPress={() => createTask({})}
+                  onOrderUp={() => onOrderUp(id, index)}
+                  onOrderDown={() => onOrderDown(id, index)}
                 >
                   {body}
                 </Task>
