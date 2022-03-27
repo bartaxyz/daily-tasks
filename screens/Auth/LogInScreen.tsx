@@ -131,12 +131,14 @@ export const LogInScreen = () => {
             alignItems: "center",
           }}
         >
-          <Typography.Caption
-            color={colors.text.error}
-            style={{ marginRight: 8 }}
-          >
-            {getErrorMessageFromCode(error?.code)}
-          </Typography.Caption>
+          {!!error?.code && (
+            <Typography.Caption
+              color={colors.text.error}
+              style={{ marginRight: 8 }}
+            >
+              {getErrorMessageFromCode(error?.code)}
+            </Typography.Caption>
+          )}
 
           <Button onPress={authenticate}>Log In</Button>
         </View>
