@@ -23,7 +23,7 @@ export const TabBar = ({ state, descriptors, navigation, position }: any) => {
   const duration = 200;
 
   useEffect(() => {
-    if (overdueTasks.length > 0 && state.index !== 2) {
+    if (overdueTasks.length > 0 && state.index === 1) {
       Animated.timing(animatedValue, {
         toValue: 1,
         duration,
@@ -105,6 +105,7 @@ export const TabBar = ({ state, descriptors, navigation, position }: any) => {
             inputRange: [0, 1],
             outputRange: [0, maxHeight],
           }),
+          overflow: "hidden",
         }}
       >
         <View

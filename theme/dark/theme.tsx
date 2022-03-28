@@ -2,8 +2,12 @@ import { rgba } from "polished";
 import { defaultTheme } from "../default/theme";
 
 const colors = {
+  primary: "#3685F9",
   background: {
     default: "#201F1E",
+  },
+  text: {
+    default: "#FFFFFF",
   },
 };
 
@@ -17,7 +21,7 @@ export const darkTheme: typeof defaultTheme = {
       default: colors.background.default,
     },
     text: {
-      default: "#FFFFFF",
+      default: colors.text.default,
       secondary: rgba("#FFFFFF", 0.5),
       error: "#FF0000",
     },
@@ -46,10 +50,26 @@ export const darkTheme: typeof defaultTheme = {
         tick: "#FFFFFF",
       },
     },
+    iconButton: {
+      ...defaultTheme.colors.iconButton,
+      background: "transparent",
+      foreground: colors.text.default,
+    },
     section: {
       ...defaultTheme.colors.section,
       background: rgba(colors.background.default, 0.5),
       separator: rgba("#FFFFFF", 0.1),
+    },
+    sidebar: {
+      ...defaultTheme.colors.sidebar,
+      button: {
+        ...defaultTheme.colors.sidebar.button,
+        backgroundActive: rgba("#FFFFFF", 0.1),
+        foreground: "#E9EAEA",
+      },
+      title: {
+        foreground: rgba(colors.text.default, 0.3),
+      },
     },
     tabs: {
       ...defaultTheme.colors.tabs,

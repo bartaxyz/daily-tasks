@@ -175,8 +175,8 @@ export const Task: React.FC<TaskProps> = ({
 
 const Root = styled.Pressable<Pick<TaskProps, "status" | "variant">>`
   padding: 8px;
-  padding-top: 0;
-  padding-bottom: 8px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   flex-direction: row;
   align-items: start;
   opacity: ${({ variant, status }) =>

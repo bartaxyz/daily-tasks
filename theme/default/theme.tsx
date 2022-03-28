@@ -5,6 +5,9 @@ const colors = {
   background: {
     default: "#FFFFFF",
   },
+  text: {
+    default: "#000000",
+  },
 };
 
 export const defaultTheme = {
@@ -17,7 +20,7 @@ export const defaultTheme = {
       transparent: rgba(colors.background.default, 0.75),
     },
     text: {
-      default: "#000000",
+      default: colors.text.default,
       secondary: rgba("#000000", 0.5),
       error: "#FF0000",
     },
@@ -25,8 +28,6 @@ export const defaultTheme = {
     /** Component Colors */
     button: {
       background: {
-        primary: colors.primary,
-        primaryPressed: lighten(0.075)(colors.primary),
         secondary: "#FFFFFF",
         secondaryPressed: "#DDD",
       },
@@ -45,9 +46,28 @@ export const defaultTheme = {
         tick: rgba("#272727", 0.5),
       },
     },
+    iconButton: {
+      background: "transparent",
+      backgroundHover: rgba(colors.primary, 0.1),
+      backgroundActive: rgba(colors.primary, 0.2),
+      foreground: colors.text.default,
+      foregroundHover: colors.primary,
+      foregroundActive: colors.primary,
+    },
     section: {
       background: rgba(colors.background.default, 0.1),
       separator: rgba("#000000", 0.1),
+    },
+    sidebar: {
+      background: "transparent",
+      button: {
+        background: "transparent",
+        backgroundActive: rgba("#000000", 0.1),
+        foreground: "#38343D",
+      },
+      title: {
+        foreground: rgba(colors.text.default, 0.3),
+      },
     },
     tabs: {
       background: "transparent",
@@ -73,7 +93,7 @@ export const defaultTheme = {
       foreground: "#000000",
       label: {
         foreground: rgba("#000000", 0.5),
-      }
+      },
     },
     toolbar: {
       button: {

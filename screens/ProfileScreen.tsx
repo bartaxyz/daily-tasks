@@ -36,31 +36,33 @@ export const ProfileScreen = () => {
   };
 
   return (
-    <Section separator="none" style={{ flex: 1 }}>
-      <Section.Content
-        inset="M"
-        style={{ flex: 1, alignContent: "space-between" }}
-      >
-        <Typography.Title textAlign="center">
-          Profile {user?.displayName}
-        </Typography.Title>
+    <Section.Content inset="M" maxWidth={560} style={{ flex: 1 }}>
+      <Section separator="none" hasBackground={false} style={{ flex: 1 }}>
+        <Section.Content
+          inset="M"
+          style={{ flex: 1, alignContent: "space-between" }}
+        >
+          <Typography.Title textAlign="center">
+            Profile {user?.displayName}
+          </Typography.Title>
 
-        <View style={{ height: 12 }} />
+          <View style={{ height: 12 }} />
 
-        <Section separator="around">
-          <Section.Content inset="M">
-            <DataRow label="Email" value={user?.email || undefined} />
-            <View style={{ height: 12 }} />
-            <DataRow label="UID" value={user?.uid} />
-          </Section.Content>
-        </Section>
+          <Section separator="around">
+            <Section.Content inset="M">
+              <DataRow label="Email" value={user?.email || undefined} />
+              <View style={{ height: 12 }} />
+              <DataRow label="UID" value={user?.uid} />
+            </Section.Content>
 
-        <Section.Content inset="S">
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Button onPress={logOutHandler}>Log Out</Button>
-          </View>
+            <Section.Content inset="S">
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <Button onPress={logOutHandler}>Log Out</Button>
+              </View>
+            </Section.Content>
+          </Section>
         </Section.Content>
-      </Section.Content>
-    </Section>
+      </Section>
+    </Section.Content>
   );
 };

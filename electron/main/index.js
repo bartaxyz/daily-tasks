@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain, systemPreferences } from "electron";
 import * as path from "path";
 import { format as formatUrl } from "url";
 
@@ -18,7 +18,7 @@ function createMainWindow() {
     },
     width: 440,
     minWidth: 440,
-    maxWidth: 640,
+    maxWidth: 800,
     minHeight: 440,
     vibrancy: "sidebar",
     transparent: true,
@@ -102,4 +102,9 @@ app.on("ready", () => {
     `;
     mainWindow.webContents.executeJavaScript(code);
   });
+});
+
+/** Get accent color */
+ipcMain.handle("get-accent-color", async () => {
+  return `#${systemPreferences.getAccentColor().substring(0, 6)}`;
 });

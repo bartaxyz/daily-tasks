@@ -50,6 +50,9 @@ const StyledText: React.FC<TypographyProps> = ({
   );
 };
 
+const Headline: React.FC<TypographyProps> = ({ children, ...props }) => (
+  <Body {...props} fontSize={16} fontWeight="bold" />
+);
 const Title: React.FC<TypographyProps> = ({ ...props }) => (
   <Body
     {...props}
@@ -68,6 +71,13 @@ const ButtonLabel: React.FC<TypographyProps> = ({ ...props }) => (
   <Body fontWeight="500" {...props} />
 );
 
+const SidebarTitle: React.FC<TypographyProps> = ({ ...props }) => (
+  <Body fontWeight="bold" fontSize={11} {...props} />
+);
+const SidebarButtonLabel: React.FC<TypographyProps> = ({ ...props }) => (
+  <Body fontWeight="500" {...props} />
+);
+
 const TagLabel: React.FC<TypographyProps> = ({ ...props }) => (
   <Body fontSize={11} fontWeight="500" {...props} />
 );
@@ -81,11 +91,18 @@ const TextInputLabel: React.FC<TypographyProps> = ({ ...props }) => (
 );
 
 export const Typography: React.FC<TypographyProps> & {
+  Headline: React.FC<TypographyProps>;
   Title: React.FC<TypographyProps>;
   Body: React.FC<TypographyProps>;
   Caption: React.FC<TypographyProps>;
   Button: {
     Label: React.FC<TypographyProps>;
+  };
+  Sidebar: {
+    Title: React.FC<TypographyProps>;
+    Button: {
+      Label: React.FC<TypographyProps>;
+    };
   };
   Tag: {
     Label: React.FC<TypographyProps>;
@@ -98,12 +115,20 @@ export const Typography: React.FC<TypographyProps> & {
   };
 } = ({ children }) => <Text>{children}</Text>;
 
+Typography.Headline = Headline;
 Typography.Title = Title;
 Typography.Body = Body;
 Typography.Caption = Caption;
 
 Typography.Button = {
   Label: ButtonLabel,
+};
+
+Typography.Sidebar = {
+  Title: SidebarTitle,
+  Button: {
+    Label: SidebarButtonLabel,
+  },
 };
 
 Typography.Tag = {

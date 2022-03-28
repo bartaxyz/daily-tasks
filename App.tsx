@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components/native";
 import "react-native-gesture-handler";
 
@@ -6,11 +7,34 @@ import useColorScheme from "./hooks/useColorScheme";
 import { Navigation } from "./navigation";
 import { darkTheme } from "./theme/dark/theme";
 import { defaultTheme } from "./theme/default/theme";
+import { isElectron } from "./utils/platform";
+
 import "./firebase";
+
+let ipcRenderer: Electron.IpcRenderer;
+
+if (isElectron) {
+  ipcRenderer = require("electron").ipcRenderer;
+}
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
+
+  const [systemAccentColor, setSystemAccentColor] = useState<string>();
+
+  useEffect(() => {
+    if (ipcRenderer) {
+      ipcRenderer.invoke("get-accent-color").then((color) => {
+        setSystemAccentColor(color);
+      });
+    }
+  }, []);
+
+  if (systemAccentColor) {
+    darkTheme.colors.primary = systemAccentColor;
+    defaultTheme.colors.primary = systemAccentColor;
+  }
 
   if (!isLoadingComplete) {
     return null;
