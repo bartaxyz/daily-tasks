@@ -1,5 +1,4 @@
-import { isBefore, isFuture, isToday, secondsToMilliseconds } from "date-fns";
-import { Timestamp } from "firebase/firestore";
+import { isFuture, isToday, secondsToMilliseconds } from "date-fns";
 import { createContext, useContext, useEffect } from "react";
 import { TaskData } from "./types";
 import { useTasks } from "./useTasks";
@@ -33,7 +32,9 @@ export const DataProvider: React.FC = ({ children }) => {
   const overdueTasks = transformedTasks.filter(
     (task) =>
       !(isToday(task.assignedDate) || isFuture(task.assignedDate)) &&
-      task.status !== "done"
+      task.status !== "done" &&
+      task.status !== "backlog" &&
+      task.status !== "deleted"
   );
 
   useEffect(() => {

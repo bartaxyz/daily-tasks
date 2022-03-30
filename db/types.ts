@@ -5,5 +5,5 @@ export interface TaskData {
   assigned_date: Timestamp;
   body: string;
   owned_by: string;
-  status: "none" | "done" | "error";
+  status: "none" | "done" | "error" | "deleted" | "backlog";
 }

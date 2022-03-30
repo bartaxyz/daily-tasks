@@ -10,7 +10,7 @@ export interface TaskProps {
   editable?: boolean;
   children?: string;
   variant?: "normal" | "add" | "more";
-  status?: "none" | "done" | "error";
+  status?: "none" | "done" | "error" | "deleted" | "backlog";
   onTaskPress?: () => void;
   onValueChange?: (text: string) => void;
   onStatusChange?: (status: "none" | "done" | "error") => void;

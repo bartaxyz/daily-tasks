@@ -8,7 +8,6 @@ import {
   doc,
   Timestamp,
   addDoc,
-  orderBy,
   deleteDoc,
 } from "firebase/firestore";
 import { firestore } from "../firebase";

@@ -12,6 +12,7 @@ import {
 } from "../../components";
 import { useData } from "../../db/DataProvider";
 import { isElectron } from "../../utils/platform";
+import { useFinishModal } from "./FinishModal";
 
 const displayItemCount = 2;
 
@@ -20,6 +21,7 @@ export const TAB_BAR_ANIMATION_DURATION = 200;
 export const TabBar = ({ state, descriptors, navigation, position }: any) => {
   const { overdueTasks } = useData();
   const { colors } = useTheme();
+  const { showFinishModal } = useFinishModal();
   const [animatedValue] = useState(new Animated.Value(0));
   const [maxHeight, setMaxHeight] = useState(0);
 
@@ -82,7 +84,7 @@ export const TabBar = ({ state, descriptors, navigation, position }: any) => {
         onPress={onProfilePress}
         iconPath="M9.99372 16.2444C13.5533 16.2444 16.4913 13.3064 16.4913 9.75307C16.4913 6.19978 13.547 3.26172 9.98744 3.26172C6.43415 3.26172 3.50237 6.19978 3.50237 9.75307C3.50237 13.3064 6.44042 16.2444 9.99372 16.2444ZM9.99372 11.9252C8.22335 11.9252 6.84849 12.5593 6.18303 13.2875C5.32923 12.3647 4.80817 11.1217 4.80817 9.75307C4.80817 6.87151 7.11216 4.56124 9.98744 4.56124C12.869 4.56124 15.1855 6.87151 15.1918 9.75307C15.1918 11.1217 14.6708 12.3647 13.8107 13.2938C13.1452 12.5593 11.7704 11.9252 9.99372 11.9252ZM9.99372 10.8956C11.2116 10.9082 12.1596 9.86607 12.1596 8.5226C12.1596 7.25446 11.2054 6.1935 9.99372 6.1935C8.78836 6.1935 7.82784 7.25446 7.83412 8.5226C7.84039 9.86607 8.78208 10.8894 9.99372 10.8956Z"
       />
-      <Tag>v0.0.1 Beta</Tag>
+      <Tag>v0.0.1 Alpha</Tag>
     </View>
   );
 
@@ -138,7 +140,15 @@ export const TabBar = ({ state, descriptors, navigation, position }: any) => {
               }}
             >
               <Typography.Title>Overdue</Typography.Title>
-              <Button variant="primary" onPress={() => {}}>
+              <Button
+                variant="primary"
+                onPress={() => {
+                  showFinishModal({
+                    mode: "overdue",
+                    tasks: overdueTasks,
+                  });
+                }}
+              >
                 Finish Overdue
               </Button>
             </View>

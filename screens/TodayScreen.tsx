@@ -2,11 +2,11 @@ import { startOfToday } from "date-fns";
 import Constants from "expo-constants";
 import { Timestamp } from "firebase/firestore";
 import React, { useState } from "react";
-import { ActivityIndicator, Animated, ScrollView, View } from "react-native";
+import { Animated, ScrollView, View } from "react-native";
 import { Svg, Path } from "react-native-svg";
 import { useTheme } from "styled-components/native";
 
-import { Section, Task, Typography, Button, Tag } from "../components";
+import { Section, Task, Typography } from "../components";
 import { useData } from "../db/DataProvider";
 
 export const TodayScreen = () => {

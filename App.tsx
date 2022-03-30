@@ -10,8 +10,6 @@ import { defaultTheme } from "./theme/default/theme";
 import { isElectron } from "./utils/platform";
 
 import "./firebase";
-import { View } from "react-native";
-import { lighten, saturate } from "polished";
 
 let ipcRenderer: Electron.IpcRenderer;
 
@@ -34,7 +32,7 @@ export default function App() {
   }, []);
 
   if (systemAccentColor) {
-    const color = saturate(0.2)(systemAccentColor);
+    const color = systemAccentColor;
     darkTheme.colors.primary = color;
     defaultTheme.colors.primary = color;
   }

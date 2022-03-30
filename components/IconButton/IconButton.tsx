@@ -4,6 +4,7 @@ import { useActive, useHover } from "react-native-web-hooks";
 import styled, { useTheme } from "styled-components/native";
 import { Svg, Path } from "react-native-svg";
 import { Typography } from "../Typography";
+import { rgba } from "polished";
 
 export interface IconButtonProps extends PressableProps {
   label: string;
@@ -29,11 +30,8 @@ export const IconButton: React.FC<IconButtonProps> = ({
   const active = useActive(ref);
   const { colors } = useTheme();
 
-  const foreground = active
-    ? colors.iconButton.foregroundActive
-    : hover
-    ? colors.iconButton.foregroundHover
-    : colors.iconButton.foreground;
+  const foreground =
+    active || hover ? colors.primary : colors.iconButton.foreground;
 
   return (
     <Root ref={ref} hover={hover} active={active} {...props}>
@@ -46,7 +44,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   );
 };
 
-interface RootProps {
+interface RootProps extends PressableProps {
   hover: boolean;
   active: boolean;
 }
@@ -58,8 +56,8 @@ const Root = styled.Pressable<RootProps>`
   border-radius: 8px;
   background: ${({ theme, hover, active }) =>
     active
-      ? theme.colors.iconButton.backgroundActive
+      ? rgba(theme.colors.primary, 0.2)
       : hover
-      ? theme.colors.iconButton.backgroundHover
+      ? rgba(theme.colors.primary, 0.1)
       : theme.colors.iconButton.background};
 `;
