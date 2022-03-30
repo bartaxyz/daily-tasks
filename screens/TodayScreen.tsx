@@ -28,13 +28,13 @@ export const TodayScreen = () => {
     Animated.timing(syncAnimatedValue, {
       toValue: 1,
       duration: 1000,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start();
   } else {
     Animated.timing(syncAnimatedValue, {
       toValue: 0,
       duration: 1000,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start();
   }
 
@@ -188,25 +188,6 @@ export const TodayScreen = () => {
           </Section.Content>
         </Section>
       </ScrollView>
-
-      <Section separator="none">
-        {tasks.length > 0 && (
-          <Section separator="around" style={{ marginTop: 0 }}>
-            <Section.Content inset="S">
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Typography.Body>Ready to finish your day?</Typography.Body>
-                <Button onPress={() => {}}>Finish Today</Button>
-              </View>
-            </Section.Content>
-          </Section>
-        )}
-      </Section>
     </React.Fragment>
   );
 };

@@ -4,10 +4,11 @@ import {
   GestureResponderEvent,
   Platform,
   PressableProps,
-  StyleSheet,
+  View,
 } from "react-native";
 import { Button as RNPButton } from "react-native-paper";
 import styled from "styled-components/native";
+import { LinearGradient } from "expo-linear-gradient";
 import { Typography } from "../Typography";
 
 export interface ButtonProps extends PressableProps {
@@ -38,7 +39,7 @@ export const Button: React.FC<ButtonProps> = ({
       <RNPButton
         mode={variant === "primary" ? "contained" : "outlined"}
         onPress={props.onPress as any}
-        disabled={disabled}
+        disabled={!!disabled}
       >
         {children}
       </RNPButton>
@@ -61,33 +62,63 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   return (
-    <Root
-      background={background}
-      variant={variant}
-      pressed={pressed}
-      disabled={disabled}
-      onPressIn={onPressInHandler}
-      onPressOut={onPressOutHandler}
-      style={{
-        shadowOpacity: 0.025,
-        shadowRadius: 0.5,
-        shadowColor: variant === "secondary" ? foreground : background,
-        shadowOffset: { height: variant === "secondary" ? 5 : 1.5, width: 0 },
-      }}
-      {...props}
-    >
-      <Label variant={variant}>{children}</Label>
-    </Root>
+    <Border variant={variant}>
+      <Root
+        background={background}
+        variant={variant}
+        pressed={pressed}
+        disabled={disabled}
+        onPressIn={onPressInHandler}
+        onPressOut={onPressOutHandler}
+        style={{
+          shadowOpacity: 0.025,
+          shadowRadius: 4,
+          shadowColor: variant === "secondary" ? foreground : background,
+          shadowOffset: { height: variant === "secondary" ? 2 : 1.5, width: 0 },
+        }}
+        {...props}
+      >
+        <Gradient
+          colors={
+            variant === "secondary"
+              ? []
+              : [rgba("#9B9B9B", 0.2), rgba("#000000", 0.1)]
+          }
+        >
+          <Label variant={variant}>{children}</Label>
+        </Gradient>
+      </Root>
+    </Border>
   );
 };
+
+const Border = styled.View<{ variant: ButtonProps["variant"] }>`
+border-radius: 5px;
+  border-width: 1px;
+  border-color: ${({ variant }) =>
+    rgba(0, 0, 0, variant === "secondary" ? 0.12 : 0)};
+
+  border-top-width: 1px;
+  border-top-color: ${({ theme, variant }) =>
+    theme.name === "dark" && variant === "secondary"
+      ? "#5D5D5D"
+      : "rgba(0, 0, 0, 0.05)"};
+`;
+
+const Gradient = styled(LinearGradient)`
+  border-radius: 5px;
+  height: 100%;
+  padding: 0 14px;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Root = styled.Pressable<{
   background: string;
   variant: ButtonProps["variant"];
   pressed: boolean;
 }>`
-  height: 22px;
-  padding: 0 14px;
+  height: 20px;
   justify-content: center;
   align-items: center;
   border-radius: 5px;
@@ -99,15 +130,6 @@ const Root = styled.Pressable<{
       : variant === "primary"
       ? theme.colors.primary
       : theme.colors.button.background.secondary};
-  border-width: 1px;
-  border-color: ${({ variant }) =>
-    rgba(0, 0, 0, variant === "secondary" ? 0.12 : 0.05)};
-
-  border-top-width: 1px;
-  border-top-color: ${({ theme, variant }) =>
-    theme.name === "dark" && variant === "secondary"
-      ? "#5D5D5D"
-      : "rgba(0, 0, 0, 0.05)"};
 `;
 
 const Label = styled(Typography.Button.Label)<{

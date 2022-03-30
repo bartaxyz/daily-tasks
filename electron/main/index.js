@@ -21,7 +21,7 @@ function createMainWindow() {
     maxWidth: 800,
     minHeight: 440,
     vibrancy: "sidebar",
-    transparent: true,
+    transparent: false,
     titleBarStyle: "hiddenInset",
   });
 
@@ -106,5 +106,6 @@ app.on("ready", () => {
 
 /** Get accent color */
 ipcMain.handle("get-accent-color", async () => {
+  console.log(systemPreferences.getAccentColor());
   return `#${systemPreferences.getAccentColor().substring(0, 6)}`;
 });

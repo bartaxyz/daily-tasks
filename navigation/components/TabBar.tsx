@@ -15,25 +15,26 @@ import { isElectron } from "../../utils/platform";
 
 const displayItemCount = 2;
 
+export const TAB_BAR_ANIMATION_DURATION = 200;
+
 export const TabBar = ({ state, descriptors, navigation, position }: any) => {
   const { overdueTasks } = useData();
   const { colors } = useTheme();
   const [animatedValue] = useState(new Animated.Value(0));
   const [maxHeight, setMaxHeight] = useState(0);
-  const duration = 200;
 
   useEffect(() => {
     if (overdueTasks.length > 0 && state.index === 1) {
       Animated.timing(animatedValue, {
         toValue: 1,
-        duration,
-        useNativeDriver: true,
+        duration: TAB_BAR_ANIMATION_DURATION,
+        useNativeDriver: false,
       }).start();
     } else {
       Animated.timing(animatedValue, {
         toValue: 0,
-        duration,
-        useNativeDriver: true,
+        duration: TAB_BAR_ANIMATION_DURATION,
+        useNativeDriver: false,
       }).start();
     }
   }, [overdueTasks]);

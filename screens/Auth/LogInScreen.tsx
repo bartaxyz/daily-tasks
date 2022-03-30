@@ -36,17 +36,8 @@ export const LogInScreen = () => {
 
   const { user } = useAuth();
 
-  const { electron } = useElectron();
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<{ code: string; message: string }>();
-
-  useEffect(() => {
-    if (!electron) return;
-    const { BrowserWindow } = electron;
-
-    console.log(electron);
-  }, []);
 
   const onLogin = async () => {
     setLoading(false);
