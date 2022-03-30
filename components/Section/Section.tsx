@@ -46,7 +46,7 @@ const Root = styled.View<SectionProps>`
 `;
 
 const Border = styled.View<SectionProps>`
-  border-radius: 10px;
+  border-radius: 6px;
   border: 1px solid ${({ theme }) => theme.colors.section.separator};
   overflow: hidden;
 `;

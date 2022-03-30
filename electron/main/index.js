@@ -1,6 +1,12 @@
 "use strict";
 
-import { app, BrowserWindow, ipcMain, systemPreferences } from "electron";
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  systemPreferences,
+  Menu,
+} from "electron";
 import * as path from "path";
 import { format as formatUrl } from "url";
 
@@ -24,8 +30,6 @@ function createMainWindow() {
     transparent: false,
     titleBarStyle: "hiddenInset",
   });
-
-  browserWindow.document;
 
   if (isDevelopment) {
     browserWindow.webContents.openDevTools();
@@ -109,3 +113,138 @@ ipcMain.handle("get-accent-color", async () => {
   console.log(systemPreferences.getAccentColor());
   return `#${systemPreferences.getAccentColor().substring(0, 6)}`;
 });
+
+const openPreferencesWindow = () => {
+  /**
+   * Create a new browser window
+   */
+  const preferencesWindow = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
+    },
+    width: 440,
+    minWidth: 440,
+    maxWidth: 800,
+    minHeight: 440,
+    vibrancy: "sidebar",
+    transparent: false,
+    titleBarStyle: "hiddenInset",
+  });
+
+  if (isDevelopment) {
+    preferencesWindow.loadURL(`http://localhost:3000`);
+  } else {
+    preferencesWindow.loadURL(
+      formatUrl({
+        pathname: path.join(__dirname, "index.html"),
+        protocol: "file",
+        slashes: true,
+      })
+    );
+  }
+};
+
+ipcMain.handle("open-preferences", async () => {});
+
+const isMac = process.platform === "darwin";
+
+const template = [
+  ...(isMac
+    ? [
+        {
+          role: "appMenu",
+          submenu: [
+            { role: "about" },
+            { type: "separator" },
+            { label: "Preferences...", 
+            accelerator: 'CmdOrCtrl+,', click: openPreferencesWindow },
+            { type: "separator" },
+            { role: "services" },
+            { type: "separator" },
+            { role: "hide" },
+            { role: "hideOthers" },
+            { role: "unhide" },
+            { type: "separator" },
+            { role: "quit" },
+          ],
+        },
+      ]
+    : []),
+  // { role: 'fileMenu' }
+  {
+    label: "File",
+    submenu: [isMac ? { role: "close" } : { role: "quit" }],
+  },
+  // { role: 'editMenu' }
+  {
+    label: "Edit",
+    submenu: [
+      { role: "undo" },
+      { role: "redo" },
+      { type: "separator" },
+      { role: "cut" },
+      { role: "copy" },
+      { role: "paste" },
+      ...(isMac
+        ? [
+            { role: "pasteAndMatchStyle" },
+            { role: "delete" },
+            { role: "selectAll" },
+            { type: "separator" },
+            {
+              label: "Speech",
+              submenu: [{ role: "startSpeaking" }, { role: "stopSpeaking" }],
+            },
+          ]
+        : [{ role: "delete" }, { type: "separator" }, { role: "selectAll" }]),
+    ],
+  },
+  // { role: 'viewMenu' }
+  {
+    label: "View",
+    submenu: [
+      { role: "reload" },
+      { role: "forceReload" },
+      { role: "toggleDevTools" },
+      { type: "separator" },
+      { role: "resetZoom" },
+      { role: "zoomIn" },
+      { role: "zoomOut" },
+      { type: "separator" },
+      { role: "togglefullscreen" },
+    ],
+  },
+  // { role: 'windowMenu' }
+  {
+    label: "Window",
+    submenu: [
+      { role: "minimize" },
+      { role: "zoom" },
+      ...(isMac
+        ? [
+            { type: "separator" },
+            { role: "front" },
+            { type: "separator" },
+            { role: "window" },
+          ]
+        : [{ role: "close" }]),
+    ],
+  },
+  {
+    role: "help",
+    submenu: [
+      {
+        label: "Learn More",
+        click: async () => {
+          const { shell } = require("electron");
+          await shell.openExternal("https://electronjs.org");
+        },
+      },
+    ],
+  },
+];
+
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);

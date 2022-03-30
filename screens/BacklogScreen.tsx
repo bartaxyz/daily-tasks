@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { Svg, Path } from "react-native-svg";
 import { useTheme } from "styled-components/native";
-import { Section, Typography } from "../components";
+import { Button, Section, Typography } from "../components";
 import { Sidebar } from "../components/Sidebar/Sidebar";
 import { TodayScreen } from "./TodayScreen";
 
@@ -14,21 +14,29 @@ export const BacklogScreen = () => {
         <Sidebar.Section>
           <Sidebar.Title>Default</Sidebar.Title>
 
-          <Sidebar.Button icon="backlog">Backlog</Sidebar.Button>
+          <Sidebar.Button icon="backlog" selected={true}>Backlog</Sidebar.Button>
         </Sidebar.Section>
 
         <Sidebar.Section>
           <Sidebar.Title>Projects</Sidebar.Title>
 
           <Sidebar.Button icon="folder">Life</Sidebar.Button>
-          <Sidebar.Button icon="folder" selected={true}>
+          <Sidebar.Button icon="folder">
             Work
           </Sidebar.Button>
           <Sidebar.Button icon="folder">Spirituality</Sidebar.Button>
         </Sidebar.Section>
+
+        <View style={{ flex: 1 }} />
+
+        <Section.Separator />
+
+        <Section.Content inset="XS">
+          <Button>Add Project</Button>
+        </Section.Content>
       </Sidebar>
       <Section separator="none" style={{ flex: 2 }}>
-        <TodayScreen />
+        {/* <TodayScreen /> */}
         {/* <Section.Content
           inset="M"
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}

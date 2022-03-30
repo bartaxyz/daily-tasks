@@ -26,5 +26,4 @@ const Root = styled.View`
   height: 100%;
   border-right-width: 1px;
   border-right-color: ${({ theme }) => theme.colors.section.separator};
-  padding: 10px;
 `;

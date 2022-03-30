@@ -1,10 +1,11 @@
-import { Timestamp } from "firebase/firestore";
+import { addDays } from "date-fns";
+import { deleteField, Timestamp } from "firebase/firestore";
 import { rgba } from "polished";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Animated, View } from "react-native";
 import { Modal } from "react-native-paper";
 import { useTheme } from "styled-components/native";
-import { Section, Task, Typography } from "../../components";
+import { Button, Section, Task, Typography } from "../../components";
 import { IconButton } from "../../components/IconButton";
 import { TaskData } from "../../db/types";
 import { useTasks } from "../../db/useTasks";
@@ -71,7 +72,9 @@ export const FinishModalProvider: React.FC = ({ children }) => {
   }) => {
     const nextTask = tasks[0];
 
-    if (status) {
+    if (status && assigned_date) {
+      updateTask
+    } else if (status) {
       updateTaskStatus({ id: nextTask.id, status });
     } else if (assigned_date) {
       updateTaskAssignedDate({ id: nextTask.id, assigned_date });
@@ -127,8 +130,14 @@ export interface FinishModalProps {
 
 export const FinishModal = () => {
   const { name, colors } = useTheme();
-  const { visible, tasks, currentTask, dismissFinishModal, finishNextTask } =
-    useFinishModal();
+  const {
+    mode,
+    visible,
+    tasks,
+    currentTask,
+    dismissFinishModal,
+    finishNextTask,
+  } = useFinishModal();
 
   const [animatedValue] = useState(new Animated.Value(0));
 
@@ -163,14 +172,22 @@ export const FinishModal = () => {
 
   const onBacklogPress = () => {
     triggerChange(() => {
-      finishNextTask({ status: "backlog" });
+      finishNextTask({ status: "backlog", assigned_date: null });
     });
   };
 
-  const onTodayPress = () => {
-    triggerChange(() => {
-      finishNextTask({ assigned_date: Timestamp.now() });
-    });
+  const onTodayTomorrowPress = () => {
+    if (mode === "overdue") {
+      triggerChange(() => {
+        finishNextTask({ assigned_date: Timestamp.now() });
+      });
+    } else {
+      triggerChange(() => {
+        finishNextTask({
+          assigned_date: Timestamp.fromDate(addDays(new Date(), 1)),
+        });
+      });
+    }
   };
 
   const onTrashPress = () => {
@@ -202,7 +219,7 @@ export const FinishModal = () => {
           textAlign="center"
           style={{ marginTop: 24, marginBottom: 12 }}
         >
-          Let's sort all your overdue tasks
+          Let's sort all your {mode === "overdue" ? "overdue" : "todays"} tasks
         </Typography.Title>
         <Typography.Caption textAlign="center" color={colors.text.secondary}>
           One by one, to make it simple and efficient
@@ -250,9 +267,9 @@ export const FinishModal = () => {
 
               <View style={{ marginLeft: 8, marginRight: 8 }}>
                 <IconButton
-                  label="Today"
+                  label={mode === "overdue" ? "Today" : "Tomorrow"}
                   icon="sunset"
-                  onPress={onTodayPress}
+                  onPress={onTodayTomorrowPress}
                 />
               </View>
 

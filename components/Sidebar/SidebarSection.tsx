@@ -8,5 +8,8 @@ export const SidebarSection: React.FC<SidebarSectionProps> = (props) => (
 );
 
 const Root = styled.View<SidebarSectionProps>`
-  margin-bottom: 16px;
+  margin-top: 10px;
+  margin-bottom: 6px;
+  margin-left: 10px;
+  margin-right: 10px;
 `;
