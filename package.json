@@ -11,6 +11,7 @@
     "eject": "expo eject",
     "test": "jest --watchAll",
     "electron": "electron .",
+    "build": "yarn electron-webpack && yarn electron-builder --dir -c.compression=store -c.mac.identity=null",
     "postinstall": "patch-package"
   },
   "repository": {
