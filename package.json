@@ -14,6 +14,25 @@
     "build": "yarn electron-webpack && yarn electron-builder --dir -c.compression=store -c.mac.identity=null",
     "postinstall": "patch-package"
   },
+  "build": {
+    "extraMetadata": {
+      "main": "main.js"
+    },
+    "files": [
+      {
+        "from": "dist/main/",
+        "to": "./",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "dist/renderer",
+        "to": "./",
+        "filter": ["**/*"]
+      },
+      "package.json",
+      "**/node_modules/**/*"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bartaxyz/daily-tasks.git"
