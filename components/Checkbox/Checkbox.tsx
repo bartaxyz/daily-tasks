@@ -18,10 +18,15 @@ export interface CheckboxProps extends PressableProps {
 }
 
 export const Checkbox: React.FC<CheckboxProps> = ({ checked, ...props }) => {
+  const { colors } = useTheme();
+  
   if (Platform.OS === "android") {
     return (
       <View style={{ margin: -8 }}>
-        <RNPCheckbox status={checked ? "checked" : "unchecked"} />
+        <RNPCheckbox
+          color={colors.primary}
+          status={checked ? "checked" : "unchecked"}
+        />
       </View>
     );
   }

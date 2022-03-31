@@ -1,12 +1,10 @@
+import { useState } from "react";
 import { View } from "react-native";
-import { Svg, Path } from "react-native-svg";
-import { useTheme } from "styled-components/native";
-import { Button, Section, Typography } from "../components";
+import { Button, Section } from "../components";
 import { Sidebar } from "../components/Sidebar/Sidebar";
-import { TodayScreen } from "./TodayScreen";
 
 export const BacklogScreen = () => {
-  const { colors } = useTheme();
+  const [selected, setSelected] = useState("backlog");
 
   return (
     <View style={{ flexDirection: "row", flex: 1 }}>
@@ -14,17 +12,39 @@ export const BacklogScreen = () => {
         <Sidebar.Section>
           <Sidebar.Title>Default</Sidebar.Title>
 
-          <Sidebar.Button icon="backlog" selected={true}>Backlog</Sidebar.Button>
+          <Sidebar.Button
+            icon="backlog"
+            selected={selected === "backlog"}
+            onPress={() => setSelected("backlog")}
+          >
+            Backlog
+          </Sidebar.Button>
         </Sidebar.Section>
 
         <Sidebar.Section>
           <Sidebar.Title>Projects</Sidebar.Title>
 
-          <Sidebar.Button icon="folder">Life</Sidebar.Button>
-          <Sidebar.Button icon="folder">
+          <Sidebar.Button
+            icon="folder"
+            selected={selected === "life"}
+            onPress={() => setSelected("life")}
+          >
+            Life
+          </Sidebar.Button>
+          <Sidebar.Button
+            icon="folder"
+            selected={selected === "work"}
+            onPress={() => setSelected("work")}
+          >
             Work
           </Sidebar.Button>
-          <Sidebar.Button icon="folder">Spirituality</Sidebar.Button>
+          <Sidebar.Button
+            icon="folder"
+            selected={selected === "spirituality"}
+            onPress={() => setSelected("spirituality")}
+          >
+            Spirituality
+          </Sidebar.Button>
         </Sidebar.Section>
 
         <View style={{ flex: 1 }} />

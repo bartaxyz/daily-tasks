@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import { Button as RNPButton } from "react-native-paper";
-import styled from "styled-components/native";
+import styled, { useTheme } from "styled-components/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Typography } from "../Typography";
 
@@ -29,15 +29,30 @@ export const Button: React.FC<ButtonProps> = ({
   onPressOut,
   ...props
 }) => {
+  const { colors } = useTheme();
   const background =
     variant === "primary" ? PRIMARY_BACKGROUND : SECONDARY_BACKGROUND;
   const foreground =
     variant === "primary" ? PRIMARY_FOREGROUND : SECONDARY_FOREGROUND;
 
+  if (Platform.OS === "ios") {
+    return (
+      <RNPButton
+        color={colors.primary}
+        mode={variant === "primary" ? "contained" : "contained"}
+        onPress={props.onPress as any}
+        disabled={!!disabled}
+      >
+        {children}
+      </RNPButton>
+    );
+  }
+
   if (Platform.OS === "android") {
     return (
       <RNPButton
-        mode={variant === "primary" ? "contained" : "outlined"}
+        color={colors.primary}
+        mode={variant === "primary" ? "contained" : "contained"}
         onPress={props.onPress as any}
         disabled={!!disabled}
       >
@@ -93,7 +108,7 @@ export const Button: React.FC<ButtonProps> = ({
 };
 
 const Border = styled.View<{ variant: ButtonProps["variant"] }>`
-border-radius: 5px;
+  border-radius: 5px;
   border-width: 1px;
   border-color: ${({ variant }) =>
     rgba(0, 0, 0, variant === "secondary" ? 0.12 : 0)};

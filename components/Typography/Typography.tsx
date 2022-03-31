@@ -51,7 +51,11 @@ const StyledText: React.FC<TypographyProps> = ({
 };
 
 const Headline: React.FC<TypographyProps> = ({ children, ...props }) => (
-  <Body {...props} fontSize={16} fontWeight="bold" />
+  <Body
+    {...props}
+    fontSize={Platform.select({ web: 16, default: 24 })}
+    fontWeight="bold"
+  />
 );
 const Title: React.FC<TypographyProps> = ({ ...props }) => (
   <Body
@@ -61,10 +65,10 @@ const Title: React.FC<TypographyProps> = ({ ...props }) => (
   />
 );
 const Body: React.FC<TypographyProps> = ({ ...props }) => (
-  <StyledText fontSize={13} {...props} />
+  <StyledText fontSize={Platform.select({ web: 13, default: 16 })} {...props} />
 );
 const Caption: React.FC<TypographyProps> = ({ ...props }) => (
-  <Body {...props} fontSize={11} />
+  <Body {...props} fontSize={Platform.select({ web: 11, default: 12 })} />
 );
 
 const ButtonLabel: React.FC<TypographyProps> = ({ ...props }) => (

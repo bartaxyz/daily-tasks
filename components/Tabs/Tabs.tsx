@@ -45,7 +45,6 @@ const Root = styled.View<RootProps>`
   flex: 1;
   flex-direction: row;
   justify-content: space-around;
-  justify-items: stretch;
   align-items: center;
   border-radius: 5px;
 `;

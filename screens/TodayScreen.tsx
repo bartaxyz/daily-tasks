@@ -1,17 +1,18 @@
 import { startOfToday } from "date-fns";
-import Constants from "expo-constants";
 import { Timestamp } from "firebase/firestore";
 import React, { useState } from "react";
-import { Animated, ScrollView, View } from "react-native";
+import { Animated, Platform, ScrollView, View } from "react-native";
 import { Svg, Path } from "react-native-svg";
 import { useTheme } from "styled-components/native";
 
 import { Section, Task, Typography } from "../components";
 import { useData } from "../db/DataProvider";
+import { OverdueSection } from "../navigation/components/OverdueSection";
 
 export const TodayScreen = () => {
   const {
     todayTasks: tasks,
+    overdueTasks,
     updateTaskBody,
     updateTaskStatus,
     createTask,
@@ -104,9 +105,13 @@ export const TodayScreen = () => {
 
   return (
     <React.Fragment>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ marginTop: Constants.statusBarHeight }} />
-
+      {overdueTasks.length > 0 &&
+        Platform.select({ web: null, default: <OverdueSection /> })}
+      <ScrollView
+        alwaysBounceHorizontal={false}
+        alwaysBounceVertical={false}
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
         <Section separator="none" style={{ flex: 1 }}>
           <Section.Content
             inset="S"

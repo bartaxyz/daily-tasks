@@ -1,4 +1,4 @@
-import { ViewProps } from "react-native";
+import { Platform, ViewProps } from "react-native";
 import styled from "styled-components/native";
 
 export interface SectionContentProps extends ViewProps {
@@ -12,17 +12,16 @@ export const SectionContent: React.FC<SectionContentProps> = ({ ...props }) => (
 
 const Root = styled.View<SectionContentProps>`
   max-width: ${({ maxWidth }) =>
-    typeof maxWidth !== "undefined" ? maxWidth : undefined}px;
+    typeof maxWidth !== "undefined" ? `${maxWidth}px` : "auto"};
   width: ${({ maxWidth }) =>
-    typeof maxWidth !== "undefined" ? "100%" : undefined};
-  margin: ${({ maxWidth }) =>
-    typeof maxWidth !== "undefined" ? "auto" : 0};
+    typeof maxWidth !== "undefined" ? "100%" : "auto"};
+  margin: ${({ maxWidth }) => (typeof maxWidth !== "undefined" ? "auto" : 0)};
   padding: ${({ inset }) =>
     inset === "XXS"
       ? "4px"
       : inset === "XS"
-      ? "8px"
+      ? Platform.select({ web: "8px", default: "12px" })
       : inset === "S"
-      ? "12px"
+      ? Platform.select({ web: "12px", default: "16px" })
       : "24px"};
 `;

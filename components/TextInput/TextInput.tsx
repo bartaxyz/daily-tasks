@@ -1,4 +1,4 @@
-import { TextInputProps as RNTextInputProps } from "react-native";
+import { Platform, TextInputProps as RNTextInputProps } from "react-native";
 import styled from "styled-components/native";
 import { Typography } from "../Typography";
 
@@ -28,5 +28,5 @@ const Input = styled.TextInput`
   background: ${({ theme }) => theme.colors.textInput.background};
   color: ${({ theme }) => theme.colors.textInput.foreground};
   padding: 0 8px;
-  outline-width: 0;
+  ${Platform.select({ web: "outline-width: 0", default: "" })};
 `;

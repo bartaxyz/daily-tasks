@@ -11,7 +11,6 @@ import {
 } from "../../components";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../db/useAuth";
-import { useElectron } from "../../utils/useElectron";
 import { ActivityIndicator } from "react-native-paper";
 
 const errorCodeMessages: { [key: string]: string } = {
@@ -99,7 +98,11 @@ export const LogInScreen = () => {
         <Spacer height={16} />
 
         <TextInput
+          autoCompleteType="email"
           label="Email"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          textContentType="emailAddress"
           value={email}
           onChange={(event) => setEmail(event.nativeEvent.text)}
         />
@@ -107,7 +110,9 @@ export const LogInScreen = () => {
         <Spacer height={12} />
 
         <TextInput
+          autoCompleteType="password"
           label="Password"
+          textContentType="password"
           value={password}
           secureTextEntry={true}
           onChange={(event) => setPassword(event.nativeEvent.text)}

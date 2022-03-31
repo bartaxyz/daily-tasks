@@ -31,7 +31,7 @@ export const SidebarButton: React.FC<SidebarButtonProps> = ({
 const Root = styled.Pressable<Pick<SidebarButtonProps, "selected">>`
   flex-direction: row;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   background: ${({ theme, selected }) =>
     selected
       ? theme.colors.sidebar.button.backgroundActive

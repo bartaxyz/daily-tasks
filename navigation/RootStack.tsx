@@ -7,8 +7,7 @@ import { RootStackParamList } from "../types";
 import { AuthStack } from "./AuthStack";
 import { HomeStack } from "./HomeStack";
 import { FinishModal, FinishModalProvider } from "./components/FinishModal";
-import { View } from "react-native";
-import { Typography } from "../components";
+import { Platform, View } from "react-native";
 import { useAuth } from "../db/useAuth";
 import { useNavigation } from "@react-navigation/native";
 
@@ -23,6 +22,12 @@ export const RootStack = () => {
         initialRouteName="Loading"
         screenOptions={{
           header: () => null,
+          contentStyle: {
+            backgroundColor: Platform.select({
+              web: "transparent",
+              default: colors.background.default,
+            }),
+          },
         }}
       >
         <Stack.Screen
@@ -57,27 +62,14 @@ export const RootStack = () => {
             );
           }}
         ></Stack.Screen>
+
         <Stack.Screen name="Auth" component={AuthStack} />
+
         <Stack.Screen
           name="Home"
           options={{ title: "Home" }}
           component={HomeStack}
         />
-        {/*       <Stack.Screen
-        name="Today"
-        component={TodayScreen}
-        options={{ headerShown: false, headerBackground: () => null }}
-      /> */}
-        {/*
-      <Stack.Screen
-        name="NotFound"
-        component={NotFoundScreen}
-        options={{ title: "Oops!" }}
-      />
-      <Stack.Group screenOptions={{ presentation: "modal" }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group>
-      */}
       </Stack.Navigator>
 
       <FinishModal />

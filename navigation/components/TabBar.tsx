@@ -1,27 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Animated, View } from "react-native";
+import { Animated, Platform, View } from "react-native";
 import { useTheme } from "styled-components/native";
-import {
-  Button,
-  Section,
-  Tabs,
-  Tag,
-  Task,
-  Typography,
-  Toolbar,
-} from "../../components";
+import { Section, Tabs, Tag, Toolbar } from "../../components";
 import { useData } from "../../db/DataProvider";
-import { isElectron } from "../../utils/platform";
-import { useFinishModal } from "./FinishModal";
-
-const displayItemCount = 2;
+import { OverdueSection } from "./OverdueSection";
 
 export const TAB_BAR_ANIMATION_DURATION = 200;
 
 export const TabBar = ({ state, descriptors, navigation, position }: any) => {
   const { overdueTasks } = useData();
   const { colors } = useTheme();
-  const { showFinishModal } = useFinishModal();
   const [animatedValue] = useState(new Animated.Value(0));
   const [maxHeight, setMaxHeight] = useState(0);
 
@@ -91,7 +79,10 @@ export const TabBar = ({ state, descriptors, navigation, position }: any) => {
   return (
     <View
       style={{
-        backgroundColor: isElectron ? "transparent" : colors.background.default,
+        backgroundColor: Platform.select({
+          web: "transparent",
+          default: colors.background.default,
+        }),
       }}
     >
       <Toolbar>
@@ -130,43 +121,7 @@ export const TabBar = ({ state, descriptors, navigation, position }: any) => {
             <Section.Separator />
           </Animated.View>
 
-          <Section.Content inset="S">
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                paddingBottom: 12,
-              }}
-            >
-              <Typography.Title>Overdue</Typography.Title>
-              <Button
-                variant="primary"
-                onPress={() => {
-                  showFinishModal({
-                    mode: "overdue",
-                    tasks: overdueTasks,
-                  });
-                }}
-              >
-                Finish Overdue
-              </Button>
-            </View>
-
-            <View style={{ opacity: 0.5 }}>
-              {overdueTasks.slice(0, displayItemCount).map(({ body, id }) => (
-                <Task key={id} editable={false}>
-                  {body}
-                </Task>
-              ))}
-
-              {overdueTasks.length - displayItemCount > 0 ? (
-                <Task variant="more" editable={false}>
-                  {`${overdueTasks.length - displayItemCount} more tasks`}
-                </Task>
-              ) : null}
-            </View>
-          </Section.Content>
+          <OverdueSection />
         </View>
       </Animated.View>
 

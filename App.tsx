@@ -10,12 +10,13 @@ import { defaultTheme } from "./theme/default/theme";
 import { isElectron } from "./utils/platform";
 
 import "./firebase";
-
+import { View } from "react-native";
+/* 
 let ipcRenderer: Electron.IpcRenderer;
 
 if (isElectron) {
   ipcRenderer = require("electron").ipcRenderer;
-}
+} */
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -23,13 +24,13 @@ export default function App() {
 
   const [systemAccentColor, setSystemAccentColor] = useState<string>();
 
-  useEffect(() => {
+  /*   useEffect(() => {
     if (ipcRenderer) {
       ipcRenderer.invoke("get-accent-color").then((color) => {
         setSystemAccentColor(color);
       });
     }
-  }, []);
+  }, []); */
 
   if (systemAccentColor) {
     const color = systemAccentColor;

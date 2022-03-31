@@ -135,12 +135,16 @@ export const Task: React.FC<TaskProps> = ({
               flex: 1,
               textDecorationLine: status === "done" ? "line-through" : "none",
               padding: 8,
+              paddingTop: Platform.select({ web: 8, default: 6 }),
               paddingLeft: 0,
-              height: textInputHeight,
-              fontSize: 12,
+              height: Platform.select({
+                web: textInputHeight,
+                default: undefined,
+              }),
+              fontSize: Platform.select({ web: 12, default: 14 }),
               color: colors.text.default,
             },
-            Platform.select({ web: { outlineWidth: 0 } as any }),
+            Platform.select({ web: { outlineWidth: 0 } as any, default: {} }),
           ]}
           onContentSizeChange={(event) => {
             setTextInputHeight(event.nativeEvent.contentSize.height);
@@ -149,7 +153,7 @@ export const Task: React.FC<TaskProps> = ({
       ) : (
         <Typography.Task.Label
           style={{ padding: 8, paddingLeft: 0 }}
-          fontSize={12}
+          fontSize={Platform.select({ web: 12, default: 14 })}
           textDecorationLine={status === "done" ? "line-through" : "none"}
         >
           {variant === "add" ? addTaskPlaceholderText : children}
@@ -174,11 +178,11 @@ export const Task: React.FC<TaskProps> = ({
 };
 
 const Root = styled.Pressable<Pick<TaskProps, "status" | "variant">>`
-  padding: 8px;
+  padding: 4px;
   padding-top: 4px;
   padding-bottom: 4px;
   flex-direction: row;
-  align-items: start;
+  align-items: flex-start;
   opacity: ${({ variant, status }) =>
     variant === "add" || status === "done" ? 0.25 : 1};
 `;

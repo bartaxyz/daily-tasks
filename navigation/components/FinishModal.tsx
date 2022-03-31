@@ -2,7 +2,7 @@ import { addDays } from "date-fns";
 import { deleteField, Timestamp } from "firebase/firestore";
 import { rgba } from "polished";
 import { createContext, useContext, useEffect, useState } from "react";
-import { Animated, View } from "react-native";
+import { Animated, Platform, View } from "react-native";
 import { Modal } from "react-native-paper";
 import { useTheme } from "styled-components/native";
 import { Button, Section, Task, Typography } from "../../components";
@@ -73,9 +73,9 @@ export const FinishModalProvider: React.FC = ({ children }) => {
     const nextTask = tasks[0];
 
     if (status && assigned_date) {
-      updateTask
+      // TODO
     } else if (status) {
-      updateTaskStatus({ id: nextTask.id, status });
+      updateTaskStatus({ id: nextTask.id, status: status as any });
     } else if (assigned_date) {
       updateTaskAssignedDate({ id: nextTask.id, assigned_date });
     }
@@ -172,7 +172,7 @@ export const FinishModal = () => {
 
   const onBacklogPress = () => {
     triggerChange(() => {
-      finishNextTask({ status: "backlog", assigned_date: null });
+      finishNextTask({ status: "backlog", assigned_date: null as any });
     });
   };
 
@@ -201,7 +201,6 @@ export const FinishModal = () => {
       visible={visible}
       onDismiss={dismissFinishModal}
       contentContainerStyle={{
-        backdropFilter: "blur(40px)",
         backgroundColor: rgba(
           colors.background.default,
           name === "dark" ? 0.1 : 0.75
@@ -212,6 +211,10 @@ export const FinishModal = () => {
         borderWidth: 1,
         borderColor: colors.section.separator,
         shadowRadius: 36,
+        ...(Platform.select({
+          web: { backdropFilter: "blur(40px)" },
+          default: {},
+        }) as any),
       }}
     >
       <Section.Content inset="XS">
