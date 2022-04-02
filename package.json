@@ -11,7 +11,10 @@
     "eject": "expo eject",
     "test": "jest --watchAll",
     "electron": "electron .",
-    "build": "yarn electron-webpack && yarn electron-builder --dir -c.compression=store -c.mac.identity=null",
+    "build:macos": "yarn electron-webpack && yarn electron-builder --dir -c.compression=store -c.mac.identity=null",
+    "sign:macos:arm64": "electron-osx-sign ./dist/mac-arm64/daily-tasks.app --identity=\"ONDREJ BARTA\"",
+    "build:macos:universal": "yarn electron-webpack && yarn electron-builder --dir -c.compression=store -c.mac.identity=null --universal",
+    "sign:macos:universal": "electron-osx-sign ./dist/mac-universal/daily-tasks.app --identity=\"ONDREJ BARTA\"",
     "postinstall": "patch-package"
   },
   "build": {
