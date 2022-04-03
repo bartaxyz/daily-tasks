@@ -169,7 +169,7 @@ export const TodayScreen = () => {
                 <Task
                   key={id}
                   status={status}
-                  onValueChange={(body) => updateTaskBody({ id, body })}
+                  onFinishedValueChange={(body) => updateTaskBody({ id, body })}
                   onStatusChange={(status) => updateTaskStatus({ id, status })}
                   onDelete={() => deleteTask({ id })}
                   onEnterPress={() => createTask({})}
