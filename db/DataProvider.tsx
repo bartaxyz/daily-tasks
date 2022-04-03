@@ -48,9 +48,11 @@ export const DataProvider: React.FC = ({ children }) => {
     });
   }, [overdueTasks]);
 
-  const todayTasks = transformedTasks.filter(
-    (task) => isToday(task.assignedDate) || isFuture(task.assignedDate)
-  );
+  const todayTasks = transformedTasks
+    .filter((task) => task.status !== "backlog" && task.status !== "deleted")
+    .filter(
+      (task) => isToday(task.assignedDate) || isFuture(task.assignedDate)
+    );
 
   return (
     <DataContext.Provider
