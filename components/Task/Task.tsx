@@ -13,6 +13,7 @@ export interface TaskProps {
   status?: "none" | "done" | "error" | "deleted" | "backlog";
   onTaskPress?: () => void;
   onValueChange?: (text: string) => void;
+  onFinishedValueChange?: (text: string) => void;
   onStatusChange?: (status: "none" | "done" | "error") => void;
   onDelete?: () => void;
   onEnterPress?: () => void;
@@ -29,6 +30,7 @@ export const Task: React.FC<TaskProps> = ({
   status,
   onTaskPress,
   onValueChange,
+  onFinishedValueChange,
   onStatusChange,
   onDelete,
   onEnterPress,
@@ -37,12 +39,14 @@ export const Task: React.FC<TaskProps> = ({
 }) => {
   const { colors } = useTheme();
   const [focused, setFocused] = useState(false);
-  const [value, setValue] = useState("");
+  const [internalValue, setInternalValue] = useState("");
   const [textInputHeight, setTextInputHeight] = useState(0);
   const keyboardShortcutMode = useRef<"none" | "ordering">("none");
 
   useEffect(() => {
-    setValue(children || "");
+    if (!focused) {
+      setInternalValue(children || "");
+    }
   }, [children]);
 
   const onChangeHandlerDebounced = (text: string) => {
@@ -57,7 +61,7 @@ export const Task: React.FC<TaskProps> = ({
   const onChangeHandler: TextInputProps["onChange"] = (event) => {
     const { text } = event.nativeEvent;
 
-    setValue(text);
+    setInternalValue(text);
     debounceCallback(text);
   };
 
@@ -79,7 +83,7 @@ export const Task: React.FC<TaskProps> = ({
     }
 
     if (key === "Backspace") {
-      if (value.length === 0) {
+      if (internalValue.length === 0) {
         onDelete && onDelete();
       }
     }
@@ -92,10 +96,13 @@ export const Task: React.FC<TaskProps> = ({
 
   const onFocus = () => {
     setFocused(true);
+
+    setInternalValue(children || "");
   };
 
   const onBlur = () => {
     setFocused(false);
+    if (onFinishedValueChange) onFinishedValueChange(internalValue);
   };
 
   const onCheckboxChange = (checked: boolean) => {
@@ -123,7 +130,7 @@ export const Task: React.FC<TaskProps> = ({
 
       {editable && variant !== "add" && variant !== "more" ? (
         <TextInput
-          value={value.replace(/\n/g, "")}
+          value={internalValue.replace(/\n/g, "")}
           onChange={onChangeHandler}
           onKeyPress={onKeyPressHandler}
           multiline={true}
