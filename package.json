@@ -25,12 +25,16 @@
       {
         "from": "dist/main/",
         "to": "./",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       {
         "from": "dist/renderer",
         "to": "./",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       "package.json",
       "**/node_modules/**/*"
@@ -100,6 +104,7 @@
     "@babel/core": "^7.12.9",
     "@expo/electron-adapter": "^0.0.55",
     "@expo/webpack-config": "^0.16.19",
+    "@types/jest": "^27.4.1",
     "@types/lodash": "^4.14.180",
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.64.12",
