@@ -43,7 +43,7 @@ export const defaultTheme = {
       },
       checked: {
         outline: rgba("#272727", 0),
-        tick: rgba("#272727", 0.5),
+        tick: rgba("#272727", 1),
       },
     },
     iconButton: {
@@ -53,6 +53,10 @@ export const defaultTheme = {
       foreground: colors.text.default,
       foregroundHover: colors.primary,
       foregroundActive: colors.primary,
+    },
+    keyboardKey: {
+      background: lighten(0.95, '#000000'),
+      separator: rgba(colors.text.default, 0.1),
     },
     section: {
       background: rgba(colors.background.default, 0.1),
