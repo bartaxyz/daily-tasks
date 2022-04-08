@@ -10,7 +10,7 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "test": "jest --watchAll",
-    "electron": "electron .",
+    "electron": "yarn expo-electron start",
     "build:macos": "yarn electron-webpack && yarn electron-builder --dir -c.compression=store -c.mac.identity=null",
     "sign:macos:arm64": "electron-osx-sign ./dist/mac-arm64/daily-tasks.app --identity=\"ONDREJ BARTA\"",
     "build:macos:universal": "yarn electron-webpack && yarn electron-builder --dir -c.compression=store -c.mac.identity=null --universal",
@@ -18,6 +18,7 @@
     "postinstall": "patch-package"
   },
   "build": {
+    "appId": "com.ondrejbarta.daily-tasks",
     "extraMetadata": {
       "main": "main.js"
     },
