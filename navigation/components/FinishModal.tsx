@@ -201,19 +201,36 @@ export const FinishModal = () => {
       visible={visible}
       onDismiss={dismissFinishModal}
       contentContainerStyle={{
-        backgroundColor: rgba(
-          colors.background.default,
-          name === "dark" ? 0.1 : 0.75
-        ),
         borderRadius: 10,
-        maxWidth: 320,
         margin: "auto",
         borderWidth: 1,
         borderColor: colors.section.separator,
         shadowRadius: 36,
+        backgroundColor: colors.background.default,
         ...(Platform.select({
-          web: { backdropFilter: "blur(40px)" },
-          default: {},
+          web: {
+            maxWidth: 320,
+            backgroundColor: rgba(
+              colors.background.default,
+              name === "dark" ? 0.1 : 0.75
+            ),
+            backdropFilter: "blur(40px)",
+          },
+          android: {
+            borderRadius: 4,
+            borderWidth: 0,
+            elevation: 24,
+            maxWidth: 400,
+            minWidth: 320,
+            marginLeft: "auto",
+            marginRight: "auto",
+          },
+          default: {
+            maxWidth: 400,
+            minWidth: 320,
+            marginLeft: "auto",
+            marginRight: "auto",
+          },
         }) as any),
       }}
     >
@@ -239,7 +256,9 @@ export const FinishModal = () => {
       >
         <Section separator="around">
           <Section.Content inset="XS">
-            <Task status="none">{currentTask?.body}</Task>
+            <Task status="none" editable={false}>
+              {currentTask?.body}
+            </Task>
           </Section.Content>
 
           <Section.Separator />

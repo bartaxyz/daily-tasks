@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Platform } from "react-native";
+import { Platform, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { DataProvider } from "../db/DataProvider";
 import { BacklogScreen } from "../screens/BacklogScreen";
@@ -9,7 +9,7 @@ import { TodayScreen } from "../screens/TodayScreen";
 import { StatusBar } from "./components/StatusBar";
 import { TabBar } from "./components/TabBar";
 import { useTheme } from "styled-components/native";
-import { Typography } from "../components";
+import { Button, Section, Sidebar, Typography } from "../components";
 
 export type MainTabsParamList = {
   Today: undefined;
@@ -44,8 +44,19 @@ export const HomeStack = () => {
           </Tab.Navigator>
         ),
         default: (
-          <BottomTabs.Navigator initialRouteName="Today">
-            <BottomTabs.Screen
+          <BottomTabs.Navigator
+            initialRouteName="Today"
+            screenOptions={{
+              tabBarStyle: {
+                backgroundColor: colors.background.default,
+                paddingBottom: 8,
+                paddingTop: 8,
+                height: 64,
+              },
+            }}
+          >
+            {/** TODO: Implement backlog */}
+            {/* <BottomTabs.Screen
               name="Backlog"
               options={{
                 tabBarIcon: ({ focused, size }) => (
@@ -64,7 +75,7 @@ export const HomeStack = () => {
                 ),
               }}
               component={BacklogScreen}
-            />
+            /> */}
             <BottomTabs.Screen
               name="Today"
               options={{
@@ -109,7 +120,7 @@ export const HomeStack = () => {
         ),
       })}
 
-      <StatusBar />
+      {Platform.select({ web: <StatusBar />, default: null })}
     </DataProvider>
   );
 };

@@ -9,6 +9,7 @@ import {
   Timestamp,
   addDoc,
   deleteDoc,
+  DocumentReference,
 } from "firebase/firestore";
 import { firestore } from "../firebase";
 import { useAuth } from "./useAuth";
@@ -50,12 +51,24 @@ export const useTasks = () => {
     };
   }, [user]);
 
-  const createTask = async ({ body = "" }: Partial<TaskData>) => {
+  const createTaskRef = () => {
     if (!user) return;
 
-    await addDoc(collection(firestore, "tasks"), {
+    /** get new task id */
+    const newTask = doc(collection(firestore, "tasks"));
+
+    return newTask;
+  };
+
+  const createTask = async (
+    ref: DocumentReference,
+    { body = "", assigned_date }: Partial<TaskData>
+  ) => {
+    if (!user) return;
+
+    return await setDoc(ref, {
       body,
-      assigned_date: Timestamp.now(),
+      assigned_date: assigned_date ?? Timestamp.now(),
       owned_by: user.uid,
       status: "none",
     });
@@ -107,6 +120,7 @@ export const useTasks = () => {
   return {
     tasks,
     tasksSynced,
+    createTaskRef,
     createTask,
     updateTaskBody,
     updateTaskStatus,

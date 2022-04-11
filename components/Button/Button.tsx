@@ -97,7 +97,7 @@ export const Button: React.FC<ButtonProps> = ({
           colors={
             variant === "secondary"
               ? []
-              : [rgba("#9B9B9B", 0.2), rgba("#000000", 0.1)]
+              : [rgba("#9B9B9B", 0.05), rgba("#000000", 0.05)]
           }
         >
           <Label variant={variant}>{children}</Label>
@@ -109,11 +109,11 @@ export const Button: React.FC<ButtonProps> = ({
 
 const Border = styled.View<{ variant: ButtonProps["variant"] }>`
   border-radius: 5px;
-  border-width: 1px;
+  border-width: ${({ variant }) => (variant === "secondary" ? "1px" : "0")};
   border-color: ${({ variant }) =>
     rgba(0, 0, 0, variant === "secondary" ? 0.12 : 0)};
 
-  border-top-width: 1px;
+  border-top-width: ${({ variant }) => (variant === "secondary" ? "1px" : "0")};
   border-top-color: ${({ theme, variant }) =>
     theme.name === "dark" && variant === "secondary"
       ? "#5D5D5D"
@@ -123,6 +123,7 @@ const Border = styled.View<{ variant: ButtonProps["variant"] }>`
 const Gradient = styled(LinearGradient)`
   border-radius: 5px;
   height: 100%;
+  width: 100%;
   padding: 0 14px;
   justify-content: center;
   align-items: center;

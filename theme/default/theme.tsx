@@ -55,7 +55,7 @@ export const defaultTheme = {
       foregroundActive: colors.primary,
     },
     keyboardKey: {
-      background: lighten(0.95, '#000000'),
+      background: lighten(0.975, '#000000'),
       separator: rgba(colors.text.default, 0.1),
     },
     section: {

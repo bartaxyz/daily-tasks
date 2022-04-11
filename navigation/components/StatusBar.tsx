@@ -1,16 +1,24 @@
-import { useEffect, useState } from "react";
-import { Animated, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Animated, Platform, View } from "react-native";
 import { useNavigationState } from "@react-navigation/native";
-import { Button, Section, Typography } from "../../components";
+import { Button, KeyboardKey, Section, Typography } from "../../components";
 import { TAB_BAR_ANIMATION_DURATION } from "./TabBar";
 import { useData } from "../../db/DataProvider";
 import { useFinishModal } from "./FinishModal";
+import { useStatusBar } from "../../utils/providers/StatusBarProvider";
+import { useTheme } from "styled-components/native";
+
+const MIN_HEIGHT = 38;
 
 export const StatusBar = () => {
+  const { keyboardShortcuts } = useStatusBar();
+
   const { todayTasks } = useData();
   const { showFinishModal } = useFinishModal();
-  const [maxHeight, setMaxHeight] = useState(0);
+  const [maxHeight, setMaxHeight] = useState(MIN_HEIGHT);
   const [animatedValue] = useState(new Animated.Value(0));
+
+  const { colors } = useTheme();
 
   const navigationState = useNavigationState((state) => state);
 
@@ -20,8 +28,15 @@ export const StatusBar = () => {
     )?.state;
 
     const isStatusBarVisible =
-      homeRouteState?.routes.findIndex((route) => route.name === "Today") ===
-      homeRouteState?.index;
+      keyboardShortcuts.length !== 0 ||
+      Platform.select({
+        web:
+          homeRouteState?.routes.findIndex(
+            (route) => route.name === "Today"
+          ) === homeRouteState?.index &&
+          todayTasks.filter((task) => task.status !== "done").length > 0,
+        default: true,
+      });
 
     if (isStatusBarVisible) {
       Animated.timing(animatedValue, {
@@ -36,7 +51,7 @@ export const StatusBar = () => {
         useNativeDriver: false,
       }).start();
     }
-  }, [navigationState]);
+  }, [navigationState, todayTasks, keyboardShortcuts]);
 
   const onFinishToday = () => {
     showFinishModal({
@@ -48,7 +63,7 @@ export const StatusBar = () => {
   return (
     <Animated.View
       style={{
-        maxHeight: animatedValue.interpolate({
+        height: animatedValue.interpolate({
           inputRange: [0, 1],
           outputRange: [0, maxHeight],
         }),
@@ -56,24 +71,87 @@ export const StatusBar = () => {
       }}
     >
       <View
-        onLayout={(event) => {
+        style={{ height: "100%", flex: 1 }}
+        /* onLayout={(event) => {
           const height = event.nativeEvent.layout.height;
           if (maxHeight < height) {
             setMaxHeight(height);
           }
-        }}
+        }} */
       >
-        <Section separator="top" hasBackground={false}>
-          <Section.Content inset="S">
+        <Section separator="top" hasBackground={false} style={{ flex: 1 }}>
+          <Section.Content inset="XS" style={{ flex: 1 }}>
             <View
               style={{
                 flexDirection: "row",
-                justifyContent: "space-between",
                 alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "nowrap",
+                flex: 1,
               }}
             >
-              <Typography.Body>Ready to finish your day?</Typography.Body>
-              <Button onPress={onFinishToday}>Finish Today</Button>
+              {keyboardShortcuts.length !== 0 ? (
+                <View
+                  style={{
+                    flexGrow: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    flexWrap: "nowrap",
+                    flex: 1,
+                  }}
+                >
+                  {keyboardShortcuts.map(
+                    ({ prefix, combination, suffix }, index, arr) => (
+                      <React.Fragment key={index}>
+                        <Typography.Caption
+                          fontSize={10}
+                          style={{
+                            marginLeft: index === 0 ? 0 : 8,
+                            marginRight: index === arr.length - 1 ? 0 : 8,
+                            flexWrap: "nowrap",
+                          }}
+                          key={index}
+                        >
+                          {prefix}
+                          {prefix && " "}
+                          {combination.map((key) => (
+                            <KeyboardKey key={key}>{key}</KeyboardKey>
+                          ))}
+                          {suffix && " "}
+                          {suffix}
+                        </Typography.Caption>
+
+                        {index !== arr.length - 1 && (
+                          <View
+                            style={{
+                              width: 1,
+                              height: 16,
+                              backgroundColor: colors.section.separator,
+                            }}
+                          />
+                        )}
+                      </React.Fragment>
+                    )
+                  )}
+                  {/* <Typography.Caption style={{ marginRight: 24 }}>
+                    + <KeyboardKey>backspace</KeyboardKey> to remove task
+                  </Typography.Caption>
+
+                  <Typography.Caption style={{ marginRight: 24 }}>
+                    + <KeyboardKey>space</KeyboardKey> to mark as done
+                  </Typography.Caption> */}
+                </View>
+              ) : (
+                <React.Fragment>
+                  <Typography.Body>Ready to finish your day?</Typography.Body>
+                </React.Fragment>
+              )}
+
+              {keyboardShortcuts.length < 2 && (
+                <View style={{ marginLeft: 64 }}>
+                  <Button onPress={onFinishToday}>Finish Today</Button>
+                </View>
+              )}
             </View>
           </Section.Content>
         </Section>

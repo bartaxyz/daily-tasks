@@ -12,7 +12,6 @@ export const useAuth = () => {
   useEffect(() => {
     const unsubscribe = getAuth().onAuthStateChanged((user) => {
       setUser(user);
-      console.log("setIsUserLoaded: ", user);
 
       if (!isUserLoaded) {
         setIsUserLoaded(true);

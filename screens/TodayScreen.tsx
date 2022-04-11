@@ -1,13 +1,15 @@
-import { startOfToday } from "date-fns";
+import { format, startOfToday } from "date-fns";
 import { Timestamp } from "firebase/firestore";
-import React, { useState } from "react";
-import { Animated, Platform, ScrollView, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Animated, Platform, ScrollView, TextInput, View } from "react-native";
+import DraggableFlatList from "react-native-draggable-flatlist";
 import { Svg, Path } from "react-native-svg";
 import { useTheme } from "styled-components/native";
 
 import { Section, Task, Typography } from "../components";
 import { useData } from "../db/DataProvider";
 import { OverdueSection } from "../navigation/components/OverdueSection";
+import { StatusBar } from "../navigation/components/StatusBar";
 
 export const TodayScreen = () => {
   const {
@@ -15,11 +17,14 @@ export const TodayScreen = () => {
     overdueTasks,
     updateTaskBody,
     updateTaskStatus,
+    createTaskRef,
     createTask,
-    updateTaskAssignedDate,
     deleteTask,
+    moveTaskInOrder,
     tasksSynced,
   } = useData();
+
+  const textInputRefs = useRef<(TextInput | null)[]>([]);
 
   const [syncAnimatedValue] = useState(new Animated.Value(0));
 
@@ -39,68 +44,62 @@ export const TodayScreen = () => {
     }).start();
   }
 
-  const onOrderUp = (id: string, index: number) => {
-    if (index === 0) return;
-
-    let assignedDate = 0;
-
-    if (index === 1) {
-      /**
-       * Finds time between of previous task and start of the day
-       */
-      const previousTask = tasks[index - 1];
-      const startOfTheDay = +startOfToday();
-      const delta =
-        (previousTask.assigned_date.toMillis() - +startOfToday()) / 2;
-      assignedDate = startOfTheDay + delta;
-    } else {
-      /**
-       * Finds time between previous two tasks
-       */
-      const previousTaskFirst = tasks[index - 2];
-      const previousTaskSecond = tasks[index - 1];
-      const delta =
-        (previousTaskSecond.assigned_date.toMillis() -
-          previousTaskFirst.assigned_date.toMillis()) /
-        2;
-      assignedDate = previousTaskFirst.assigned_date.toMillis() + delta;
+  /**
+   * Focus on next render
+   */
+  const indexToFocus = useRef<number | string>();
+  const focusOnNextRender = (index: number | string) => {
+    indexToFocus.current = index;
+  };
+  useEffect(() => {
+    if (typeof indexToFocus.current !== "undefined") {
+      let textInput;
+      if (typeof indexToFocus.current === "number") {
+        textInput = textInputRefs.current[indexToFocus.current];
+      } else {
+        const taskIndex = tasks.findIndex(
+          (task) => task.id === indexToFocus.current
+        );
+        textInput = textInputRefs.current[taskIndex];
+      }
+      textInput?.focus();
+      textInput?.setNativeProps({
+        selection: {
+          start: 0,
+          end: 0,
+        },
+      });
     }
+    indexToFocus.current = undefined;
+  }, [tasks.length]);
 
-    updateTaskAssignedDate({
-      id,
-      assigned_date: Timestamp.fromMillis(assignedDate),
-    });
+  /**
+   * Move order on next render
+   */
+  const moveTaskData = useRef<{ taskId: string; toIndex: number }>();
+  const moveTaskOnNextRender = (taskId: string, toIndex: number) => {
+    console.log("moveTaskOnNextRender");
+    moveTaskData.current = { taskId, toIndex };
+  };
+  useEffect(() => {
+    if (moveTaskData.current) {
+      console.log("moveTaskOnNextRender ASDFSADGDFG");
+      const { taskId, toIndex } = moveTaskData.current;
+      console.log(moveTaskData);
+      moveTaskInOrder(taskId, toIndex);
+      moveTaskData.current = undefined;
+    }
+  }, [moveTaskData.current]);
+
+  const onOrderUp = (id: string, index: number) => {
+    if (index > 0) {
+      moveTaskInOrder(id, index - 1 + overdueTasks.length);
+    }
   };
   const onOrderDown = (id: string, index: number) => {
-    if (index === tasks.length - 1) return;
-
-    let assignedDate = 0;
-
-    if (index === tasks.length - 2) {
-      /**
-       * Finds time between of next task and end of the day
-       */
-      const nextTask = tasks[index + 1];
-      const endOfTheDay = +startOfToday() + 86400000;
-      const delta = (endOfTheDay - nextTask.assigned_date.toMillis()) / 2;
-      assignedDate = nextTask.assigned_date.toMillis() + delta;
-    } else {
-      /**
-       * Finds time between next two tasks
-       */
-      const nextTaskFirst = tasks[index + 1];
-      const nextTaskSecond = tasks[index + 2];
-      const delta =
-        (nextTaskSecond.assigned_date.toMillis() -
-          nextTaskFirst.assigned_date.toMillis()) /
-        2;
-      assignedDate = nextTaskFirst.assigned_date.toMillis() + delta;
+    if (index < tasks.length - 1) {
+      moveTaskInOrder(id, index + 1 + overdueTasks.length);
     }
-
-    updateTaskAssignedDate({
-      id,
-      assigned_date: Timestamp.fromMillis(assignedDate),
-    });
   };
 
   return (
@@ -161,18 +160,64 @@ export const TodayScreen = () => {
                     </Svg>
                   </Animated.View>
                 )}
-
-                {/* <Button onPress={() => {}}>Finish Today</Button> */}
               </View>
 
-              {tasks.map(({ status, body, id }, index) => (
+              {tasks.map(({ status, body, id, assigned_date }, index) => (
                 <Task
                   key={id}
+                  textInputRef={(ref) => (textInputRefs.current[index] = ref)}
                   status={status}
                   onFinishedValueChange={(body) => updateTaskBody({ id, body })}
                   onStatusChange={(status) => updateTaskStatus({ id, status })}
-                  onDelete={() => deleteTask({ id })}
-                  onEnterPress={() => createTask({})}
+                  onDelete={() => {
+                    deleteTask({ id });
+
+                    /** Focus previous */
+                    if (index > 0) {
+                      console.log(textInputRefs);
+                      textInputRefs.current[index - 1]?.focus();
+                    }
+                    focusOnNextRender(index);
+                  }}
+                  onEnterPress={({ textBeforeSelect, textAfterSelect }) => {
+                    /** Insert new task after */
+                    const ref = createTaskRef();
+                    if (!ref) return;
+                    focusOnNextRender(ref.id);
+                    createTask(ref, {
+                      body: "",
+                      assigned_date: Timestamp.now(),
+                    });
+                    moveTaskOnNextRender(ref.id, index + 1);
+
+                    /*
+                    const assignedDate = getAssignedDateOfIndex(tasks, index);
+                    console.log(assignedDate);
+
+                    if (textAfterSelect.length === 0) {
+                      const ref = createTaskRef();
+                      if (!ref) return;
+                      createTask(ref, {
+                        assigned_date: assignedDate,
+                      });
+                      insertTaskToOrder(ref.id, index + 1);
+                      focusOnNextRender(index + 1);
+                    } else {
+                      console.log({
+                        start: textBeforeSelect,
+                        end: textAfterSelect,
+                      });
+                      updateTaskBody({ id, body: textBeforeSelect });
+                      const ref = createTaskRef();
+                      if (!ref) return;
+                      createTask(ref, {
+                        body: textAfterSelect,
+                        assigned_date: assignedDate,
+                      });
+                      insertTaskToOrder(ref.id, index + 1);
+                      focusOnNextRender(index + 1);
+                    } */
+                  }}
                   onOrderUp={() => onOrderUp(id, index)}
                   onOrderDown={() => onOrderDown(id, index)}
                 >
@@ -183,8 +228,10 @@ export const TodayScreen = () => {
               <Task
                 variant="add"
                 onTaskPress={() => {
-                  console.log("createTask");
-                  console.log(createTask({ body: "" }));
+                  const ref = createTaskRef();
+                  if (!ref) return;
+                  createTask(ref, { body: "" });
+                  focusOnNextRender(tasks.length);
                 }}
               />
             </View>
@@ -192,6 +239,8 @@ export const TodayScreen = () => {
             <View style={{ flex: 1 }} />
           </Section.Content>
         </Section>
+
+        {Platform.select({ web: null, default: <StatusBar /> })}
       </ScrollView>
     </React.Fragment>
   );
