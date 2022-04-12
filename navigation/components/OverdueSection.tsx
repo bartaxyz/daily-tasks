@@ -1,3 +1,4 @@
+import React from "react";
 import { View } from "react-native";
 import { Button, Section, Task, Typography } from "../../components";
 import { useData } from "../../db/DataProvider";
@@ -36,13 +37,20 @@ export const OverdueSection: React.FC<OverdueSectionProps> = () => {
       </View>
 
       <View style={{ opacity: 0.5 }}>
-        {overdueTasks.slice(0, displayItemCount).map(({ body, id }) => (
-          <Task key={id} editable={false}>
-            {body}
-          </Task>
-        ))}
+        {overdueTasks
+          .slice(
+            0,
+            overdueTasks.length === displayItemCount + 1
+              ? displayItemCount + 1
+              : displayItemCount
+          )
+          .map(({ body, id }) => (
+            <Task key={id} editable={false}>
+              {body}
+            </Task>
+          ))}
 
-        {overdueTasks.length - displayItemCount > 0 ? (
+        {overdueTasks.length - displayItemCount > 1 ? (
           <Task variant="more" editable={false}>
             {`${overdueTasks.length - displayItemCount} more tasks`}
           </Task>

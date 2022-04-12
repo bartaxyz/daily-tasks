@@ -7,7 +7,10 @@ https://user-images.githubusercontent.com/4202010/160281910-91c8e51c-d8d1-4710-9
 
 ## Installation
 
-Currently there are no builds, nor availability in the App Store. If you stumbled upon this repo and would like to see it there, leave a star!
+At the moment, there are only alpha builds for MacOS available: https://github.com/bartaxyz/daily-tasks/releases
+These do have the base functionality, but some features are for now visuals-only or not working fully.
+
+If you want to support the development, leave a star, create an issue or outright create a PR!
 
 ## Build
 

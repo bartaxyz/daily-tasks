@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Modal } from "react-native-paper";
+import React, { useEffect } from "react";
+import { ActivityIndicator } from "react-native-paper";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { rgba } from "polished";
 import { useTheme } from "styled-components/native";
 import { RootStackParamList } from "../types";
 import { AuthStack } from "./AuthStack";
@@ -35,6 +34,10 @@ export const RootStack = () => {
           component={() => {
             const { isUserLoaded, user } = useAuth();
             const { navigate } = useNavigation();
+
+            if (user) {
+              navigate("Home" as any);
+            }
 
             useEffect(() => {
               /**

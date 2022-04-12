@@ -1,6 +1,6 @@
 import React from "react";
-import { View, ViewProps } from "react-native";
-import styled from "styled-components/native";
+import { Platform, View, ViewProps } from "react-native";
+import styled, { useTheme } from "styled-components/native";
 import { SectionContent, SectionContentProps } from "./SectionContent";
 import { SectionSeparator, SectionSeparatorProps } from "./SectionSeparator";
 
@@ -14,6 +14,7 @@ export const Section: React.FC<SectionProps> & {
   Separator: React.FC<SectionSeparatorProps>;
 } = (props) => {
   const { separator, hasBackground = true } = props;
+  const { colors } = useTheme();
 
   const background = hasBackground ? (
     <Background {...props} />
@@ -46,7 +47,7 @@ const Root = styled.View<SectionProps>`
 `;
 
 const Border = styled.View<SectionProps>`
-  border-radius: 6px;
+  border-radius: ${Platform.select({ android: "4px", default: "6px" })};
   border: 1px solid ${({ theme }) => theme.colors.section.separator};
   overflow: hidden;
 `;

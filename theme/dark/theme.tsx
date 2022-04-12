@@ -1,4 +1,4 @@
-import { rgba } from "polished";
+import { lighten, rgba } from "polished";
 import { defaultTheme } from "../default/theme";
 
 const colors = {
@@ -54,6 +54,10 @@ export const darkTheme: typeof defaultTheme = {
       ...defaultTheme.colors.iconButton,
       background: "transparent",
       foreground: colors.text.default,
+    },
+    keyboardKey: {
+      background: lighten(0.05, "#000000"),
+      separator: rgba(colors.text.default, 0.1),
     },
     section: {
       ...defaultTheme.colors.section,

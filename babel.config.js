@@ -6,8 +6,8 @@ module.exports = function (api) {
       [
         "styled-components",
         { ssr: true, displayName: true, preprocess: false },
-        "react-native-reanimated/plugin",
       ],
+      "react-native-reanimated/plugin",
     ],
   };
 };

@@ -1,34 +1,64 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Platform, TextInput, TextInputProps } from "react-native";
+import React, {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  Animated,
+  Platform,
+  Pressable,
+  TextInput,
+  TextInputProps,
+  View,
+} from "react-native";
 import styled, { useTheme } from "styled-components/native";
 import { Svg, Path } from "react-native-svg";
 import { debounce } from "lodash";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { Typography } from "../Typography";
+import { useActive, useHover } from "react-native-web-hooks";
+import { rgba } from "polished";
+import { useStatusBar } from "../../utils/providers/StatusBarProvider";
 
 export interface TaskProps {
   editable?: boolean;
   children?: string;
   variant?: "normal" | "add" | "more";
   status?: "none" | "done" | "error" | "deleted" | "backlog";
+  textInputPropOverrides?: TextInputProps;
+  textInputRef?: (ref: TextInput | null) => void;
   onTaskPress?: () => void;
   onValueChange?: (text: string) => void;
+  onFinishedValueChange?: (text: string) => void;
   onStatusChange?: (status: "none" | "done" | "error") => void;
   onDelete?: () => void;
-  onEnterPress?: () => void;
+  onEnterPress?: (selection: {
+    textBeforeSelect: string;
+    textAfterSelect: string;
+  }) => void;
   onOrderUp?: () => void;
   onOrderDown?: () => void;
 }
 
 const addTaskPlaceholderText = "Add a task";
 
+interface TaskRef {
+  root: View | null;
+  textInput: TextInput | null;
+}
+
 export const Task: React.FC<TaskProps> = ({
   editable = true,
   children,
   variant = "normal",
   status,
+  textInputPropOverrides,
+  textInputRef,
   onTaskPress,
   onValueChange,
+  onFinishedValueChange,
   onStatusChange,
   onDelete,
   onEnterPress,
@@ -36,13 +66,41 @@ export const Task: React.FC<TaskProps> = ({
   onOrderDown,
 }) => {
   const { colors } = useTheme();
+  const rootRef = useRef<View | null>(null);
+  const textInputInnerRef = useRef<TextInput | null>(null);
+  const active = useActive(rootRef);
+  const hover = useHover(rootRef);
+  const firstFocusedRender = useRef<boolean>(false);
   const [focused, setFocused] = useState(false);
-  const [value, setValue] = useState("");
+  const [selected, setSelected] = useState(false);
+  const [internalValue, setInternalValue] = useState("");
   const [textInputHeight, setTextInputHeight] = useState(0);
-  const keyboardShortcutMode = useRef<"none" | "ordering">("none");
+  const { setKeyboardShortcuts, clearKeyboardShortcuts } = useStatusBar();
+
+  const [heightAnimatedValue] = useState(new Animated.Value(0));
 
   useEffect(() => {
-    setValue(children || "");
+    rootRef.current?.setNativeProps({
+      tabIndex: -1,
+    });
+  }, [rootRef.current]);
+
+  useEffect(() => {
+    firstFocusedRender.current = false;
+  }, [firstFocusedRender.current]);
+
+  const selection = useRef({ start: 0, end: 0 });
+
+  const onSelectionChangeHandler: TextInputProps["onSelectionChange"] = (
+    event
+  ) => {
+    selection.current = event.nativeEvent.selection;
+  };
+
+  useEffect(() => {
+    if (!focused) {
+      setInternalValue(children || "");
+    }
   }, [children]);
 
   const onChangeHandlerDebounced = (text: string) => {
@@ -50,141 +108,285 @@ export const Task: React.FC<TaskProps> = ({
   };
 
   const debounceCallback = useCallback(
-    debounce(onChangeHandlerDebounced, 250),
+    debounce(onChangeHandlerDebounced, 100),
     []
   );
 
   const onChangeHandler: TextInputProps["onChange"] = (event) => {
     const { text } = event.nativeEvent;
 
-    setValue(text);
+    setInternalValue(text);
     debounceCallback(text);
   };
 
+  const pressedKeys = useRef<string[]>([]);
+  const keyboardCombination = (combination: string[]) => {
+    /**
+     * return if combination is exactly the same as pressed keys
+     */
+    if (pressedKeys.current.length !== combination.length) return false;
+    for (let i = 0; i < combination.length; i++) {
+      if (combination[i] !== pressedKeys.current[i]) return false;
+    }
+    return true;
+  };
+
   const onKeyPressHandler: TextInputProps["onKeyPress"] = (event) => {
-    const { key } = event.nativeEvent;
+    const key = event.nativeEvent.key.toLowerCase();
 
-    if (key === "Alt") {
-      keyboardShortcutMode.current = "ordering";
-    }
-    if (keyboardShortcutMode.current === "ordering") {
-      if (key === "Alt") {
-      } else if (key === "ArrowUp") {
-        if (onOrderUp) onOrderUp();
-      } else if (key === "ArrowDown") {
-        if (onOrderDown) onOrderDown();
-      } else {
-        keyboardShortcutMode.current = "none";
-      }
+    if (pressedKeys.current.indexOf(key) === -1) {
+      pressedKeys.current.push(key);
     }
 
-    if (key === "Backspace") {
-      if (value.length === 0) {
-        onDelete && onDelete();
-      }
+    console.log({ key }, pressedKeys.current);
+
+    if (keyboardCombination(["alt", " "])) {
+      console.log("SPACE");
     }
 
-    if (key === "Enter") {
+    if (keyboardCombination(["alt"])) {
+      setSelected(true);
+    }
+
+    if (keyboardCombination(["alt", "arrowup"])) {
       event.preventDefault();
-      onEnterPress && onEnterPress();
+      if (onOrderUp) onOrderUp();
+    } else if (keyboardCombination(["alt", "arrowdown"])) {
+      event.preventDefault();
+      if (onOrderDown) onOrderDown();
+    } else if (keyboardCombination(["alt", "backspace"])) {
+      event.preventDefault();
+      if (onDelete) {
+        clearKeyboardShortcuts();
+        onDelete();
+      }
+    } else if (keyboardCombination(["alt", " "])) {
+      console.log("ASDJF");
+      event.preventDefault();
+      onCheckboxChange(status === "none" ? true : false);
+    } else if (keyboardCombination(["Enter"])) {
+      event.preventDefault();
+      textInputInnerRef.current?.blur();
+      if (onEnterPress)
+        onEnterPress({
+          textBeforeSelect: internalValue.slice(0, selection.current.start),
+          textAfterSelect: internalValue.slice(selection.current.end),
+        });
+    } else if (keyboardCombination(["backspace"])) {
+      if (internalValue.length === 0) {
+        event.preventDefault();
+        if (onDelete) {
+          clearKeyboardShortcuts();
+          onDelete();
+        }
+      }
     }
   };
+
+  const onKeyUpHandler: TextInputProps["onKeyPress"] = (event) => {
+    const key = event.nativeEvent.key.toLowerCase();
+
+    if (pressedKeys.current.indexOf(key) !== -1) {
+      pressedKeys.current.splice(pressedKeys.current.indexOf(key), 1);
+    }
+
+    if (key === "alt") {
+      setSelected(false);
+    }
+  };
+
+  useEffect(() => {
+    if (focused && !selected) {
+      setKeyboardShortcuts([
+        {
+          prefix: "Hold",
+          combination: ["alt"],
+          suffix: "to select task",
+        },
+      ]);
+    } else if (focused && selected) {
+      setKeyboardShortcuts([
+        {
+          combination: ["arrowUp"],
+          suffix: "to order up",
+        },
+        {
+          combination: ["arrowDown"],
+          suffix: "to order down",
+        },
+        {
+          combination: ["backspace"],
+          suffix: "to delete",
+        },
+        {
+          combination: ["space"],
+          suffix: "to finish",
+        },
+      ]);
+    } else {
+      clearKeyboardShortcuts();
+    }
+  }, [focused, selected]);
 
   const onFocus = () => {
     setFocused(true);
+
+    setInternalValue(children || "");
   };
 
   const onBlur = () => {
+    pressedKeys.current = [];
     setFocused(false);
+    if (onFinishedValueChange) onFinishedValueChange(internalValue);
   };
 
   const onCheckboxChange = (checked: boolean) => {
     if (onStatusChange) onStatusChange(checked ? "done" : "none");
   };
 
+  const [selectedAnimatedValue] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    if (selected) {
+      Animated.timing(selectedAnimatedValue, {
+        toValue: 1,
+        duration: 80,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      Animated.timing(selectedAnimatedValue, {
+        toValue: 0,
+        duration: 80,
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [selected]);
+
   return (
     <Root
+      ref={rootRef}
+      active={active}
+      hover={hover}
+      selected={selected}
       variant={variant}
       status={status}
       onPress={() => {
         setFocused(true);
         if (onTaskPress) onTaskPress();
       }}
+      style={{
+        backgroundColor: selectedAnimatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [
+            rgba(colors.text.default, 0),
+            rgba(colors.text.default, 0.075),
+          ],
+        }),
+        height: Platform.select({
+          web: heightAnimatedValue,
+          default: "auto",
+        } as any),
+      }}
     >
-      <CheckboxRoot>
-        {variant === "normal" ? (
-          <Checkbox checked={status === "done"} onChange={onCheckboxChange} />
-        ) : variant === "add" ? (
-          <AddSign />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "flex-start",
+          flex: 1,
+          padding: 4,
+        }}
+        onLayout={({ nativeEvent }) => {
+          Animated.timing(heightAnimatedValue, {
+            toValue: nativeEvent.layout.height,
+            duration: 80,
+            useNativeDriver: false,
+          }).start();
+        }}
+      >
+        <CheckboxRoot>
+          {variant === "normal" ? (
+            <Checkbox
+              tabIndex={-1}
+              checked={status === "done"}
+              onChange={onCheckboxChange}
+              disabled={!editable}
+            />
+          ) : variant === "add" ? (
+            <AddSign />
+          ) : (
+            <MoreSign />
+          )}
+        </CheckboxRoot>
+
+        {editable && variant !== "add" && variant !== "more" ? (
+          <TextInput
+            ref={(ref) => {
+              textInputInnerRef.current = ref;
+              if (textInputRef) {
+                textInputRef(ref);
+              }
+            }}
+            value={internalValue.replace(/\n/g, "")}
+            onChange={onChangeHandler}
+            onKeyPress={onKeyPressHandler}
+            {...(Platform.OS === "web" ? { onKeyUp: onKeyUpHandler } : {})}
+            onSelectionChange={onSelectionChangeHandler}
+            multiline={true}
+            editable={editable}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            style={[
+              {
+                flex: 1,
+                textDecorationLine: status === "done" ? "line-through" : "none",
+                padding: 8,
+                paddingTop: Platform.select({ web: 8, default: 6 }),
+                paddingLeft: 0,
+                maxHeight: Platform.select({
+                  web: textInputHeight,
+                  default: "auto",
+                } as any),
+                fontSize: Platform.select({ web: 12, default: 14 }),
+                color: colors.text.default,
+                opacity: status === "done" ? 0.25 : 1,
+              },
+              Platform.select({ web: { outlineWidth: 0 } as any, default: {} }),
+            ]}
+            onContentSizeChange={(event) => {
+              setTextInputHeight(event.nativeEvent.contentSize.height);
+            }}
+            {...textInputPropOverrides}
+          />
         ) : (
-          <MoreSign />
-        )}
-      </CheckboxRoot>
-
-      {editable && variant !== "add" && variant !== "more" ? (
-        <TextInput
-          value={value.replace(/\n/g, "")}
-          onChange={onChangeHandler}
-          onKeyPress={onKeyPressHandler}
-          multiline={true}
-          editable={editable}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          style={[
-            {
-              flex: 1,
-              textDecorationLine: status === "done" ? "line-through" : "none",
+          <Typography.Task.Label
+            style={{
               padding: 8,
-              paddingTop: Platform.select({ web: 8, default: 6 }),
               paddingLeft: 0,
-              height: Platform.select({
-                web: textInputHeight,
-                default: undefined,
-              }),
-              fontSize: Platform.select({ web: 12, default: 14 }),
-              color: colors.text.default,
-            },
-            Platform.select({ web: { outlineWidth: 0 } as any, default: {} }),
-          ]}
-          onContentSizeChange={(event) => {
-            setTextInputHeight(event.nativeEvent.contentSize.height);
-          }}
-        />
-      ) : (
-        <Typography.Task.Label
-          style={{ padding: 8, paddingLeft: 0 }}
-          fontSize={Platform.select({ web: 12, default: 14 })}
-          textDecorationLine={status === "done" ? "line-through" : "none"}
-        >
-          {variant === "add" ? addTaskPlaceholderText : children}
-        </Typography.Task.Label>
-      )}
-
-      {/* {variant === "normal" && !focused ? (
-        <Typography.Task.Label
-          textDecorationLine={status === "done" ? "line-through" : "none"}
-        >
-          {children}
-        </Typography.Task.Label>
-      ) : (
-        <TextInput
-          value={value}
-          onChange={onChangeHandler}
-          onBlur={onBlur}
-        />
-      )} */}
+              opacity:
+                variant === "add" ? (active ? 1 : hover ? 0.5 : 0.25) : 1,
+            }}
+            fontSize={Platform.select({ web: 12, default: 14 })}
+            textDecorationLine={status === "done" ? "line-through" : "none"}
+          >
+            {variant === "add" ? addTaskPlaceholderText : children}
+          </Typography.Task.Label>
+        )}
+      </View>
     </Root>
   );
 };
 
-const Root = styled.Pressable<Pick<TaskProps, "status" | "variant">>`
-  padding: 4px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+interface RootProps extends Pick<TaskProps, "status" | "variant"> {
+  hover: boolean;
+  active: boolean;
+  selected: boolean;
+}
+const Root = styled(Animated.createAnimatedComponent(Pressable))<RootProps>`
   flex-direction: row;
   align-items: flex-start;
-  opacity: ${({ variant, status }) =>
-    variant === "add" || status === "done" ? 0.25 : 1};
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.colors.section.background};
+  overflow: hidden;
 `;
 
 const CheckboxRoot = styled.View`
