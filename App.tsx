@@ -15,7 +15,7 @@ import { KeyboardProvider } from "./utils/providers/KeyboardProvider";
 import { StatusBarProvider } from "./utils/providers/StatusBarProvider";
 
 /** TODO: Fix this somehow for other environments than Electron */
-let ipcRenderer: Electron.IpcRenderer = require("electron").ipcRenderer;
+// let ipcRenderer: Electron.IpcRenderer = require("electron").ipcRenderer;
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -24,11 +24,13 @@ export default function App() {
   const [systemAccentColor, setSystemAccentColor] = useState<string>();
 
   useEffect(() => {
+    /*
     if (ipcRenderer) {
       ipcRenderer.invoke("get-accent-color").then((color) => {
         setSystemAccentColor(color);
       });
     }
+    */
   }, []);
 
   if (systemAccentColor) {
