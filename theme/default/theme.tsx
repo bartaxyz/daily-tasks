@@ -30,6 +30,9 @@ export const defaultTheme = {
       background: {
         secondary: "#FFFFFF",
         secondaryPressed: "#DDD",
+        tertiary: "transparent",
+        tertiaryHover: rgba("#000000", 0.1),
+        tertiaryPressed: rgba("#000000", 0.2),
       },
       label: {
         primary: "#FFFFFF",
@@ -55,7 +58,8 @@ export const defaultTheme = {
       foregroundActive: colors.primary,
     },
     keyboardKey: {
-      background: lighten(0.975, '#000000'),
+      background: lighten(0.975, "#000000"),
+      backgroundPressed: lighten(0.85, "#000000"),
       separator: rgba(colors.text.default, 0.1),
     },
     section: {

@@ -9,9 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: 'yarn install --frozen-lockfile && expo build:web'
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Setup Expo
+        uses: expo/expo-github-action@v7
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DAILY_TASKS_21205 }}'
-          projectId: daily-tasks-21205
+          expo-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - run: 'yarn install --frozen-lockfile && expo build:web'
+#      - uses: FirebaseExtended/action-hosting-deploy@v0
+#        with:
+#          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+#          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DAILY_TASKS_21205 }}'
+#          projectId: daily-tasks-21205

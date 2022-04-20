@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import styled, { useTheme } from "styled-components/native";
 import { Typography } from "../Typography";
 
@@ -22,10 +23,32 @@ const keyMapKeys = Object.keys(keyMap);
 
 export const KeyboardKey: React.FC<KeyboardKeyProps> = ({ children }) => {
   const { colors } = useTheme();
+  const [pressed, setPressed] = useState(false);
 
   const label = keyMapKeys.includes(children)
     ? keyMap[children as keyof typeof keyMap]
     : children;
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === children) {
+        setPressed(true);
+      }
+    };
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.key === children) {
+        setPressed(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+    };
+  }, []);
 
   return (
     <Root
@@ -37,7 +60,7 @@ export const KeyboardKey: React.FC<KeyboardKeyProps> = ({ children }) => {
         shadowRadius: 4,
       }}
     >
-      <Background>
+      <Background pressed={pressed}>
         <Typography.Caption>{label}</Typography.Caption>
       </Background>
     </Root>
@@ -53,8 +76,11 @@ const Root = styled.View`
   overflow: hidden;
 `;
 
-const Background = styled.View`
-  background-color: ${({ theme }) => theme.colors.keyboardKey.background};
+const Background = styled.View<{ pressed: boolean }>`
+  background-color: ${({ theme, pressed }) =>
+    pressed
+      ? theme.colors.keyboardKey.backgroundPressed
+      : theme.colors.keyboardKey.background};
   padding: 2px;
   padding-left: 3px;
   padding-right: 3px;

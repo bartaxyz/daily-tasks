@@ -2,14 +2,20 @@ import { useState } from "react";
 import { ScrollView, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useTheme } from "styled-components/native";
-import { Section, Task, Typography } from "../components";
+import { Button, Section, Task, Typography } from "../components";
 import { Sidebar } from "../components/Sidebar/Sidebar";
 import { useData } from "../db/DataProvider";
 
 export const BacklogScreen = () => {
   const [selected, setSelected] = useState("backlog");
-  const { projects, backlogTasks, deletedTasks } = useData();
+  const { projects, backlogTasks, deletedTasks, deleteTask } = useData();
   const { colors } = useTheme();
+
+  const onEmptyTrash = () => {
+    deletedTasks.forEach((task) => {
+      deleteTask({ id: task.id });
+    });
+  };
 
   const emptyBacklog = (
     <Section.Content
@@ -81,7 +87,14 @@ export const BacklogScreen = () => {
         </Section.Content> */}
       </Sidebar>
       <Section separator="none" style={{ flex: 2 }}>
-        <Section.Content inset="S">
+        <Section.Content
+          inset="S"
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <Typography.Title>
             {selected === "backlog"
               ? "Backlog"
@@ -89,6 +102,10 @@ export const BacklogScreen = () => {
               ? "Trash"
               : `${projects.find((project) => project.id === selected)?.name}`}
           </Typography.Title>
+
+          {selected === "trash" && (
+            <Button onPress={onEmptyTrash}>Empty Trash</Button>
+          )}
         </Section.Content>
 
         <Section.Separator />

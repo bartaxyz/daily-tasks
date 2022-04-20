@@ -33,6 +33,8 @@ export const darkTheme: typeof defaultTheme = {
         ...defaultTheme.colors.button.background,
         secondary: "#565656",
         secondaryPressed: "#72706F",
+        tertiaryHover: rgba("#FFFFFF", 0.1),
+        tertiaryPressed: rgba("#FFFFFF", 0.2),
       },
       label: {
         ...defaultTheme.colors.button.label,
@@ -57,6 +59,7 @@ export const darkTheme: typeof defaultTheme = {
     },
     keyboardKey: {
       background: lighten(0.05, "#000000"),
+      backgroundPressed: lighten(0.15, "#000000"),
       separator: rgba(colors.text.default, 0.1),
     },
     section: {

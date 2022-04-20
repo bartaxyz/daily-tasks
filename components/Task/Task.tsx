@@ -21,6 +21,7 @@ import { Typography } from "../Typography";
 import { useActive, useHover } from "react-native-web-hooks";
 import { rgba } from "polished";
 import { useStatusBar } from "../../utils/providers/StatusBarProvider";
+import { Button } from "../Button";
 
 export interface TaskProps {
   editable?: boolean;
@@ -73,6 +74,7 @@ export const Task: React.FC<TaskProps> = ({
   const firstFocusedRender = useRef<boolean>(false);
   const [focused, setFocused] = useState(false);
   const [selected, setSelected] = useState(false);
+  const [shift, setShift] = useState(false);
   const [internalValue, setInternalValue] = useState("");
   const [textInputHeight, setTextInputHeight] = useState(0);
   const { setKeyboardShortcuts, clearKeyboardShortcuts } = useStatusBar();
@@ -148,10 +150,14 @@ export const Task: React.FC<TaskProps> = ({
       setSelected(true);
     }
 
-    if (keyboardCombination(["alt", "arrowup"])) {
+    if (keyboardCombination(["alt", "shift"])) {
+      setShift(true);
+    }
+
+    if (keyboardCombination(["alt", "shift", "arrowup"])) {
       event.preventDefault();
       if (onOrderUp) onOrderUp();
-    } else if (keyboardCombination(["alt", "arrowdown"])) {
+    } else if (keyboardCombination(["alt", "shift", "arrowdown"])) {
       event.preventDefault();
       if (onOrderDown) onOrderDown();
     } else if (keyboardCombination(["alt", "backspace"])) {
@@ -190,6 +196,10 @@ export const Task: React.FC<TaskProps> = ({
       pressedKeys.current.splice(pressedKeys.current.indexOf(key), 1);
     }
 
+    if (key === "shift") {
+      setShift(false);
+    }
+
     if (key === "alt") {
       setSelected(false);
     }
@@ -204,15 +214,12 @@ export const Task: React.FC<TaskProps> = ({
           suffix: "to select task",
         },
       ]);
-    } else if (focused && selected) {
+    } else if (focused && selected && !shift) {
       setKeyboardShortcuts([
         {
-          combination: ["arrowUp"],
-          suffix: "to order up",
-        },
-        {
-          combination: ["arrowDown"],
-          suffix: "to order down",
+          prefix: "Hold",
+          combination: ["shift"],
+          suffix: "for more",
         },
         {
           combination: ["backspace"],
@@ -223,10 +230,21 @@ export const Task: React.FC<TaskProps> = ({
           suffix: "to finish",
         },
       ]);
+    } else if (focused && selected && shift) {
+      setKeyboardShortcuts([
+        {
+          combination: ["arrowUp"],
+          suffix: "to order up",
+        },
+        {
+          combination: ["arrowDown"],
+          suffix: "to order down",
+        },
+      ]);
     } else {
       clearKeyboardShortcuts();
     }
-  }, [focused, selected]);
+  }, [focused, selected, shift]);
 
   const onFocus = () => {
     setFocused(true);
@@ -360,6 +378,7 @@ export const Task: React.FC<TaskProps> = ({
         ) : (
           <Typography.Task.Label
             style={{
+              flex: 1,
               padding: 8,
               paddingLeft: 0,
               opacity:
@@ -370,6 +389,22 @@ export const Task: React.FC<TaskProps> = ({
           >
             {variant === "add" ? addTaskPlaceholderText : children}
           </Typography.Task.Label>
+        )}
+
+        {/** Actions */}
+        {variant !== "add" && (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              paddingTop: 6,
+              paddingRight: 8,
+              opacity: hover || selected ? 1 : 0,
+            }}
+          >
+            <Button variant="tertiary">&middot;&middot;&middot;</Button>
+          </View>
         )}
       </View>
     </Root>

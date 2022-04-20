@@ -1,5 +1,5 @@
 import { lighten, rgba } from "polished";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   GestureResponderEvent,
   Platform,
@@ -10,16 +10,19 @@ import { Button as RNPButton } from "react-native-paper";
 import styled, { useTheme } from "styled-components/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Typography } from "../Typography";
+import { useHover } from "react-native-web-hooks";
 
 export interface ButtonProps extends PressableProps {
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "tertiary";
 }
 
 const PRIMARY_BACKGROUND = "#3685F9";
 const SECONDARY_BACKGROUND = "#FFFFFF";
+const TERTIARY_BACKGROUND = "transparent";
 
 const PRIMARY_FOREGROUND = "#FFFFFF";
 const SECONDARY_FOREGROUND = "#3D3D3D";
+const TERTIARY_FOREGROUND = "#FFFFFF";
 
 export const Button: React.FC<ButtonProps> = ({
   children,
@@ -31,9 +34,17 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const { colors } = useTheme();
   const background =
-    variant === "primary" ? PRIMARY_BACKGROUND : SECONDARY_BACKGROUND;
+    variant === "primary"
+      ? PRIMARY_BACKGROUND
+      : variant === "secondary"
+      ? SECONDARY_BACKGROUND
+      : TERTIARY_BACKGROUND;
   const foreground =
-    variant === "primary" ? PRIMARY_FOREGROUND : SECONDARY_FOREGROUND;
+    variant === "primary"
+      ? PRIMARY_FOREGROUND
+      : variant === "secondary"
+      ? SECONDARY_FOREGROUND
+      : TERTIARY_FOREGROUND;
 
   if (Platform.OS === "ios") {
     return (
@@ -61,7 +72,9 @@ export const Button: React.FC<ButtonProps> = ({
     );
   }
 
+  const buttonRef = useRef<View>(null);
   const [pressed, setPressed] = useState(false);
+  const hover = useHover(buttonRef);
 
   const onPressInHandler = (event: GestureResponderEvent) => {
     if (onPressIn) {
@@ -79,9 +92,11 @@ export const Button: React.FC<ButtonProps> = ({
   return (
     <Border variant={variant}>
       <Root
+        ref={buttonRef}
         background={background}
         variant={variant}
         pressed={pressed}
+        hover={hover}
         disabled={disabled}
         onPressIn={onPressInHandler}
         onPressOut={onPressOutHandler}
@@ -94,8 +109,9 @@ export const Button: React.FC<ButtonProps> = ({
         {...props}
       >
         <Gradient
+          variant={variant}
           colors={
-            variant === "secondary"
+            variant === "secondary" || variant === "tertiary"
               ? []
               : [rgba("#9B9B9B", 0.05), rgba("#000000", 0.05)]
           }
@@ -117,14 +133,16 @@ const Border = styled.View<{ variant: ButtonProps["variant"] }>`
   border-top-color: ${({ theme, variant }) =>
     theme.name === "dark" && variant === "secondary"
       ? "#5D5D5D"
-      : "rgba(0, 0, 0, 0.05)"};
+      : variant !== "tertiary"
+      ? "rgba(0, 0, 0, 0.05)"
+      : "transparent"};
 `;
 
-const Gradient = styled(LinearGradient)`
+const Gradient = styled(LinearGradient)<{ variant: ButtonProps["variant"] }>`
   border-radius: 5px;
   height: 100%;
   width: 100%;
-  padding: 0 14px;
+  padding: 0 ${({ variant }) => (variant !== "tertiary" ? 14 : 8)}px;
   justify-content: center;
   align-items: center;
 `;
@@ -133,19 +151,40 @@ const Root = styled.Pressable<{
   background: string;
   variant: ButtonProps["variant"];
   pressed: boolean;
+  hover: boolean;
 }>`
   height: 20px;
   justify-content: center;
   align-items: center;
   border-radius: 5px;
-  background-color: ${({ pressed, variant, theme }) =>
-    pressed
-      ? variant === "primary"
-        ? lighten(0.075)(theme.colors.primary)
-        : theme.colors.button.background.secondaryPressed
-      : variant === "primary"
-      ? theme.colors.primary
-      : theme.colors.button.background.secondary};
+  background-color: ${({ pressed, hover, variant, theme }) => {
+    const { colors } = theme;
+
+    if (variant === "primary") {
+      if (pressed) {
+        return lighten(0.075, colors.primary);
+      }
+      return colors.primary;
+    }
+
+    if (variant === "secondary") {
+      if (pressed) {
+        return colors.button.background.secondaryPressed;
+      }
+      return colors.button.background.secondary;
+    }
+
+    if (variant === "tertiary") {
+      if (pressed) {
+        return colors.button.background.tertiaryPressed;
+      } else if (hover) {
+        return colors.button.background.tertiaryHover;
+      }
+      return colors.button.background.tertiary;
+    }
+
+    return "transparent";
+  }};
 `;
 
 const Label = styled(Typography.Button.Label)<{
