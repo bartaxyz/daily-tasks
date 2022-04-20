@@ -33,6 +33,8 @@ export const darkTheme: typeof defaultTheme = {
         ...defaultTheme.colors.button.background,
         secondary: "#565656",
         secondaryPressed: "#72706F",
+        tertiaryHover: rgba("#FFFFFF", 0.1),
+        tertiaryPressed: rgba("#FFFFFF", 0.2),
       },
       label: {
         ...defaultTheme.colors.button.label,
