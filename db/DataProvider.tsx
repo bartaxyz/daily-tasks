@@ -89,7 +89,7 @@ export const DataProvider: React.FC = ({ children }) => {
 
   const todayTasks = transformedTasks
     .filter((task) => task.status !== "backlog" && task.status !== "deleted")
-    .filter((task) => isToday(task.assignedDate) || isFuture(task.assignedDate))
+    .filter((task) => isToday(task.assignedDate))
     .sort(sortBasedOnTodayOrder);
   /* .sort((a, b) => {
       if (a.status === "done" && b.status !== "done") return -1;
