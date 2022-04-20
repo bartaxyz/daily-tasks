@@ -57,6 +57,7 @@ export const darkTheme: typeof defaultTheme = {
     },
     keyboardKey: {
       background: lighten(0.05, "#000000"),
+      backgroundPressed: lighten(0.15, "#000000"),
       separator: rgba(colors.text.default, 0.1),
     },
     section: {
