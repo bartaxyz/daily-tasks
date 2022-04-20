@@ -30,6 +30,9 @@ export const defaultTheme = {
       background: {
         secondary: "#FFFFFF",
         secondaryPressed: "#DDD",
+        tertiary: "transparent",
+        tertiaryHover: rgba("#000000", 0.1),
+        tertiaryPressed: rgba("#000000", 0.2),
       },
       label: {
         primary: "#FFFFFF",
