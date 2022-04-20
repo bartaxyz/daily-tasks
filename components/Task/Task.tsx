@@ -74,6 +74,7 @@ export const Task: React.FC<TaskProps> = ({
   const firstFocusedRender = useRef<boolean>(false);
   const [focused, setFocused] = useState(false);
   const [selected, setSelected] = useState(false);
+  const [shift, setShift] = useState(false);
   const [internalValue, setInternalValue] = useState("");
   const [textInputHeight, setTextInputHeight] = useState(0);
   const { setKeyboardShortcuts, clearKeyboardShortcuts } = useStatusBar();
@@ -149,10 +150,14 @@ export const Task: React.FC<TaskProps> = ({
       setSelected(true);
     }
 
-    if (keyboardCombination(["alt", "arrowup"])) {
+    if (keyboardCombination(["alt", "shift"])) {
+      setShift(true);
+    }
+
+    if (keyboardCombination(["alt", "shift", "arrowup"])) {
       event.preventDefault();
       if (onOrderUp) onOrderUp();
-    } else if (keyboardCombination(["alt", "arrowdown"])) {
+    } else if (keyboardCombination(["alt", "shift", "arrowdown"])) {
       event.preventDefault();
       if (onOrderDown) onOrderDown();
     } else if (keyboardCombination(["alt", "backspace"])) {
@@ -191,6 +196,10 @@ export const Task: React.FC<TaskProps> = ({
       pressedKeys.current.splice(pressedKeys.current.indexOf(key), 1);
     }
 
+    if (key === "shift") {
+      setShift(false);
+    }
+
     if (key === "alt") {
       setSelected(false);
     }
@@ -205,15 +214,12 @@ export const Task: React.FC<TaskProps> = ({
           suffix: "to select task",
         },
       ]);
-    } else if (focused && selected) {
+    } else if (focused && selected && !shift) {
       setKeyboardShortcuts([
         {
-          combination: ["arrowUp"],
-          suffix: "to order up",
-        },
-        {
-          combination: ["arrowDown"],
-          suffix: "to order down",
+          prefix: "Hold",
+          combination: ["shift"],
+          suffix: "for more",
         },
         {
           combination: ["backspace"],
@@ -224,10 +230,21 @@ export const Task: React.FC<TaskProps> = ({
           suffix: "to finish",
         },
       ]);
+    } else if (focused && selected && shift) {
+      setKeyboardShortcuts([
+        {
+          combination: ["arrowUp"],
+          suffix: "to order up",
+        },
+        {
+          combination: ["arrowDown"],
+          suffix: "to order down",
+        },
+      ]);
     } else {
       clearKeyboardShortcuts();
     }
-  }, [focused, selected]);
+  }, [focused, selected, shift]);
 
   const onFocus = () => {
     setFocused(true);
