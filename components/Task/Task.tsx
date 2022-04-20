@@ -21,6 +21,7 @@ import { Typography } from "../Typography";
 import { useActive, useHover } from "react-native-web-hooks";
 import { rgba } from "polished";
 import { useStatusBar } from "../../utils/providers/StatusBarProvider";
+import { Button } from "../Button";
 
 export interface TaskProps {
   editable?: boolean;
@@ -360,6 +361,7 @@ export const Task: React.FC<TaskProps> = ({
         ) : (
           <Typography.Task.Label
             style={{
+              flex: 1,
               padding: 8,
               paddingLeft: 0,
               opacity:
@@ -370,6 +372,22 @@ export const Task: React.FC<TaskProps> = ({
           >
             {variant === "add" ? addTaskPlaceholderText : children}
           </Typography.Task.Label>
+        )}
+
+        {/** Actions */}
+        {variant !== "add" && (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              paddingTop: 6,
+              paddingRight: 8,
+              opacity: hover || selected ? 1 : 0,
+            }}
+          >
+            <Button variant="tertiary">&middot;&middot;&middot;</Button>
+          </View>
         )}
       </View>
     </Root>
