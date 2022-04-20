@@ -1,10 +1,34 @@
 "use strict";
 
 import { app, BrowserWindow, ipcMain, systemPreferences, Menu } from "electron";
+import contextMenu from "electron-context-menu";
 import * as path from "path";
 import { format as formatUrl } from "url";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
+
+contextMenu({
+  showSaveImageAs: true,
+  prepend: (defaultActions, parameters, browserWindow) => [
+    {
+      label: "Rainbow",
+      // Only show it when right-clicking images
+      visible: parameters.mediaType === "image",
+    },
+    {
+      label: "Search Google for “{selection}”",
+      // Only show it when right-clicking text
+      visible: parameters.selectionText.trim().length > 0,
+      click: () => {
+        shell.openExternal(
+          `https://google.com/search?q=${encodeURIComponent(
+            parameters.selectionText
+          )}`
+        );
+      },
+    },
+  ],
+});
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow;
