@@ -11,7 +11,6 @@ import { defaultTheme } from "./theme/default/theme";
 // import electron from 'electron';
 
 import "./firebase";
-import { KeyboardProvider } from "./utils/providers/KeyboardProvider";
 import { StatusBarProvider } from "./utils/providers/StatusBarProvider";
 
 /** TODO: Fix this somehow for other environments than Electron */
