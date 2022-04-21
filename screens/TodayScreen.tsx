@@ -23,6 +23,7 @@ export const TodayScreen = () => {
     moveTaskInOrder,
     insertTaskToOrder,
     tasksSynced,
+    loading,
   } = useData();
 
   const textInputRefs = useRef<(TextInput | null)[]>([]);
@@ -144,36 +145,47 @@ export const TodayScreen = () => {
                   </Animated.View>
                 )}
               </View>
+              
+              {loading ? null : (
+                <React.Fragment>
+                  {tasks.map(({ status, body, id, assigned_date }, index) => (
+                    <Task
+                      key={id}
+                      textInputRef={(ref) =>
+                        (textInputRefs.current[index] = ref)
+                      }
+                      status={status}
+                      onFinishedValueChange={(body) =>
+                        updateTaskBody({ id, body })
+                      }
+                      onStatusChange={(status) =>
+                        updateTaskStatus({ id, status })
+                      }
+                      onDelete={() => {
+                        deleteTask({ id });
 
-              {tasks.map(({ status, body, id, assigned_date }, index) => (
-                <Task
-                  key={id}
-                  textInputRef={(ref) => (textInputRefs.current[index] = ref)}
-                  status={status}
-                  onFinishedValueChange={(body) => updateTaskBody({ id, body })}
-                  onStatusChange={(status) => updateTaskStatus({ id, status })}
-                  onDelete={() => {
-                    deleteTask({ id });
+                        /** Focus previous */
+                        if (index > 0) {
+                          console.log(textInputRefs);
+                          textInputRefs.current[index - 1]?.focus();
+                        }
+                        focusOnNextRender(index - 1);
+                      }}
+                      onEnterPress={({ textBeforeSelect, textAfterSelect }) => {
+                        /** Insert new task after */
+                        const ref = createTaskRef();
+                        if (!ref) return;
+                        focusOnNextRender(ref.id);
+                        insertTaskToOrder(
+                          ref.id,
+                          index + 1 + overdueTasks.length
+                        );
+                        createTask(ref, {
+                          body: "",
+                          assigned_date: Timestamp.now(),
+                        });
 
-                    /** Focus previous */
-                    if (index > 0) {
-                      console.log(textInputRefs);
-                      textInputRefs.current[index - 1]?.focus();
-                    }
-                    focusOnNextRender(index - 1);
-                  }}
-                  onEnterPress={({ textBeforeSelect, textAfterSelect }) => {
-                    /** Insert new task after */
-                    const ref = createTaskRef();
-                    if (!ref) return;
-                    focusOnNextRender(ref.id);
-                    insertTaskToOrder(ref.id, index + 1 + overdueTasks.length);
-                    createTask(ref, {
-                      body: "",
-                      assigned_date: Timestamp.now(),
-                    });
-
-                    /*
+                        /*
                     const assignedDate = getAssignedDateOfIndex(tasks, index);
                     console.log(assignedDate);
 
@@ -200,23 +212,25 @@ export const TodayScreen = () => {
                       insertTaskToOrder(ref.id, index + 1);
                       focusOnNextRender(index + 1);
                     } */
-                  }}
-                  onOrderUp={() => onOrderUp(id, index)}
-                  onOrderDown={() => onOrderDown(id, index)}
-                >
-                  {body}
-                </Task>
-              ))}
+                      }}
+                      onOrderUp={() => onOrderUp(id, index)}
+                      onOrderDown={() => onOrderDown(id, index)}
+                    >
+                      {body}
+                    </Task>
+                  ))}
 
-              <Task
-                variant="add"
-                onTaskPress={() => {
-                  const ref = createTaskRef();
-                  if (!ref) return;
-                  createTask(ref, { body: "" });
-                  focusOnNextRender(tasks.length);
-                }}
-              />
+                  <Task
+                    variant="add"
+                    onTaskPress={() => {
+                      const ref = createTaskRef();
+                      if (!ref) return;
+                      createTask(ref, { body: "" });
+                      focusOnNextRender(tasks.length);
+                    }}
+                  />
+                </React.Fragment>
+              )}
             </View>
 
             <View style={{ flex: 1 }} />
