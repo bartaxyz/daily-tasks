@@ -21,6 +21,7 @@ export const TodayScreen = () => {
     createTask,
     deleteTask,
     moveTaskInOrder,
+    insertTaskToOrder,
     tasksSynced,
   } = useData();
 
@@ -72,24 +73,6 @@ export const TodayScreen = () => {
     }
     indexToFocus.current = undefined;
   }, [tasks.length]);
-
-  /**
-   * Move order on next render
-   */
-  const moveTaskData = useRef<{ taskId: string; toIndex: number }>();
-  const moveTaskOnNextRender = (taskId: string, toIndex: number) => {
-    console.log("moveTaskOnNextRender");
-    moveTaskData.current = { taskId, toIndex };
-  };
-  useEffect(() => {
-    if (moveTaskData.current) {
-      console.log("moveTaskOnNextRender ASDFSADGDFG");
-      const { taskId, toIndex } = moveTaskData.current;
-      console.log(moveTaskData);
-      moveTaskInOrder(taskId, toIndex);
-      moveTaskData.current = undefined;
-    }
-  }, [moveTaskData.current]);
 
   const onOrderUp = (id: string, index: number) => {
     if (index > 0) {
@@ -177,18 +160,18 @@ export const TodayScreen = () => {
                       console.log(textInputRefs);
                       textInputRefs.current[index - 1]?.focus();
                     }
-                    focusOnNextRender(index);
+                    focusOnNextRender(index - 1);
                   }}
                   onEnterPress={({ textBeforeSelect, textAfterSelect }) => {
                     /** Insert new task after */
                     const ref = createTaskRef();
                     if (!ref) return;
                     focusOnNextRender(ref.id);
+                    insertTaskToOrder(ref.id, index + 1 + overdueTasks.length);
                     createTask(ref, {
                       body: "",
                       assigned_date: Timestamp.now(),
                     });
-                    moveTaskOnNextRender(ref.id, index + 1);
 
                     /*
                     const assignedDate = getAssignedDateOfIndex(tasks, index);
