@@ -37,12 +37,13 @@ export const DataContext = createContext<DataContextValue>({
   setTodayOrder: async () => {},
   insertTaskToOrder: async () => {},
   moveTaskInOrder: async () => {},
+  loading: true,
 });
 
 export const DataProvider: React.FC = ({ children }) => {
   const { tasks, ...taskMethods } = useTasks();
   const { ...projects } = useProjects();
-  const { ...userData } = useUser();
+  const { loading: loadingUser, ...userData } = useUser();
 
   const transformedTasks = tasks.map((task) => ({
     ...task,
@@ -116,13 +117,20 @@ export const DataProvider: React.FC = ({ children }) => {
    */
   useEffect(() => {
     /**
-     * If today_order isn't in sync with tasks, update it
+     * If today_order is loaded and it isn't in sync
+     * with tasks, update it
      */
-    if (userData.userData) {
+    if (!loadingUser && userData.userData) {
       const todayOrder = userData.userData.today_order;
 
-      if (!isEqual(todayOrderIds, todayOrder)) {
+      /** today order contains all todayOrderIds */
+      const containsAllTodayOrderIds = todayOrder.every((id) =>
+        todayOrderIds.includes(id)
+      );
+
+      if (!containsAllTodayOrderIds) {
         userData.setTodayOrder(todayOrderIds);
+        console.log("RESET TODAY ORDER");
       }
     }
   }, [JSON.stringify(todayOrderIds)]);
@@ -130,6 +138,7 @@ export const DataProvider: React.FC = ({ children }) => {
   return (
     <DataContext.Provider
       value={{
+        loading: loadingUser,
         tasks,
         overdueTasks,
         todayTasks,
