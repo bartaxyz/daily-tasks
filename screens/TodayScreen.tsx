@@ -21,7 +21,9 @@ export const TodayScreen = () => {
     createTask,
     deleteTask,
     moveTaskInOrder,
+    insertTaskToOrder,
     tasksSynced,
+    loading,
   } = useData();
 
   const textInputRefs = useRef<(TextInput | null)[]>([]);
@@ -72,24 +74,6 @@ export const TodayScreen = () => {
     }
     indexToFocus.current = undefined;
   }, [tasks.length]);
-
-  /**
-   * Move order on next render
-   */
-  const moveTaskData = useRef<{ taskId: string; toIndex: number }>();
-  const moveTaskOnNextRender = (taskId: string, toIndex: number) => {
-    console.log("moveTaskOnNextRender");
-    moveTaskData.current = { taskId, toIndex };
-  };
-  useEffect(() => {
-    if (moveTaskData.current) {
-      console.log("moveTaskOnNextRender ASDFSADGDFG");
-      const { taskId, toIndex } = moveTaskData.current;
-      console.log(moveTaskData);
-      moveTaskInOrder(taskId, toIndex);
-      moveTaskData.current = undefined;
-    }
-  }, [moveTaskData.current]);
 
   const onOrderUp = (id: string, index: number) => {
     if (index > 0) {
@@ -161,36 +145,47 @@ export const TodayScreen = () => {
                   </Animated.View>
                 )}
               </View>
+              
+              {loading ? null : (
+                <React.Fragment>
+                  {tasks.map(({ status, body, id, assigned_date }, index) => (
+                    <Task
+                      key={id}
+                      textInputRef={(ref) =>
+                        (textInputRefs.current[index] = ref)
+                      }
+                      status={status}
+                      onFinishedValueChange={(body) =>
+                        updateTaskBody({ id, body })
+                      }
+                      onStatusChange={(status) =>
+                        updateTaskStatus({ id, status })
+                      }
+                      onDelete={() => {
+                        deleteTask({ id });
 
-              {tasks.map(({ status, body, id, assigned_date }, index) => (
-                <Task
-                  key={id}
-                  textInputRef={(ref) => (textInputRefs.current[index] = ref)}
-                  status={status}
-                  onFinishedValueChange={(body) => updateTaskBody({ id, body })}
-                  onStatusChange={(status) => updateTaskStatus({ id, status })}
-                  onDelete={() => {
-                    deleteTask({ id });
+                        /** Focus previous */
+                        if (index > 0) {
+                          console.log(textInputRefs);
+                          textInputRefs.current[index - 1]?.focus();
+                        }
+                        focusOnNextRender(index - 1);
+                      }}
+                      onEnterPress={({ textBeforeSelect, textAfterSelect }) => {
+                        /** Insert new task after */
+                        const ref = createTaskRef();
+                        if (!ref) return;
+                        focusOnNextRender(ref.id);
+                        insertTaskToOrder(
+                          ref.id,
+                          index + 1 + overdueTasks.length
+                        );
+                        createTask(ref, {
+                          body: "",
+                          assigned_date: Timestamp.now(),
+                        });
 
-                    /** Focus previous */
-                    if (index > 0) {
-                      console.log(textInputRefs);
-                      textInputRefs.current[index - 1]?.focus();
-                    }
-                    focusOnNextRender(index);
-                  }}
-                  onEnterPress={({ textBeforeSelect, textAfterSelect }) => {
-                    /** Insert new task after */
-                    const ref = createTaskRef();
-                    if (!ref) return;
-                    focusOnNextRender(ref.id);
-                    createTask(ref, {
-                      body: "",
-                      assigned_date: Timestamp.now(),
-                    });
-                    moveTaskOnNextRender(ref.id, index + 1);
-
-                    /*
+                        /*
                     const assignedDate = getAssignedDateOfIndex(tasks, index);
                     console.log(assignedDate);
 
@@ -217,23 +212,25 @@ export const TodayScreen = () => {
                       insertTaskToOrder(ref.id, index + 1);
                       focusOnNextRender(index + 1);
                     } */
-                  }}
-                  onOrderUp={() => onOrderUp(id, index)}
-                  onOrderDown={() => onOrderDown(id, index)}
-                >
-                  {body}
-                </Task>
-              ))}
+                      }}
+                      onOrderUp={() => onOrderUp(id, index)}
+                      onOrderDown={() => onOrderDown(id, index)}
+                    >
+                      {body}
+                    </Task>
+                  ))}
 
-              <Task
-                variant="add"
-                onTaskPress={() => {
-                  const ref = createTaskRef();
-                  if (!ref) return;
-                  createTask(ref, { body: "" });
-                  focusOnNextRender(tasks.length);
-                }}
-              />
+                  <Task
+                    variant="add"
+                    onTaskPress={() => {
+                      const ref = createTaskRef();
+                      if (!ref) return;
+                      createTask(ref, { body: "" });
+                      focusOnNextRender(tasks.length);
+                    }}
+                  />
+                </React.Fragment>
+              )}
             </View>
 
             <View style={{ flex: 1 }} />

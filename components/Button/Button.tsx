@@ -14,6 +14,7 @@ import { useHover } from "react-native-web-hooks";
 
 export interface ButtonProps extends PressableProps {
   variant?: "primary" | "secondary" | "tertiary";
+  tabindex?: number | string;
 }
 
 const PRIMARY_BACKGROUND = "#3685F9";
@@ -30,6 +31,7 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   onPressIn,
   onPressOut,
+  tabindex,
   ...props
 }) => {
   const { colors } = useTheme();
@@ -90,7 +92,7 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   return (
-    <Border variant={variant}>
+    <Border variant={variant} {...{ tabindex }}>
       <Root
         ref={buttonRef}
         background={background}
@@ -106,6 +108,7 @@ export const Button: React.FC<ButtonProps> = ({
           shadowColor: variant === "secondary" ? foreground : background,
           shadowOffset: { height: variant === "secondary" ? 2 : 1.5, width: 0 },
         }}
+        {...{ tabindex }}
         {...props}
       >
         <Gradient
@@ -115,8 +118,11 @@ export const Button: React.FC<ButtonProps> = ({
               ? []
               : [rgba("#9B9B9B", 0.05), rgba("#000000", 0.05)]
           }
+          {...{ tabindex }}
         >
-          <Label variant={variant}>{children}</Label>
+          <Label variant={variant} {...{ tabindex }}>
+            {children}
+          </Label>
         </Gradient>
       </Root>
     </Border>

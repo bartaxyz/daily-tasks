@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { Alert, Platform, ScrollView, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { useTheme } from "styled-components/native";
 import { Button, Section, Task, Typography } from "../components";
@@ -12,9 +12,31 @@ export const BacklogScreen = () => {
   const { colors } = useTheme();
 
   const onEmptyTrash = () => {
-    deletedTasks.forEach((task) => {
-      deleteTask({ id: task.id });
-    });
+    const removeAllTasksFromTrash = () => {
+      deletedTasks.forEach((task) => {
+        deleteTask({ id: task.id });
+      });
+
+      setSelected("backlog");
+    };
+
+    if (Platform.OS === "web") {
+      if (confirm("Do you wish to remove all tasks from the trash?")) {
+        console.log("REMOVING");
+        removeAllTasksFromTrash();
+      }
+    } else {
+      Alert.alert("Do you wish to remove all tasks from the trash?", "", [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Remove",
+          onPress: removeAllTasksFromTrash,
+        },
+      ]);
+    }
   };
 
   const emptyBacklog = (
@@ -51,13 +73,15 @@ export const BacklogScreen = () => {
             Backlog
           </Sidebar.Button>
 
-          <Sidebar.Button
-            icon="trash"
-            selected={selected === "trash"}
-            onPress={() => setSelected("trash")}
-          >
-            Trash
-          </Sidebar.Button>
+          {deletedTasks.length !== 0 && (
+            <Sidebar.Button
+              icon="trash"
+              selected={selected === "trash"}
+              onPress={() => setSelected("trash")}
+            >
+              Trash
+            </Sidebar.Button>
+          )}
         </Sidebar.Section>
 
         {projects.length !== 0 && (

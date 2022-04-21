@@ -8,12 +8,15 @@ export const useUser = () => {
   const { user } = useAuth();
   const [userData, setUserData] = useState<UserData>();
   const [userDataSynced, setUserDataSynced] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
 
     const unsubscribe = onSnapshot(doc(firestore, "users", user.uid), (doc) => {
       setUserDataSynced(!doc.metadata.hasPendingWrites);
+
+      setLoading(false);
 
       const data = doc.data() as UserData;
       const userData: UserData = {
@@ -78,6 +81,7 @@ export const useUser = () => {
   };
 
   return {
+    loading,
     userData,
     userDataSynced,
     setTodayOrder,

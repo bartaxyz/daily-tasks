@@ -170,7 +170,7 @@ export const Task: React.FC<TaskProps> = ({
       console.log("ASDJF");
       event.preventDefault();
       onCheckboxChange(status === "none" ? true : false);
-    } else if (keyboardCombination(["Enter"])) {
+    } else if (keyboardCombination(["enter"])) {
       event.preventDefault();
       textInputInnerRef.current?.blur();
       if (onEnterPress)
@@ -368,7 +368,10 @@ export const Task: React.FC<TaskProps> = ({
                 color: colors.text.default,
                 opacity: status === "done" ? 0.25 : 1,
               },
-              Platform.select({ web: { outlineWidth: 0 } as any, default: {} }),
+              Platform.select({
+                web: { outlineWidth: 0 } as any,
+                default: {},
+              }),
             ]}
             onContentSizeChange={(event) => {
               setTextInputHeight(event.nativeEvent.contentSize.height);
@@ -403,7 +406,9 @@ export const Task: React.FC<TaskProps> = ({
               opacity: hover || selected ? 1 : 0,
             }}
           >
-            <Button variant="tertiary">&middot;&middot;&middot;</Button>
+            <Button variant="tertiary" {...{ tabindex: "-1" }}>
+              &middot;&middot;&middot;
+            </Button>
           </View>
         )}
       </View>

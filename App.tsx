@@ -8,29 +8,19 @@ import useColorScheme from "./hooks/useColorScheme";
 import { Navigation } from "./navigation";
 import { darkTheme } from "./theme/dark/theme";
 import { defaultTheme } from "./theme/default/theme";
-// import electron from 'electron';
 
 import "./firebase";
 import { StatusBarProvider } from "./utils/providers/StatusBarProvider";
-
-/** TODO: Fix this somehow for other environments than Electron */
-// let ipcRenderer: Electron.IpcRenderer = require("electron").ipcRenderer;
+import { useSystemAccentColor } from "./utils/useSystemAccentColor";
+import { useEnvironment } from "./utils/useEnvironment";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
-  const [systemAccentColor, setSystemAccentColor] = useState<string>();
+  const systemAccentColor = useSystemAccentColor();
 
-  useEffect(() => {
-    /*
-    if (ipcRenderer) {
-      ipcRenderer.invoke("get-accent-color").then((color) => {
-        setSystemAccentColor(color);
-      });
-    }
-    */
-  }, []);
+  useEnvironment();
 
   if (systemAccentColor) {
     const color = systemAccentColor;
