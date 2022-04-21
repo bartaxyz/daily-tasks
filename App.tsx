@@ -12,15 +12,13 @@ import { defaultTheme } from "./theme/default/theme";
 import "./firebase";
 import { StatusBarProvider } from "./utils/providers/StatusBarProvider";
 import { useSystemAccentColor } from "./utils/useSystemAccentColor";
-import { useEnvironment } from "./utils/useEnvironment";
+import { Environment } from "./utils/Environment";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
   const systemAccentColor = useSystemAccentColor();
-
-  useEnvironment();
 
   if (systemAccentColor) {
     const color = systemAccentColor;
@@ -34,6 +32,7 @@ export default function App() {
     return (
       <ThemeProvider theme={colorScheme === "dark" ? darkTheme : defaultTheme}>
         <StatusBarProvider>
+          <Environment />
           <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
           <Navigation colorScheme={colorScheme} />
         </StatusBarProvider>
