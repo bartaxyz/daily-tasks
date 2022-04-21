@@ -99,7 +99,7 @@ const CheckIcon: React.FC<CheckIconProps> = ({ checked, ...props }) => {
         viewBox="0 0 16 16"
         fill="none"
         style={{ position: "absolute", top: 0, left: 0 }}
-        tabindex="-1"
+        {...{ tabIndex: "-1" }}
       >
         <AnimatedPath
           d="M2 8L6 12L14 4"
@@ -109,7 +109,7 @@ const CheckIcon: React.FC<CheckIconProps> = ({ checked, ...props }) => {
           strokeDasharray={[20, 20]}
           strokeDashoffset={tickDashOffset}
           strokeOpacity={0.5}
-          tabindex="-1"
+          {...{ tabIndex: "-1" }}
         />
       </Svg>
 
@@ -119,7 +119,8 @@ const CheckIcon: React.FC<CheckIconProps> = ({ checked, ...props }) => {
         viewBox="0 0 16 16"
         fill="none"
         style={{ position: "absolute", top: 0, left: 0 }}
-        tabindex="-1"
+        collapsable={undefined}
+        {...{ tabIndex: "-1" }}
       >
         <AnimatedPath
           d="M15.4196 6.90468C16.0245 11.0024 13.193 14.8147 9.09532 15.4196C4.99759 16.0245 1.18534 13.193 0.580411 9.09532C-0.0245188 4.99759 2.80695 1.18534 6.90468 0.580411C11.0024 -0.0245188 14.8147 2.80695 15.4196 6.90468Z"
@@ -131,7 +132,7 @@ const CheckIcon: React.FC<CheckIconProps> = ({ checked, ...props }) => {
           })}
           strokeDasharray={[56, 56]}
           strokeDashoffset={circleDashOffset}
-          tabindex="-1"
+          {...{ tabIndex: "-1" }}
         />
       </Svg>
     </View>
