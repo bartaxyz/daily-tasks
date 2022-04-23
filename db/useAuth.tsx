@@ -25,5 +25,5 @@ export const useAuth = () => {
     };
   }, []);
 
-  return { user, isUserLoaded, logOut };
+  return { user, isUserLoaded, logOut, setUser };
 };
