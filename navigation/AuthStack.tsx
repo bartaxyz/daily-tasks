@@ -2,7 +2,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { LogInScreen } from "../screens/Auth/LogInScreen";
 
 export type AuthParamList = {
-  LogIn: undefined;
+  LogIn?: {
+    mode: "login" | "signup";
+  };
 };
 
 const Stack = createNativeStackNavigator<AuthParamList>();

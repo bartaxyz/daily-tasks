@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { View } from "react-native";
 import { useTheme } from "styled-components/native";
 import {
@@ -37,8 +37,11 @@ export const getErrorMessageFromCode = (code: string = "") => {
 export const LogInScreen = () => {
   const { navigate } = useNavigation();
   const { colors } = useTheme();
+  const { params } = useRoute();
 
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<"login" | "signup">(
+    (params as any).mode || "login"
+  );
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -118,7 +121,7 @@ export const LogInScreen = () => {
     <React.Fragment>
       <Section separator="none" hasBackground={false} style={{ flex: 1 }}>
         <Section.Content
-          inset="M"
+          inset="S"
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
           <Logo />
@@ -176,10 +179,10 @@ export const LogInScreen = () => {
               style={{
                 marginTop: 16,
                 marginBottom: 12,
-                flexDirection: "row",
+                // flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                height: 48
+                height: 48,
               }}
             >
               {!!error?.code ? (

@@ -5,9 +5,11 @@ import { TaskData } from "./types";
 import { useProjects } from "./useProjects";
 import { useTasks } from "./useTasks";
 import { useUser } from "./useUser";
+import { useAuth } from "./useAuth";
 
 interface DataContextValue
-  extends ReturnType<typeof useTasks>,
+  extends ReturnType<typeof useAuth>,
+    ReturnType<typeof useTasks>,
     ReturnType<typeof useProjects>,
     ReturnType<typeof useUser> {
   tasks: TaskData[];
@@ -18,6 +20,10 @@ interface DataContextValue
 }
 
 export const DataContext = createContext<DataContextValue>({
+  user: null,
+  isUserLoaded: false,
+  logOut: () => {},
+  setUser: () => {},
   tasks: [],
   overdueTasks: [],
   todayTasks: [],
@@ -41,6 +47,7 @@ export const DataContext = createContext<DataContextValue>({
 });
 
 export const DataProvider: React.FC = ({ children }) => {
+  const { ...auth } = useAuth();
   const { tasks, ...taskMethods } = useTasks();
   const { ...projects } = useProjects();
   const { loading: loadingUser, ...userData } = useUser();
@@ -139,6 +146,7 @@ export const DataProvider: React.FC = ({ children }) => {
   return (
     <DataContext.Provider
       value={{
+        ...auth,
         loading: loadingUser,
         tasks,
         overdueTasks,

@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Animated, Platform, View } from "react-native";
+import { Animated, Platform, View, Text } from "react-native";
 import { useTheme } from "styled-components/native";
-import { Section, Tabs, Tag, Toolbar } from "../../components";
+import {
+  Section,
+  Spacer,
+  Tabs,
+  Tag,
+  Toolbar,
+  Typography,
+} from "../../components";
 import { useData } from "../../db/DataProvider";
+import { useAuth } from "../../db/useAuth";
 import { OverdueSection } from "./OverdueSection";
 
 export const TAB_BAR_ANIMATION_DURATION = 200;
 
 export const TabBar = ({ state, descriptors, navigation, position }: any) => {
-  const { overdueTasks } = useData();
+  const { user, overdueTasks } = useData();
   const { colors } = useTheme();
   const [animatedValue] = useState(new Animated.Value(0));
   const [maxHeight, setMaxHeight] = useState(0);
@@ -100,6 +108,28 @@ export const TabBar = ({ state, descriptors, navigation, position }: any) => {
 
         {versionTag}
       </Toolbar>
+
+      {user?.isAnonymous && (
+        <Section separator="top" hasBackground={false}>
+          <Section.Content inset="S" style={{ flexDirection: "row" }}>
+            <Typography.Body color={colors.text.warning}>⚠️</Typography.Body>
+            <Spacer width={8} />
+            <Typography.Body color={colors.text.warning}>
+              You're in guest mode.{" "}
+              <Text
+                onPress={() => {
+                  navigation.navigate("Profile");
+                }}
+                style={{
+                  textDecorationLine: "underline",
+                }}
+              >
+                Sign in to preserve your data.
+              </Text>
+            </Typography.Body>
+          </Section.Content>
+        </Section>
+      )}
 
       <Animated.View
         style={{
