@@ -24,6 +24,7 @@ export const darkTheme: typeof defaultTheme = {
       ...defaultTheme.colors.text,
       default: colors.text.default,
       secondary: rgba("#FFFFFF", 0.5),
+      warning: "#FFD700",
     },
 
     /** Component Colors */
