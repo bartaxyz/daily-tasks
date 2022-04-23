@@ -1,15 +1,15 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { Platform, View } from "react-native";
+import { Platform } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { DataProvider, useData } from "../db/DataProvider";
+import { DataProvider } from "../db/DataProvider";
 import { BacklogScreen } from "../screens/BacklogScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
 import { TodayScreen } from "../screens/TodayScreen";
 import { StatusBar } from "./components/StatusBar";
 import { TabBar } from "./components/TabBar";
 import { useTheme } from "styled-components/native";
-import { Button, Section, Sidebar, Typography } from "../components";
+import { Typography } from "../components";
 import React from "react";
 
 export type MainTabsParamList = {
@@ -24,9 +24,6 @@ const Tab = createMaterialTopTabNavigator<MainTabsParamList>();
 
 export const HomeStackWithoutData = () => {
   const { colors } = useTheme();
-  const { backlogTasks } = useData();
-
-  console.log({ backlogTasks: backlogTasks.length > 0 });
 
   return (
     <React.Fragment>
@@ -42,9 +39,7 @@ export const HomeStackWithoutData = () => {
               swipeEnabled: Platform.select({ web: false, default: true }),
             }}
           >
-            {backlogTasks.length > 0 && (
-              <Tab.Screen name="Backlog" component={BacklogScreen} />
-            )}
+            <Tab.Screen name="Backlog" component={BacklogScreen} />
             <Tab.Screen name="Today" component={TodayScreen} />
             <Tab.Screen name="Profile" component={ProfileScreen} />
           </Tab.Navigator>

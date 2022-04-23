@@ -36,13 +36,11 @@ export const RootStack = () => {
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Auth" component={AuthStack} />
 
-        {!!user && (
-          <Stack.Screen
-            name="Home"
-            options={{ title: "Home" }}
-            component={HomeStack}
-          />
-        )}
+        <Stack.Screen
+          name="Home"
+          options={{ title: "Home" }}
+          component={HomeStack}
+        />
       </Stack.Navigator>
 
       <FinishModal />

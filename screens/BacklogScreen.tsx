@@ -5,6 +5,7 @@ import { useTheme } from "styled-components/native";
 import { Button, Section, Task, Typography } from "../components";
 import { Sidebar } from "../components/Sidebar/Sidebar";
 import { useData } from "../db/DataProvider";
+import { confirm } from "../utils/confirm";
 
 export const BacklogScreen = () => {
   const [selected, setSelected] = useState("backlog");
@@ -20,23 +21,10 @@ export const BacklogScreen = () => {
       setSelected("backlog");
     };
 
-    if (Platform.OS === "web") {
-      if (confirm("Do you wish to remove all tasks from the trash?")) {
-        console.log("REMOVING");
-        removeAllTasksFromTrash();
-      }
-    } else {
-      Alert.alert("Do you wish to remove all tasks from the trash?", "", [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Remove",
-          onPress: removeAllTasksFromTrash,
-        },
-      ]);
-    }
+    confirm({
+      message: "Are you sure you want to empty the trash?",
+      onConfirm: removeAllTasksFromTrash,
+    });
   };
 
   const emptyBacklog = (
