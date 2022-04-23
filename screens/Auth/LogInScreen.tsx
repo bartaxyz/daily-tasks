@@ -40,7 +40,7 @@ export const LogInScreen = () => {
   const { params } = useRoute();
 
   const [mode, setMode] = useState<"login" | "signup">(
-    (params as any).mode || "login"
+    (params as any)?.mode || "login"
   );
 
   const [email, setEmail] = useState("");
