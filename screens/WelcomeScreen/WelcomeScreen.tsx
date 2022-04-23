@@ -27,7 +27,7 @@ export const WelcomeScreen = () => {
 
           <View style={{ marginTop: 8 }} />
 
-          <Typography.Body textAlign="center">
+          <Typography.Body textAlign="center" style={{ opacity: 0.5 }}>
             Opinionated task app to help you get through the day
           </Typography.Body>
         </View>
@@ -49,7 +49,12 @@ export const WelcomeScreen = () => {
             }}
           >
             <Button
-              onPress={() => (navigate as any)("Auth", { screen: "LogIn" })}
+              onPress={() =>
+                (navigate as any)("Auth", {
+                  screen: "LogIn",
+                  params: { mode: "login" },
+                })
+              }
             >
               Log In
             </Button>
@@ -57,7 +62,12 @@ export const WelcomeScreen = () => {
             <Typography.Body>or</Typography.Body>
             <View style={{ width: 8 }} />
             <Button
-              onPress={() => (navigate as any)("Auth", { screen: "SignUp" })}
+              onPress={() =>
+                (navigate as any)("Auth", {
+                  screen: "LogIn",
+                  params: { mode: "signup" },
+                })
+              }
             >
               Sign Up
             </Button>
