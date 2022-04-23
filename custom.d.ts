@@ -6,3 +6,8 @@ import { Theme } from "./theme/default/theme";
 declare module "styled-components" {
   export interface DefaultTheme extends Theme {}
 }
+
+declare module "*.png" {
+  const value: any;
+  export default value;
+}

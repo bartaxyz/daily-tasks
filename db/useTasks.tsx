@@ -7,7 +7,6 @@ import {
   setDoc,
   doc,
   Timestamp,
-  addDoc,
   deleteDoc,
   DocumentReference,
 } from "firebase/firestore";
@@ -66,6 +65,8 @@ export const useTasks = () => {
   ) => {
     if (!user) return;
 
+    console.log({ ref, body, assigned_date, owned_by: user.uid });
+
     return await setDoc(ref, {
       body,
       assigned_date: assigned_date ?? Timestamp.now(),
@@ -114,6 +115,8 @@ export const useTasks = () => {
   };
 
   const deleteTask = async ({ id }: Pick<TaskData, "id">) => {
+    console.log("deleteTask", { id });
+
     await deleteDoc(doc(firestore, "tasks", id));
   };
 

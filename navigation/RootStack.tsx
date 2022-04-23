@@ -9,11 +9,14 @@ import { FinishModal, FinishModalProvider } from "./components/FinishModal";
 import { Platform, View } from "react-native";
 import { useAuth } from "../db/useAuth";
 import { useNavigation } from "@react-navigation/native";
+import { WelcomeScreen } from "../screens/WelcomeScreen/WelcomeScreen";
+import { LoadingScreen } from "../screens/LoadingScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootStack = () => {
   const { colors } = useTheme();
+  const { user } = useAuth();
 
   return (
     <FinishModalProvider>
@@ -29,50 +32,17 @@ export const RootStack = () => {
           },
         }}
       >
-        <Stack.Screen
-          name="Loading"
-          component={() => {
-            const { isUserLoaded, user } = useAuth();
-            const { navigate } = useNavigation();
-
-            if (user) {
-              navigate("Home" as any);
-            }
-
-            useEffect(() => {
-              /**
-               * If user is logged in already, skip the login screen
-               */
-              if (isUserLoaded) {
-                if (user) {
-                  navigate("Home" as any);
-                } else {
-                  navigate("Auth" as any);
-                }
-              }
-            }, [isUserLoaded]);
-
-            return (
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <ActivityIndicator color={colors.primary} size={16} />
-              </View>
-            );
-          }}
-        ></Stack.Screen>
-
+        <Stack.Screen name="Loading" component={LoadingScreen} />
+        <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Auth" component={AuthStack} />
 
-        <Stack.Screen
-          name="Home"
-          options={{ title: "Home" }}
-          component={HomeStack}
-        />
+        {!!user && (
+          <Stack.Screen
+            name="Home"
+            options={{ title: "Home" }}
+            component={HomeStack}
+          />
+        )}
       </Stack.Navigator>
 
       <FinishModal />

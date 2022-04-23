@@ -9,8 +9,6 @@ export const useAuth = () => {
 
   const logOut = () => {
     getAuth().signOut();
-
-    navigation.navigate("Login" as any);
   };
 
   useEffect(() => {

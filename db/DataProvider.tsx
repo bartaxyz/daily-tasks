@@ -121,16 +121,17 @@ export const DataProvider: React.FC = ({ children }) => {
      * with tasks, update it
      */
     if (!loadingUser && userData.userData) {
+      console.log(userData);
       const todayOrder = userData.userData.today_order;
 
+      console.log({ todayOrder });
+
       /** today order contains all todayOrderIds */
-      const containsAllTodayOrderIds = todayOrder.every((id) =>
-        todayOrderIds.includes(id)
-      );
+      const containsAllTodayOrderIds =
+        !!todayOrder && todayOrder.every((id) => todayOrderIds.includes(id));
 
       if (!containsAllTodayOrderIds) {
         userData.setTodayOrder(todayOrderIds);
-        console.log("RESET TODAY ORDER");
       }
     }
   }, [JSON.stringify(todayOrderIds)]);

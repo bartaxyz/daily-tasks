@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { useTheme } from "styled-components/native";
 import { Button, KeyboardKey, Section, Typography } from "../components";
 import { useAuth } from "../db/useAuth";
@@ -76,67 +76,78 @@ export const ProfileScreen = () => {
 
       <View style={{ height: 16 }} />
 
-      <Typography.Caption textAlign="center">
-        Keyboard Shortcuts
-      </Typography.Caption>
+      {Platform.OS === "web" && false && (
+        <React.Fragment>
+          <Typography.Caption textAlign="center">
+            Keyboard Shortcuts
+          </Typography.Caption>
 
-      <Section separator="around">
-        <Section.Content inset="S">
-          <DataRow label="General" header={true} />
-          <DataRow
-            label="Preferences"
-            value={
-              <React.Fragment>
-                <KeyboardKey>cmd</KeyboardKey> + <KeyboardKey>,</KeyboardKey>
-              </React.Fragment>
-            }
-          />
+          <Section separator="around">
+            <Section.Content inset="S">
+              <DataRow label="General" header={true} />
+              <DataRow
+                label="Preferences"
+                value={
+                  <React.Fragment>
+                    <KeyboardKey>cmd</KeyboardKey> +{" "}
+                    <KeyboardKey>,</KeyboardKey>
+                  </React.Fragment>
+                }
+              />
 
-          <View style={{ height: 16 }} />
+              <View style={{ height: 16 }} />
 
-          <DataRow label="Tasks" header={true} />
-          <DataRow
-            label="Move between tasks"
-            value={
-              <React.Fragment>
-                <Typography.Caption fontWeight="bold">Down</Typography.Caption>{" "}
-                <KeyboardKey>tab</KeyboardKey> /{" "}
-                <Typography.Caption fontWeight="bold">Up</Typography.Caption>{" "}
-                <KeyboardKey>Shift</KeyboardKey> +{" "}
-                <KeyboardKey>Tab</KeyboardKey>
-              </React.Fragment>
-            }
-          />
-          <DataRow
-            label="Delete empty task"
-            value={<KeyboardKey>backspace</KeyboardKey>}
-          />
-          <DataRow
-            label="Select task"
-            value={
-              <React.Fragment>
-                hold <KeyboardKey>alt</KeyboardKey>
-              </React.Fragment>
-            }
-          />
-          <DataRow
-            label="Move task up"
-            value={
-              <React.Fragment>
-                <KeyboardKey>alt</KeyboardKey> + <KeyboardKey>up</KeyboardKey>
-              </React.Fragment>
-            }
-          />
-          <DataRow
-            label="Move task down"
-            value={
-              <React.Fragment>
-                <KeyboardKey>alt</KeyboardKey> + <KeyboardKey>down</KeyboardKey>
-              </React.Fragment>
-            }
-          />
-        </Section.Content>
-      </Section>
+              <DataRow label="Tasks" header={true} />
+              <DataRow
+                label="Move between tasks"
+                value={
+                  <React.Fragment>
+                    <Typography.Caption fontWeight="bold">
+                      Down
+                    </Typography.Caption>{" "}
+                    <KeyboardKey>tab</KeyboardKey> /{" "}
+                    <Typography.Caption fontWeight="bold">
+                      Up
+                    </Typography.Caption>{" "}
+                    <KeyboardKey>Shift</KeyboardKey> +{" "}
+                    <KeyboardKey>Tab</KeyboardKey>
+                  </React.Fragment>
+                }
+              />
+              <DataRow
+                label="Delete empty task"
+                value={<KeyboardKey>backspace</KeyboardKey>}
+              />
+              <DataRow
+                label="Select task"
+                value={
+                  <React.Fragment>
+                    hold <KeyboardKey>alt</KeyboardKey>
+                  </React.Fragment>
+                }
+              />
+              <DataRow
+                label="Move task up"
+                value={
+                  <React.Fragment>
+                    <KeyboardKey>alt</KeyboardKey> +{" "}
+                    <KeyboardKey>up</KeyboardKey>
+                  </React.Fragment>
+                }
+              />
+              <DataRow
+                label="Move task down"
+                value={
+                  <React.Fragment>
+                    <KeyboardKey>alt</KeyboardKey> +{" "}
+                    <KeyboardKey>down</KeyboardKey>
+                  </React.Fragment>
+                }
+              />
+            </Section.Content>
+          </Section>
+        </React.Fragment>
+      )}
     </Section>
   );
 };

@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { Platform, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { DataProvider } from "../db/DataProvider";
+import { DataProvider, useData } from "../db/DataProvider";
 import { BacklogScreen } from "../screens/BacklogScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
 import { TodayScreen } from "../screens/TodayScreen";
@@ -10,6 +10,7 @@ import { StatusBar } from "./components/StatusBar";
 import { TabBar } from "./components/TabBar";
 import { useTheme } from "styled-components/native";
 import { Button, Section, Sidebar, Typography } from "../components";
+import React from "react";
 
 export type MainTabsParamList = {
   Today: undefined;
@@ -21,11 +22,14 @@ const BottomTabs = createBottomTabNavigator<MainTabsParamList>();
 
 const Tab = createMaterialTopTabNavigator<MainTabsParamList>();
 
-export const HomeStack = () => {
+export const HomeStackWithoutData = () => {
   const { colors } = useTheme();
+  const { backlogTasks } = useData();
+
+  console.log({ backlogTasks: backlogTasks.length > 0 });
 
   return (
-    <DataProvider>
+    <React.Fragment>
       {Platform.select({
         web: (
           <Tab.Navigator
@@ -38,7 +42,9 @@ export const HomeStack = () => {
               swipeEnabled: Platform.select({ web: false, default: true }),
             }}
           >
-            <Tab.Screen name="Backlog" component={BacklogScreen} />
+            {backlogTasks.length > 0 && (
+              <Tab.Screen name="Backlog" component={BacklogScreen} />
+            )}
             <Tab.Screen name="Today" component={TodayScreen} />
             <Tab.Screen name="Profile" component={ProfileScreen} />
           </Tab.Navigator>
@@ -55,8 +61,7 @@ export const HomeStack = () => {
               },
             }}
           >
-            {/** TODO: Implement backlog */}
-            {/* <BottomTabs.Screen
+            <BottomTabs.Screen
               name="Backlog"
               options={{
                 tabBarIcon: ({ focused, size }) => (
@@ -75,7 +80,7 @@ export const HomeStack = () => {
                 ),
               }}
               component={BacklogScreen}
-            /> */}
+            />
             <BottomTabs.Screen
               name="Today"
               options={{
@@ -119,8 +124,15 @@ export const HomeStack = () => {
           </BottomTabs.Navigator>
         ),
       })}
-
       {Platform.select({ web: <StatusBar />, default: null })}
+    </React.Fragment>
+  );
+};
+
+export const HomeStack = () => {
+  return (
+    <DataProvider>
+      <HomeStackWithoutData />
     </DataProvider>
   );
 };

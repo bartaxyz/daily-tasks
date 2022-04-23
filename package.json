@@ -10,12 +10,13 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "test": "jest --watchAll",
-    "electron": "yarn expo-electron start",
+    "electron": "yarn expo-electron start && npm run copy-html-template",
     "build:macos": "yarn electron-webpack && yarn electron-builder --dir -c.compression=store -c.mac.identity=null",
     "sign:macos:arm64": "electron-osx-sign ./dist/mac-arm64/daily-tasks.app --identity=\"ONDREJ BARTA\"",
     "build:macos:universal": "yarn electron-webpack && yarn electron-builder --dir -c.compression=store -c.mac.identity=null --universal",
     "sign:macos:universal": "electron-osx-sign ./dist/mac-universal/daily-tasks.app --identity=\"ONDREJ BARTA\"",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "copy-html-template": "cp -R ./web/index.html ./dist/.renderer-index-template.html"
   },
   "build": {
     "appId": "com.ondrejbarta.daily-tasks",

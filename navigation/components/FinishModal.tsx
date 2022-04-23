@@ -217,11 +217,11 @@ export const FinishModal = () => {
             backdropFilter: "blur(40px)",
           },
           android: {
-            borderRadius: 4,
+            borderRadius: 28,
             borderWidth: 0,
             elevation: 24,
             maxWidth: 400,
-            minWidth: 320,
+            minWidth: 280,
             marginLeft: "auto",
             marginRight: "auto",
           },

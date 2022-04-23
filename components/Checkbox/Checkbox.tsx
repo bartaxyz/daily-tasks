@@ -42,8 +42,8 @@ export const Checkbox: React.FC<CheckboxProps> = ({
           color={colors.primary}
           status={checked ? "checked" : "unchecked"}
           uncheckedColor={colors.text.default}
-          onPress={() => props.onChange(!checked)}
-          disabled={disabled}
+          onPress={disabled ? undefined : () => props.onChange(!checked)}
+          // disabled={disabled}
         />
       </View>
     );

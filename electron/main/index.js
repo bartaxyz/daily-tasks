@@ -118,11 +118,6 @@ app.on("ready", () => {
 
       document.body.appendChild(div);
 
-      var script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src = "/renderer.js";
-      document.head.appendChild(script)
-
       ;0
     `;
     mainWindow.webContents.executeJavaScript(code);
@@ -269,6 +264,22 @@ const template = [
     ],
   },
 ];
+
+ipcMain.on("show-task-context-menu", (event) => {
+  const template = [
+    {
+      label: "Move to backlog",
+      click: () => {
+        event.sender.send("context-menu-command", "menu-item-1");
+      },
+    },
+    { label: "Move to trash" },
+    { type: "separator" },
+    { label: "Delete" },
+  ];
+  const menu = Menu.buildFromTemplate(template);
+  menu.popup(BrowserWindow.fromWebContents(event.sender));
+});
 
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
