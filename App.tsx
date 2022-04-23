@@ -13,6 +13,7 @@ import "./firebase";
 import { StatusBarProvider } from "./utils/providers/StatusBarProvider";
 import { useSystemAccentColor } from "./utils/useSystemAccentColor";
 import { Environment } from "./utils/Environment";
+import { Provider } from "react-native-paper";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -32,9 +33,11 @@ export default function App() {
     return (
       <ThemeProvider theme={colorScheme === "dark" ? darkTheme : defaultTheme}>
         <StatusBarProvider>
-          <Environment />
-          <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-          <Navigation colorScheme={colorScheme} />
+          <Provider>
+            <Environment />
+            <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+            <Navigation colorScheme={colorScheme} />
+          </Provider>
         </StatusBarProvider>
       </ThemeProvider>
     );

@@ -22,6 +22,7 @@ import { useActive, useHover } from "react-native-web-hooks";
 import { rgba } from "polished";
 import { useStatusBar } from "../../utils/providers/StatusBarProvider";
 import { Button } from "../Button";
+import { TaskActionButton } from "./TaskActionButton";
 
 export interface TaskProps {
   editable?: boolean;
@@ -300,10 +301,10 @@ export const Task: React.FC<TaskProps> = ({
             rgba(colors.text.default, 0.075),
           ],
         }),
-        height: Platform.select({
+        /* height: Platform.select({
           web: heightAnimatedValue,
           default: "auto",
-        } as any),
+        } as any), */
       }}
     >
       <View
@@ -406,9 +407,7 @@ export const Task: React.FC<TaskProps> = ({
               opacity: hover || selected ? 1 : 0,
             }}
           >
-            <Button variant="tertiary" {...{ tabindex: "-1" }}>
-              &middot;&middot;&middot;
-            </Button>
+            <TaskActionButton />
           </View>
         )}
       </View>

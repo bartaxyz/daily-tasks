@@ -1,6 +1,7 @@
 export * from "./Button";
 export * from "./Checkbox";
 export * from "./KeyboardKey";
+export * from "./Logo";
 export * from "./Section";
 export * from "./Sidebar";
 export * from "./Spacer";

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Platform } from "react-native";
 import styled, { useTheme } from "styled-components/native";
 import { Typography } from "../Typography";
 
@@ -30,6 +31,8 @@ export const KeyboardKey: React.FC<KeyboardKeyProps> = ({ children }) => {
     : children;
 
   useEffect(() => {
+    if (Platform.OS !== "web") return;
+
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === children) {
         setPressed(true);

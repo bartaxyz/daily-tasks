@@ -1,17 +1,25 @@
 import { useNavigation } from "@react-navigation/native";
 import { View } from "react-native";
 import { useTheme } from "styled-components/native";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import {
   Button,
   Section,
   Typography,
   TextInput,
   Spacer,
+  Logo,
+  Tabs,
+  TAB_HEIGHT,
 } from "../../components";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../db/useAuth";
 import { ActivityIndicator } from "react-native-paper";
+import { LogInAsGuestBanner } from "../WelcomeScreen/components/LogInAsGuestBanner";
 
 const errorCodeMessages: { [key: string]: string } = {
   "auth/invalid-email": "Invalid email address",
@@ -29,6 +37,8 @@ export const getErrorMessageFromCode = (code: string = "") => {
 export const LogInScreen = () => {
   const { navigate } = useNavigation();
   const { colors } = useTheme();
+
+  const [mode, setMode] = useState<"login" | "signup">("login");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,6 +61,7 @@ export const LogInScreen = () => {
 
   const authenticate = () => {
     setLoading(true);
+    setError(undefined);
 
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
@@ -68,81 +79,135 @@ export const LogInScreen = () => {
       });
   };
 
-  if (loading) {
-    return (
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: colors.background.default,
-          flex: 1,
-        }}
-      >
-        <ActivityIndicator size={20} color={colors.text.secondary} />
-      </View>
-    );
-  }
+  const signUp = () => {
+    setLoading(true);
+    setError(undefined);
 
-  return (
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+
+        console.log(user);
+        // ...
+      })
+      .catch((error) => {
+        setError(error);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        console.error(error);
+        setLoading(false);
+      });
+  };
+
+  const Loading = () => (
     <View
       style={{
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: colors.background.default,
         flex: 1,
       }}
     >
-      <Section.Content inset="M">
-        <Typography.Title textAlign="center">Login</Typography.Title>
+      <ActivityIndicator size={20} color={colors.text.secondary} />
+    </View>
+  );
 
-        <Spacer height={16} />
-
-        <TextInput
-          autoCompleteType="email"
-          label="Email"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          textContentType="emailAddress"
-          value={email}
-          onChange={(event) => setEmail(event.nativeEvent.text)}
-        />
-
-        <Spacer height={12} />
-
-        <TextInput
-          autoCompleteType="password"
-          label="Password"
-          textContentType="password"
-          value={password}
-          secureTextEntry={true}
-          onChange={(event) => setPassword(event.nativeEvent.text)}
-        />
-
-        <View
-          style={{
-            marginTop: 24,
-            marginBottom: 12,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+  return (
+    <React.Fragment>
+      <Section separator="none" hasBackground={false} style={{ flex: 1 }}>
+        <Section.Content
+          inset="M"
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          {!!error?.code && (
-            <Typography.Caption
-              color={colors.text.error}
-              style={{ marginRight: 8 }}
-            >
-              {getErrorMessageFromCode(error?.code)}
-            </Typography.Caption>
-          )}
+          <Logo />
 
-          <Button onPress={authenticate}>Log In</Button>
-        </View>
-      </Section.Content>
+          <Spacer height={24} />
+
+          <View style={{ width: 160 }}>
+            <View style={{ height: TAB_HEIGHT }}>
+              <Tabs
+                tabs={[
+                  {
+                    label: "Log In",
+                    selected: mode === "login",
+                    onPress: () => {
+                      setError(undefined);
+                      setMode("login");
+                    },
+                  },
+                  {
+                    label: "Sign Up",
+                    selected: mode === "signup",
+                    onPress: () => {
+                      setError(undefined);
+                      setMode("signup");
+                    },
+                  },
+                ]}
+              />
+            </View>
+
+            <Spacer height={24} />
+
+            <TextInput
+              autoCompleteType="email"
+              label="Email"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              textContentType="emailAddress"
+              value={email}
+              onChange={(event) => setEmail(event.nativeEvent.text)}
+            />
+
+            <Spacer height={12} />
+
+            <TextInput
+              autoCompleteType="password"
+              label="Password"
+              textContentType="password"
+              value={password}
+              secureTextEntry={true}
+              onChange={(event) => setPassword(event.nativeEvent.text)}
+            />
+
+            <View
+              style={{
+                marginTop: 16,
+                marginBottom: 12,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                height: 48
+              }}
+            >
+              {!!error?.code ? (
+                <Typography.Caption
+                  color={colors.text.error}
+                  style={{ marginRight: 8 }}
+                >
+                  {getErrorMessageFromCode(error?.code)}
+                </Typography.Caption>
+              ) : (
+                <View />
+              )}
+
+              {loading ? (
+                <Loading />
+              ) : (
+                <Button onPress={mode === "login" ? authenticate : signUp}>
+                  {mode === "login" ? "Log In" : "Sign Up"}
+                </Button>
+              )}
+            </View>
+          </View>
+        </Section.Content>
+      </Section>
 
       <Section.Separator />
 
-      <Button onPress={() => navigate("SignUp" as any)}>Sign Up</Button>
-    </View>
+      <LogInAsGuestBanner />
+    </React.Fragment>
   );
 };

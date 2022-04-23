@@ -50,7 +50,7 @@ const StyledText: React.FC<TypographyProps> = ({
   );
 };
 
-const Headline: React.FC<TypographyProps> = ({ children, ...props }) => (
+const Headline: React.FC<TypographyProps> = ({ ...props }) => (
   <Body
     {...props}
     fontSize={Platform.select({ web: 16, default: 24 })}

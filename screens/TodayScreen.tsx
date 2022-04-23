@@ -3,11 +3,13 @@ import { Timestamp } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import { Animated, Platform, ScrollView, TextInput, View } from "react-native";
 import DraggableFlatList from "react-native-draggable-flatlist";
+import { Appbar, FAB } from "react-native-paper";
 import { Svg, Path } from "react-native-svg";
 import { useTheme } from "styled-components/native";
 
-import { Section, Task, Typography } from "../components";
+import { Button, Section, Task, Typography } from "../components";
 import { useData } from "../db/DataProvider";
+import { useFinishModal } from "../navigation/components/FinishModal";
 import { OverdueSection } from "../navigation/components/OverdueSection";
 import { StatusBar } from "../navigation/components/StatusBar";
 
@@ -25,6 +27,8 @@ export const TodayScreen = () => {
     tasksSynced,
     loading,
   } = useData();
+
+  const { showFinishModal } = useFinishModal();
 
   const textInputRefs = useRef<(TextInput | null)[]>([]);
 
@@ -88,6 +92,24 @@ export const TodayScreen = () => {
 
   return (
     <React.Fragment>
+      {Platform.select({
+        web: null,
+        default: (
+          <View
+            style={{
+              position: "absolute",
+              right: 16,
+              bottom: 16,
+              zIndex: 100,
+            }}
+          >
+            <Button onPress={() => showFinishModal({ mode: "today", tasks })}>
+              Finish Today
+            </Button>
+          </View>
+        ),
+      })}
+
       {overdueTasks.length > 0 &&
         Platform.select({ web: null, default: <OverdueSection /> })}
       <ScrollView
@@ -145,7 +167,7 @@ export const TodayScreen = () => {
                   </Animated.View>
                 )}
               </View>
-              
+
               {loading ? null : (
                 <React.Fragment>
                   {tasks.map(({ status, body, id, assigned_date }, index) => (
@@ -237,7 +259,7 @@ export const TodayScreen = () => {
           </Section.Content>
         </Section>
 
-        {Platform.select({ web: null, default: <StatusBar /> })}
+        {Platform.select({ web: null })}
       </ScrollView>
     </React.Fragment>
   );

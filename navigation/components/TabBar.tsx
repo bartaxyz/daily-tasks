@@ -29,37 +29,43 @@ export const TabBar = ({ state, descriptors, navigation, position }: any) => {
     }
   }, [overdueTasks]);
 
-  const tabs = state.routes.slice(0, 2).map((route: any, index: number) => {
-    const { options } = descriptors[route.key];
+  const itemsInTabs = state.routes.filter(
+    (route: any) => route.name !== "Profile"
+  ).length;
 
-    const label =
-      options.tabBarLabel !== undefined
-        ? options.tabBarLabel
-        : options.title !== undefined
-        ? options.title
-        : route.name;
+  const tabs = state.routes
+    .slice(0, itemsInTabs)
+    .map((route: any, index: number) => {
+      const { options } = descriptors[route.key];
 
-    const selected = state.index === index;
+      const label =
+        options.tabBarLabel !== undefined
+          ? options.tabBarLabel
+          : options.title !== undefined
+          ? options.title
+          : route.name;
 
-    const onPress = () => {
-      const event = navigation.emit({
-        type: "tabPress",
-        target: route.key,
-        canPreventDefault: true,
-      });
+      const selected = state.index === index;
 
-      if (!selected && !event.defaultPrevented) {
-        // The `merge: true` option makes sure that the params inside the tab screen are preserved
-        navigation.navigate({ name: route.name, merge: true });
-      }
-    };
+      const onPress = () => {
+        const event = navigation.emit({
+          type: "tabPress",
+          target: route.key,
+          canPreventDefault: true,
+        });
 
-    return {
-      label,
-      onPress,
-      selected,
-    };
-  });
+        if (!selected && !event.defaultPrevented) {
+          // The `merge: true` option makes sure that the params inside the tab screen are preserved
+          navigation.navigate({ name: route.name, merge: true });
+        }
+      };
+
+      return {
+        label,
+        onPress,
+        selected,
+      };
+    });
 
   const onProfilePress = () => {
     navigation.navigate("Profile");
@@ -88,7 +94,9 @@ export const TabBar = ({ state, descriptors, navigation, position }: any) => {
       <Toolbar>
         <View style={{ opacity: 0 }}>{versionTag}</View>
 
-        <Tabs tabs={tabs} />
+        <View style={{ maxWidth: 120 * itemsInTabs, flex: 1 }}>
+          <Tabs tabs={tabs} />
+        </View>
 
         {versionTag}
       </Toolbar>

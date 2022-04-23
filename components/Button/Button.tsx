@@ -55,6 +55,7 @@ export const Button: React.FC<ButtonProps> = ({
         mode={variant === "primary" ? "contained" : "contained"}
         onPress={props.onPress as any}
         disabled={!!disabled}
+        {...(props as any)}
       >
         {children}
       </RNPButton>
