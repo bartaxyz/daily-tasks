@@ -23,6 +23,7 @@ export const defaultTheme = {
       default: colors.text.default,
       secondary: rgba("#000000", 0.5),
       error: "#FF0000",
+      warning: "#FFD700",
     },
 
     /** Component Colors */
