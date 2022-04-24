@@ -157,7 +157,7 @@ export const ProfileScreen = () => {
       </Section.Content>
 
       {!isGuest && (
-        <Section separator="around" style={{ marginTop: 0 }}>
+        <Section separator="top" style={{ marginTop: 0 }}>
           <Section.Content inset="S">
             <DataRow label="Email" value={user?.email || undefined} />
             <DataRow label="UID" value={user?.uid} />
@@ -166,7 +166,7 @@ export const ProfileScreen = () => {
       )}
 
       {isGuest && (
-        <Section separator="around" style={{ marginTop: 0 }}>
+        <Section separator="top" style={{ marginTop: 0 }}>
           <Section.Content inset="M">
             <Typography.Body>Create an account</Typography.Body>
 
