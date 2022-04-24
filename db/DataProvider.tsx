@@ -79,7 +79,8 @@ export const DataProvider: React.FC = ({ children }) => {
         !(isToday(task.assignedDate) || isFuture(task.assignedDate)) &&
         task.status !== "done" &&
         task.status !== "backlog" &&
-        task.status !== "deleted"
+        task.status !== "deleted" &&
+        task.body !== ""
     )
     /** Sort based on order array */
     .sort(sortBasedOnTodayOrder);

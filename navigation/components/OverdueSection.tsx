@@ -37,6 +37,16 @@ export const OverdueSection: React.FC<OverdueSectionProps> = () => {
       </View>
 
       <View style={{ opacity: 0.5 }}>
+        {/**
+         * In order to have smoother animation,we keep
+         * one invisible task here as a placeholder
+         */}
+        {overdueTasks.length === 0 && (
+          <View style={{ opacity: 0 }}>
+            <Task editable={false}>&nbsp;</Task>
+          </View>
+        )}
+
         {overdueTasks
           .slice(
             0,
