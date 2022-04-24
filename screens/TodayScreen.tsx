@@ -1,9 +1,6 @@
-import { format, startOfToday } from "date-fns";
 import { Timestamp } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import { Animated, Platform, ScrollView, TextInput, View } from "react-native";
-import DraggableFlatList from "react-native-draggable-flatlist";
-import { Appbar, FAB } from "react-native-paper";
 import { Svg, Path } from "react-native-svg";
 import { useTheme } from "styled-components/native";
 
@@ -11,7 +8,6 @@ import { Button, Section, Task, Typography } from "../components";
 import { useData } from "../db/DataProvider";
 import { useFinishModal } from "../navigation/components/FinishModal";
 import { OverdueSection } from "../navigation/components/OverdueSection";
-import { StatusBar } from "../navigation/components/StatusBar";
 
 export const TodayScreen = () => {
   const {
