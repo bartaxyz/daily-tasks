@@ -361,7 +361,7 @@ export const Task: React.FC<TaskProps> = ({
                 padding: 8,
                 paddingTop: Platform.select({ web: 8, default: 6 }),
                 paddingLeft: 0,
-                maxHeight: Platform.select({
+                height: Platform.select({
                   web: textInputHeight,
                   default: "auto",
                 } as any),
