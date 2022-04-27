@@ -47,7 +47,6 @@ function createMainWindow() {
     vibrancy: "sidebar",
     transparent: true,
     titleBarStyle: "hiddenInset",
-    icon: path.join(__dirname, "../../assets/images/electron-icon.png"),
   });
 
   if (isDevelopment) {
@@ -79,8 +78,6 @@ function createMainWindow() {
 
   return browserWindow;
 }
-
-app.dock.setIcon(path.join(__dirname, "../../assets/images/electron-icon.png"));
 
 // quit application when all windows are closed
 app.on("window-all-closed", () => {
