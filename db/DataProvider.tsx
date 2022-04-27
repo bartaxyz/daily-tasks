@@ -41,7 +41,9 @@ export const DataContext = createContext<DataContextValue>({
   userData: undefined,
   userDataSynced: false,
   setTodayOrder: async () => {},
+  insertTaskToOrderBeforeAfter: async () => {},
   insertTaskToOrder: async () => {},
+  moveTaskInOrderBeforeAfter: async () => {},
   moveTaskInOrder: async () => {},
   loading: true,
 });
@@ -129,16 +131,14 @@ export const DataProvider: React.FC = ({ children }) => {
      * with tasks, update it
      */
     if (!loadingUser && userData.userData) {
-      console.log(userData);
       const todayOrder = userData.userData.today_order;
-
-      console.log({ todayOrder });
 
       /** today order contains all todayOrderIds */
       const containsAllTodayOrderIds =
         !!todayOrder && todayOrder.every((id) => todayOrderIds.includes(id));
 
       if (!containsAllTodayOrderIds) {
+        console.warn('Re-setting today order');
         userData.setTodayOrder(todayOrderIds);
       }
     }

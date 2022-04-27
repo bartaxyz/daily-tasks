@@ -18,8 +18,8 @@ export const TodayScreen = () => {
     createTaskRef,
     createTask,
     deleteTask,
-    moveTaskInOrder,
-    insertTaskToOrder,
+    moveTaskInOrderBeforeAfter,
+    insertTaskToOrderBeforeAfter,
     tasksSynced,
     loading,
   } = useData();
@@ -77,12 +77,16 @@ export const TodayScreen = () => {
 
   const onOrderUp = (id: string, index: number) => {
     if (index > 0) {
-      moveTaskInOrder(id, index - 1 + overdueTasks.length);
+      moveTaskInOrderBeforeAfter(id, {
+        before: tasks[index - 1 + overdueTasks.length].id,
+      });
     }
   };
   const onOrderDown = (id: string, index: number) => {
     if (index < tasks.length - 1) {
-      moveTaskInOrder(id, index + 1 + overdueTasks.length);
+      moveTaskInOrderBeforeAfter(id, {
+        after: tasks[index + 1 + overdueTasks.length].id,
+      });
     }
   };
 
@@ -194,10 +198,12 @@ export const TodayScreen = () => {
                         const ref = createTaskRef();
                         if (!ref) return;
                         focusOnNextRender(ref.id);
-                        insertTaskToOrder(
-                          ref.id,
-                          index + 1 + overdueTasks.length
-                        );
+
+                        /** Insert new task after */
+                        insertTaskToOrderBeforeAfter(ref.id, {
+                          after: id,
+                        });
+
                         createTask(ref, {
                           body: "",
                           assigned_date: Timestamp.now(),

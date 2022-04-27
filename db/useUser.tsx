@@ -45,6 +45,55 @@ export const useUser = () => {
     return setTodayOrder(userData);
   }; */
 
+  const insertTaskToOrderBeforeAfter = async (
+    taskId: string,
+    {
+      before,
+      after,
+    }: {
+      before?: string;
+      after?: string;
+    }
+  ) => {
+    if (!user || !userData) return;
+
+    if (before) {
+      const index = userData.today_order.findIndex(
+        (taskId) => taskId === before
+      );
+
+      if (index === -1) return;
+
+      const newOrder = [
+        ...userData.today_order.slice(0, index),
+        taskId,
+        ...userData.today_order.slice(index + 1),
+      ];
+
+      return setTodayOrder(newOrder);
+    }
+
+    if (after) {
+      const index = userData.today_order.findIndex(
+        (taskId) => taskId === after
+      );
+
+      if (index === -1) return;
+
+      const newOrder = [
+        ...userData.today_order.slice(0, index + 1),
+        taskId,
+        ...userData.today_order.slice(index + 1),
+      ];
+
+      return setTodayOrder(newOrder);
+    }
+  };
+
+  /**
+   * @deprecated Please use `insertTaskToOrderBeforeAfter` instead for more
+   * consistent results.
+   */
   const insertTaskToOrder = async (taskId: string, index: number) => {
     if (!user || !userData) return;
 
@@ -64,6 +113,33 @@ export const useUser = () => {
     });
   };
 
+  const moveTaskInOrderBeforeAfter = async (
+    taskId: string,
+    {
+      before,
+      after,
+    }: {
+      before?: string;
+      after?: string;
+    }
+  ) => {
+    if (!user || !userData) return;
+
+    const todayOrder = userData.today_order;
+
+    const index = !!before
+      ? todayOrder.findIndex((taskId) => taskId === before)
+      : todayOrder.findIndex((taskId) => taskId === after);
+
+    if (index === -1) return;
+
+    return moveTaskInOrder(taskId, index);
+  };
+
+  /**
+   * @deprecated Please use `moveTaskInOrderBeforeAfter` instead for more
+   * consistent results.
+   */
   const moveTaskInOrder = async (taskId: string, index: number) => {
     if (!user || !userData) return;
 
@@ -85,7 +161,9 @@ export const useUser = () => {
     userData,
     userDataSynced,
     setTodayOrder,
+    insertTaskToOrderBeforeAfter,
     insertTaskToOrder,
+    moveTaskInOrderBeforeAfter,
     moveTaskInOrder,
   };
 };
