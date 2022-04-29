@@ -138,7 +138,7 @@ const Border = styled.View<{ variant: ButtonProps["variant"] }>`
 
   border-top-width: ${({ variant }) => (variant === "secondary" ? "1px" : "0")};
   border-top-color: ${({ theme, variant }) =>
-    theme.name === "dark" && variant === "secondary"
+    theme.name !== "dark" && variant === "secondary"
       ? "#5D5D5D"
       : variant !== "tertiary"
       ? "rgba(0, 0, 0, 0.05)"

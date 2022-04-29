@@ -3,11 +3,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { Animated, Platform, ScrollView, TextInput, View } from "react-native";
 import { Svg, Path } from "react-native-svg";
 import { useTheme } from "styled-components/native";
+import BottomSheet from "@gorhom/bottom-sheet";
 
 import { Button, Section, Task, Typography } from "../components";
 import { useData } from "../db/DataProvider";
 import { useFinishModal } from "../navigation/components/FinishModal";
 import { OverdueSection } from "../navigation/components/OverdueSection";
+import { Portal } from "react-native-paper";
 
 export const TodayScreen = () => {
   const {
@@ -78,14 +80,14 @@ export const TodayScreen = () => {
   const onOrderUp = (id: string, index: number) => {
     if (index > 0) {
       moveTaskInOrderBeforeAfter(id, {
-        before: tasks[index - 1 + overdueTasks.length].id,
+        before: tasks[index - 1].id,
       });
     }
   };
   const onOrderDown = (id: string, index: number) => {
     if (index < tasks.length - 1) {
       moveTaskInOrderBeforeAfter(id, {
-        after: tasks[index + 1 + overdueTasks.length].id,
+        after: tasks[index + 1].id,
       });
     }
   };
@@ -263,6 +265,19 @@ export const TodayScreen = () => {
 
         {Platform.select({ web: null })}
       </ScrollView>
+
+      {/* <Portal>
+        <BottomSheet
+          // ref={bottomSheetRef}
+          index={1}
+          snapPoints={["25%", "50%"]}
+          //onChange={handleSheetChanges}
+        >
+          <View>
+            <Typography.Body>Awesome 🎉</Typography.Body>
+          </View>
+        </BottomSheet>
+      </Portal> */}
     </React.Fragment>
   );
 };

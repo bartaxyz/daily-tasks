@@ -82,17 +82,14 @@ export const ProfileScreen = () => {
           "You are in guest mode. If you log out, you'll lose all data. Are you sure you want to log out?",
         onConfirm: () => {
           logOut();
-          (navigate as any)("Auth", { screen: "SignUp" });
+          (navigate as any)("Auth");
         },
       });
     }
 
     if (user.email) {
       logOut();
-      (navigate as any)("Auth", {
-        screen: "LogIn",
-        params: { mode: "login" },
-      });
+      (navigate as any)("Auth");
     }
   };
 

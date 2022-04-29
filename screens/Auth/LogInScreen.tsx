@@ -15,6 +15,7 @@ import {
   Logo,
   Tabs,
   TAB_HEIGHT,
+  Screen,
 } from "../../components";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../db/useAuth";
@@ -118,7 +119,7 @@ export const LogInScreen = () => {
   );
 
   return (
-    <React.Fragment>
+    <Screen>
       <Section separator="none" hasBackground={false} style={{ flex: 1 }}>
         <Section.Content
           inset="S"
@@ -211,6 +212,6 @@ export const LogInScreen = () => {
       <Section.Separator />
 
       <LogInAsGuestBanner />
-    </React.Fragment>
+    </Screen>
   );
 };

@@ -6,7 +6,7 @@ import { RootStackParamList } from "../types";
 import { AuthStack } from "./AuthStack";
 import { HomeStack } from "./HomeStack";
 import { FinishModal, FinishModalProvider } from "./components/FinishModal";
-import { Platform, View } from "react-native";
+import { Platform, SafeAreaView, View } from "react-native";
 import { useAuth } from "../db/useAuth";
 import { useNavigation } from "@react-navigation/native";
 import { WelcomeScreen } from "../screens/WelcomeScreen/WelcomeScreen";

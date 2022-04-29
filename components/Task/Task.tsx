@@ -16,7 +16,7 @@ import {
 import styled, { useTheme } from "styled-components/native";
 import { Svg, Path } from "react-native-svg";
 import { debounce } from "lodash";
-import { Checkbox } from "../Checkbox/Checkbox";
+import { Checkbox, CHECKBOX_SIZE } from "../Checkbox/Checkbox";
 import { Typography } from "../Typography";
 import { useActive, useHover } from "react-native-web-hooks";
 import { rgba } from "polished";
@@ -429,14 +429,21 @@ const Root = styled(Animated.createAnimatedComponent(Pressable))<RootProps>`
 `;
 
 const CheckboxRoot = styled.View`
-  margin: 8px;
+  margin: ${Platform.select({ ios: 0, default: 8 })}px;
+  margin-top: ${Platform.select({ ios: 4, default: 8 })}px;
   margin-right: 12px;
 `;
 
 const AddIcon = ({ ...props }) => {
   const { colors } = useTheme();
   return (
-    <Svg width="16" height="16" viewBox="0 0 16 16" fill="none" {...props}>
+    <Svg
+      width={CHECKBOX_SIZE}
+      height={CHECKBOX_SIZE}
+      viewBox="0 0 16 16"
+      fill="none"
+      {...props}
+    >
       <Path
         d="M1 8H15M8 1V15"
         stroke={colors.checkbox.unchecked.outline}

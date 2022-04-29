@@ -9,7 +9,7 @@ import { TodayScreen } from "../screens/TodayScreen";
 import { StatusBar } from "./components/StatusBar";
 import { TabBar } from "./components/TabBar";
 import { useTheme } from "styled-components/native";
-import { Typography } from "../components";
+import { Screen, Typography } from "../components";
 import React from "react";
 
 export type MainTabsParamList = {
@@ -26,7 +26,7 @@ export const HomeStackWithoutData = () => {
   const { colors } = useTheme();
 
   return (
-    <React.Fragment>
+    <Screen>
       {Platform.select({
         web: (
           <Tab.Navigator
@@ -53,6 +53,10 @@ export const HomeStackWithoutData = () => {
                 paddingBottom: 8,
                 paddingTop: 8,
                 height: 64,
+                shadowColor: "rgba(0, 0, 0, 0.25)",
+                shadowOffset: { width: 0, height: -2 },
+                shadowOpacity: 0.5,
+                shadowRadius: 2,
               },
             }}
           >
@@ -120,7 +124,7 @@ export const HomeStackWithoutData = () => {
         ),
       })}
       {Platform.select({ web: <StatusBar />, default: null })}
-    </React.Fragment>
+    </Screen>
   );
 };
 
