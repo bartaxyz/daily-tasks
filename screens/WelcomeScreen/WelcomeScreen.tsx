@@ -1,15 +1,18 @@
 import React from "react";
 import { View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Button, Logo, Section, Typography } from "../../components";
+import { Button, Logo, Screen, Section, Typography } from "../../components";
 import { LogInAsGuestBanner } from "./components/LogInAsGuestBanner";
 
 export const WelcomeScreen = () => {
   const { navigate } = useNavigation();
 
   return (
-    <React.Fragment>
-      <Section.Content inset="M" style={{ flex: 1 }}>
+    <Screen>
+      <Section.Content
+        inset="M"
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
         <View
           style={{
             flex: 1,
@@ -37,6 +40,7 @@ export const WelcomeScreen = () => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
+            width: "100%",
           }}
         >
           <Typography.Body>Get started</Typography.Body>
@@ -78,6 +82,6 @@ export const WelcomeScreen = () => {
       <Section.Separator />
 
       <LogInAsGuestBanner />
-    </React.Fragment>
+    </Screen>
   );
 };

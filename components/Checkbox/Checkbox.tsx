@@ -65,6 +65,8 @@ const Root = styled.Pressable``;
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
+export const CHECKBOX_SIZE = Platform.select({ ios: 20, default: 16 });
+
 interface CheckIconProps {
   checked: boolean;
 }
@@ -94,8 +96,8 @@ const CheckIcon: React.FC<CheckIconProps> = ({ checked, ...props }) => {
   return (
     <View {...props}>
       <Svg
-        width="16"
-        height="16"
+        width={CHECKBOX_SIZE}
+        height={CHECKBOX_SIZE}
         viewBox="0 0 16 16"
         fill="none"
         style={{ position: "absolute", top: 0, left: 0 }}
@@ -114,8 +116,8 @@ const CheckIcon: React.FC<CheckIconProps> = ({ checked, ...props }) => {
       </Svg>
 
       <Svg
-        width="16"
-        height="16"
+        width={CHECKBOX_SIZE}
+        height={CHECKBOX_SIZE}
         viewBox="0 0 16 16"
         fill="none"
         style={{ position: "absolute", top: 0, left: 0 }}
@@ -141,7 +143,7 @@ const CheckIcon: React.FC<CheckIconProps> = ({ checked, ...props }) => {
 
 const Check = styled(CheckIcon)`
   position: relative;
-  width: 16px;
-  height: 16px;
+  width: ${CHECKBOX_SIZE}px;
+  height: ${CHECKBOX_SIZE}px;
   position: relative;
 `;

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components/native";
 import { StatusBar } from "expo-status-bar";
 import "react-native-gesture-handler";
+import { Provider } from "react-native-paper";
 
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
@@ -13,7 +14,7 @@ import "./firebase";
 import { StatusBarProvider } from "./utils/providers/StatusBarProvider";
 import { useSystemAccentColor } from "./utils/useSystemAccentColor";
 import { Environment } from "./utils/Environment";
-import { Provider } from "react-native-paper";
+import { ScreenProvider } from "./components";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -31,15 +32,19 @@ export default function App() {
     return null;
   } else {
     return (
-      <ThemeProvider theme={colorScheme === "dark" ? darkTheme : defaultTheme}>
-        <StatusBarProvider>
-          <Provider>
-            <Environment />
-            <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-            <Navigation colorScheme={colorScheme} />
-          </Provider>
-        </StatusBarProvider>
-      </ThemeProvider>
+      <ScreenProvider>
+        <ThemeProvider
+          theme={colorScheme === "dark" ? darkTheme : defaultTheme}
+        >
+          <StatusBarProvider>
+            <Provider>
+              <Environment />
+              <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+              <Navigation colorScheme={colorScheme} />
+            </Provider>
+          </StatusBarProvider>
+        </ThemeProvider>
+      </ScreenProvider>
     );
   }
 }

@@ -20,6 +20,7 @@
        */
       html,
       body,
+      #background,
       #root {
         width: 100%;
         /* To smooth any scrolling behavior */
@@ -53,6 +54,7 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         -ms-overflow-style: scrollbar;
+        flex-direction: column;
       }
       /* Enable for apps that support dark-theme */
       /*@media (prefers-color-scheme: dark) {
@@ -60,6 +62,35 @@
           background-color: black;
         }
       }*/
+
+      #background {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+      }
+
+      #root {
+        max-width: 560px;
+        max-height: 800px;
+        width: 100vw;
+        height: 100%;
+        margin: 80px;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        margin: auto;
+        overflow: hidden;
+      }
+
+      @media screen and (max-width: 560px) {
+        #root {
+          max-width: 100%;
+          max-height: 100%;
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          border-radius: 0;
+        }
+      }
     </style>
   </head>
 
@@ -91,7 +122,7 @@
           "
         >
           <p>Oh no! It looks like JavaScript is not enabled in your browser.</p>
-          <p style="margin: 20px 0;">
+          <p style="margin: 20px 0">
             <button
               type="submit"
               style="
@@ -113,6 +144,8 @@
       </form>
     </noscript>
     <!-- The root element for your Expo app. -->
-    <div id="root"></div>
+    <div id="background">
+      <div id="root"></div>
+    </div>
   </body>
 </html>
