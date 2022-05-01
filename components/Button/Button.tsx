@@ -137,12 +137,8 @@ const Border = styled.View<{ variant: ButtonProps["variant"] }>`
     rgba(0, 0, 0, variant === "secondary" ? 0.12 : 0)};
 
   border-top-width: ${({ variant }) => (variant === "secondary" ? "1px" : "0")};
-  border-top-color: ${({ theme, variant }) =>
-    theme.name !== "dark" && variant === "secondary"
-      ? "#5D5D5D"
-      : variant !== "tertiary"
-      ? "rgba(0, 0, 0, 0.05)"
-      : "transparent"};
+  border-top-color: ${({ variant }) =>
+    variant !== "tertiary" ? "rgba(0, 0, 0, 0.05)" : "transparent"};
 `;
 
 const Gradient = styled(LinearGradient)<{ variant: ButtonProps["variant"] }>`
