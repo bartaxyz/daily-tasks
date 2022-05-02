@@ -5,23 +5,22 @@ import { useTheme } from "styled-components/native";
 import { Button } from "../Button";
 import { Typography } from "../Typography";
 import { TaskActionButtonProps } from "./types";
-import { getMenu } from "./utils/getMenu";
+import { useTaskMenu } from "./utils/useTaskMenu";
 
 export const TaskActionButton: React.FC<TaskActionButtonProps> = ({
-  /**
-   * TODO: Implement functions
-   */
   taskId,
   context,
 }) => {
+  const { menu } = useTaskMenu(taskId, context);
   const { colors } = useTheme();
   const [visible, setVisible] = useState(false);
 
   const openMenu = () => setVisible(true);
-
   const closeMenu = () => setVisible(false);
 
-  const menu = getMenu(context);
+  if (menu.length === 0) {
+    return null;
+  }
 
   return (
     <View>
@@ -60,6 +59,7 @@ export const TaskActionButton: React.FC<TaskActionButtonProps> = ({
               titleStyle={styles.menuItemStyle}
               key={item.label}
               title={<Typography.Body>{item.label}</Typography.Body>}
+              onPress={item.onPress}
             />
           );
         })}

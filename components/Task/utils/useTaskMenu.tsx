@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+import { useTasks } from "../../../db/useTasks";
 import { TaskActionButtonProps } from "../types";
 
 type MenuIds =
@@ -10,29 +12,47 @@ type MenuIds =
 interface MenuItem {
   id: MenuIds;
   label: string;
-  /**
-   * To Do: Add onPress here
-   */
+  onPress?: () => void;
 }
 
-export const getMenu = (context: TaskActionButtonProps["context"]) => {
+export const useTaskMenu = (
+  taskId: string,
+  context: TaskActionButtonProps["context"]
+) => {
+  const { updateTaskStatus, updateTaskAssignedDate, deleteTask } = useTasks();
   let menu: MenuItem[] = [];
 
   const moveToBacklogItem: MenuItem = {
     id: "move-to-backlog",
     label: "Move to backlog",
+    onPress: () => {
+      updateTaskStatus({ id: taskId, status: "backlog" });
+    },
   };
   const moveToTodayItem: MenuItem = {
     id: "move-to-today",
     label: "Move to today",
+    onPress: () => {
+      updateTaskStatus({ id: taskId, status: "none" });
+      updateTaskAssignedDate({
+        id: taskId,
+        assigned_date: Timestamp.now(),
+      });
+    },
   };
   const moveToTrashItem: MenuItem = {
     id: "move-to-trash",
     label: "Move to trash",
+    onPress: () => {
+      updateTaskStatus({ id: taskId, status: "deleted" });
+    },
   };
   const deleteTaskItem: MenuItem = {
     id: "delete-task",
     label: "Delete task",
+    onPress: () => {
+      deleteTask({ id: taskId });
+    },
   };
 
   const separator: MenuItem = {
@@ -64,5 +84,5 @@ export const getMenu = (context: TaskActionButtonProps["context"]) => {
     ];
   }
 
-  return menu;
+  return { menu };
 };

@@ -7,6 +7,7 @@ import { useTasks } from "./useTasks";
 import { useUser } from "./useUser";
 import { useAuth } from "./useAuth";
 import { Timestamp } from "firebase/firestore";
+import { useContextMenuHandler } from "./utils/useContextMenuHandler";
 
 interface DataContextValue
   extends ReturnType<typeof useAuth>,
@@ -54,6 +55,8 @@ export const DataProvider: React.FC = ({ children }) => {
   const { tasks, ...taskMethods } = useTasks();
   const { ...projects } = useProjects();
   const { loading: loadingUser, ...userData } = useUser();
+
+  useContextMenuHandler({ tasks, ...taskMethods });
 
   const transformedTasks = tasks.map((task) => ({
     ...task,
@@ -144,47 +147,6 @@ export const DataProvider: React.FC = ({ children }) => {
       }
     }
   }, [JSON.stringify(todayOrderIds)]);
-
-  useEffect(() => {
-    const deleteTaskHandler = (event: any) => {
-      taskMethods.deleteTask({ id: event.detail.taskId });
-    };
-    const moveToBacklogHandler = (event: any) => {
-      taskMethods.updateTaskStatus({
-        id: event.detail.taskId,
-        status: "backlog",
-      });
-    };
-    const moveToTodayHandler = (event: any) => {
-      taskMethods.updateTaskStatus({
-        id: event.detail.taskId,
-        status: "none",
-      });
-      taskMethods.updateTaskAssignedDate({
-        id: event.detail.taskId,
-        assigned_date: Timestamp.now(),
-      });
-    };
-
-    document.body.addEventListener("task-delete", deleteTaskHandler);
-    document.body.addEventListener(
-      "task-move-to-backlog",
-      moveToBacklogHandler
-    );
-    document.body.addEventListener("task-move-to-today", moveToTodayHandler);
-
-    return () => {
-      document.body.removeEventListener("task-delete", deleteTaskHandler);
-      document.body.removeEventListener(
-        "task-move-to-backlog",
-        moveToBacklogHandler
-      );
-      document.body.removeEventListener(
-        "task-move-to-today",
-        moveToTodayHandler
-      );
-    };
-  }, []);
 
   return (
     <DataContext.Provider
