@@ -43,7 +43,9 @@ export const OverdueSection: React.FC<OverdueSectionProps> = () => {
          */}
         {overdueTasks.length === 0 && (
           <View style={{ opacity: 0 }}>
-            <Task editable={false}>&nbsp;</Task>
+            <Task id="" context="today" editable={false}>
+              &nbsp;
+            </Task>
           </View>
         )}
 
@@ -55,13 +57,13 @@ export const OverdueSection: React.FC<OverdueSectionProps> = () => {
               : displayItemCount
           )
           .map(({ body, id }) => (
-            <Task key={id} editable={false}>
+            <Task key={id} id={id} context="overdue" editable={false}>
               {body}
             </Task>
           ))}
 
         {overdueTasks.length - displayItemCount > 1 ? (
-          <Task variant="more" editable={false}>
+          <Task id="" context="overdue" variant="more" editable={false}>
             {`${overdueTasks.length - displayItemCount} more tasks`}
           </Task>
         ) : null}
