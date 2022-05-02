@@ -175,6 +175,8 @@ export const TodayScreen = () => {
                   {tasks.map(({ status, body, id, assigned_date }, index) => (
                     <Task
                       key={id}
+                      id={id}
+                      context="today"
                       textInputRef={(ref) =>
                         (textInputRefs.current[index] = ref)
                       }

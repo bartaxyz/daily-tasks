@@ -5,6 +5,8 @@ import contextMenu from "electron-context-menu";
 import * as path from "path";
 import { format as formatUrl } from "url";
 
+import "./taskContextMenu";
+
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 contextMenu({
@@ -261,22 +263,6 @@ const template = [
     ],
   },
 ];
-
-ipcMain.on("show-task-context-menu", (event) => {
-  const template = [
-    {
-      label: "Move to backlog",
-      click: () => {
-        event.sender.send("context-menu-command", "menu-item-1");
-      },
-    },
-    { label: "Move to trash" },
-    { type: "separator" },
-    { label: "Delete" },
-  ];
-  const menu = Menu.buildFromTemplate(template);
-  menu.popup(BrowserWindow.fromWebContents(event.sender));
-});
 
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);

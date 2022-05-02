@@ -6,6 +6,8 @@ import { useProjects } from "./useProjects";
 import { useTasks } from "./useTasks";
 import { useUser } from "./useUser";
 import { useAuth } from "./useAuth";
+import { Timestamp } from "firebase/firestore";
+import { useContextMenuHandler } from "./utils/useContextMenuHandler";
 
 interface DataContextValue
   extends ReturnType<typeof useAuth>,
@@ -53,6 +55,8 @@ export const DataProvider: React.FC = ({ children }) => {
   const { tasks, ...taskMethods } = useTasks();
   const { ...projects } = useProjects();
   const { loading: loadingUser, ...userData } = useUser();
+
+  useContextMenuHandler({ tasks, ...taskMethods });
 
   const transformedTasks = tasks.map((task) => ({
     ...task,
@@ -138,7 +142,7 @@ export const DataProvider: React.FC = ({ children }) => {
         !!todayOrder && todayOrder.every((id) => todayOrderIds.includes(id));
 
       if (!containsAllTodayOrderIds) {
-        console.warn('Re-setting today order');
+        console.warn("Re-setting today order");
         userData.setTodayOrder(todayOrderIds);
       }
     }

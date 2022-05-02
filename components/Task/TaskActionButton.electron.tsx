@@ -1,13 +1,17 @@
 import { ipcRenderer } from "electron";
-import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
-import { Menu } from "react-native-paper";
 import { Button } from "../Button";
 import { TaskActionButtonProps } from "./types";
 
-export const TaskActionButton: React.FC<TaskActionButtonProps> = () => {
+export const TaskActionButton: React.FC<TaskActionButtonProps> = ({
+  taskId,
+  context,
+}) => {
   const openMenu = () => {
-    ipcRenderer.send("show-task-context-menu");
+    ipcRenderer.send("show-task-context-menu", {
+      taskId,
+      context,
+    });
   };
 
   return (
