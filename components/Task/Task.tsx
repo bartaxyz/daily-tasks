@@ -25,6 +25,8 @@ import { Button } from "../Button";
 import { TaskActionButton } from "./TaskActionButton";
 
 export interface TaskProps {
+  id: string;
+  context: "today" | "overdue" | "backlog" | "trash" | "project";
   editable?: boolean;
   children?: string;
   variant?: "normal" | "add" | "more";
@@ -52,6 +54,8 @@ interface TaskRef {
 }
 
 export const Task: React.FC<TaskProps> = ({
+  id,
+  context,
   editable = true,
   children,
   variant = "normal",
@@ -407,7 +411,7 @@ export const Task: React.FC<TaskProps> = ({
               opacity: hover || selected ? 1 : 0,
             }}
           >
-            <TaskActionButton />
+            <TaskActionButton taskId={id} context={context} />
           </View>
         )}
       </View>

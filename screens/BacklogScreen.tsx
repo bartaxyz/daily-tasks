@@ -130,7 +130,12 @@ export const BacklogScreen = () => {
             <ScrollView>
               <Section.Content inset="S">
                 {backlogTasks.map((task, index) => (
-                  <Task key={task.id} editable={false}>
+                  <Task
+                    key={task.id}
+                    id={task.id}
+                    context="backlog"
+                    editable={false}
+                  >
                     {task.body}
                   </Task>
                 ))}
@@ -145,7 +150,12 @@ export const BacklogScreen = () => {
             <ScrollView>
               <Section.Content inset="S">
                 {deletedTasks.map((task, index) => (
-                  <Task key={task.id} editable={false}>
+                  <Task
+                    key={task.id}
+                    id={task.id}
+                    context="trash"
+                    editable={false}
+                  >
                     {task.body}
                   </Task>
                 ))}
