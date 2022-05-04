@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components/native";
 import { StatusBar } from "expo-status-bar";
 import "react-native-gesture-handler";
