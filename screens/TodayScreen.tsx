@@ -267,19 +267,6 @@ export const TodayScreen = () => {
 
         {Platform.select({ web: null })}
       </ScrollView>
-
-      {/* <Portal>
-        <BottomSheet
-          // ref={bottomSheetRef}
-          index={1}
-          snapPoints={["25%", "50%"]}
-          //onChange={handleSheetChanges}
-        >
-          <View>
-            <Typography.Body>Awesome 🎉</Typography.Body>
-          </View>
-        </BottomSheet>
-      </Portal> */}
     </React.Fragment>
   );
 };
