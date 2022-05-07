@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { PressableProps, View } from "react-native";
+import { Platform, PressableProps, View } from "react-native";
 import { useActive, useHover } from "react-native-web-hooks";
 import styled, { useTheme } from "styled-components/native";
 import { Svg, Path } from "react-native-svg";
@@ -34,7 +34,16 @@ export const IconButton: React.FC<IconButtonProps> = ({
     active || hover ? colors.primary : colors.iconButton.foreground;
 
   return (
-    <Root ref={ref} hover={hover} active={active} {...props}>
+    <Root
+      ref={ref}
+      hover={hover}
+      active={active}
+      android_ripple={{
+        color: colors.iconButton.backgroundActive,
+        // borderless: true
+      }}
+      {...props}
+    >
       <Svg width="28" height="28" viewBox="0 0 28 28" fill="none">
         <Path d={icons[icon]} fill={foreground} />
       </Svg>
@@ -51,13 +60,29 @@ interface RootProps extends PressableProps {
 const Root = styled.Pressable<RootProps>`
   justify-content: center;
   align-items: center;
-  min-width: 80px;
-  padding: 8px;
+  flex: 1;
+  ${Platform.select({
+    web: "min-width: 80px",
+    default: undefined,
+  })};
+  padding: ${Platform.select({
+    web: 8,
+    default: 16,
+  })}px;
   border-radius: 8px;
-  background: ${({ theme, hover, active }) =>
-    active
-      ? rgba(theme.colors.primary, 0.2)
-      : hover
-      ? rgba(theme.colors.primary, 0.1)
-      : theme.colors.iconButton.background};
+  background: ${({ theme, hover, active }) => {
+    return Platform.select({
+      web: active
+        ? rgba(theme.colors.primary, 0.2)
+        : hover
+        ? rgba(theme.colors.primary, 0.1)
+        : theme.colors.iconButton.background,
+      default: active
+        ? rgba(theme.colors.primary, 0.2)
+        : hover
+        ? rgba(theme.colors.primary, 0.1)
+        : rgba(theme.colors.iconButton.foreground, 0.025),
+    });
+  }};
+  overflow: hidden;
 `;
