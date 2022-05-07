@@ -1,8 +1,9 @@
 import React from "react";
 import { View } from "react-native";
 import { Button, Section, Task, Typography } from "../../components";
+import { TaskList } from "../../components/TaskList";
 import { useData } from "../../db/DataProvider";
-import { useFinishModal } from "./FinishModal";
+import { useFinishModal } from "./FinishModal/FinishProvider";
 
 export interface OverdueSectionProps {}
 
@@ -49,24 +50,11 @@ export const OverdueSection: React.FC<OverdueSectionProps> = () => {
           </View>
         )}
 
-        {overdueTasks
-          .slice(
-            0,
-            overdueTasks.length === displayItemCount + 1
-              ? displayItemCount + 1
-              : displayItemCount
-          )
-          .map(({ body, id }) => (
-            <Task key={id} id={id} context="overdue" editable={false}>
-              {body}
-            </Task>
-          ))}
-
-        {overdueTasks.length - displayItemCount > 1 ? (
-          <Task id="" context="overdue" variant="more" editable={false}>
-            {`${overdueTasks.length - displayItemCount} more tasks`}
-          </Task>
-        ) : null}
+        <TaskList
+          tasks={overdueTasks}
+          limit={displayItemCount}
+          context="overdue"
+        />
       </View>
     </Section.Content>
   );
