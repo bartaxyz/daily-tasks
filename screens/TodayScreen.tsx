@@ -3,13 +3,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { Animated, Platform, ScrollView, TextInput, View } from "react-native";
 import { Svg, Path } from "react-native-svg";
 import { useTheme } from "styled-components/native";
-import BottomSheet from "@gorhom/bottom-sheet";
 
 import { Button, Section, Task, Typography } from "../components";
 import { useData } from "../db/DataProvider";
-import { useFinishModal } from "../navigation/components/FinishModal";
 import { OverdueSection } from "../navigation/components/OverdueSection";
-import { Portal } from "react-native-paper";
+import { useFinishModal } from "../navigation/components/FinishModal/FinishProvider";
 
 export const TodayScreen = () => {
   const {
@@ -113,7 +111,15 @@ export const TodayScreen = () => {
       })}
 
       {overdueTasks.length > 0 &&
-        Platform.select({ web: null, default: <OverdueSection /> })}
+        Platform.select({
+          web: null,
+          default: (
+            <React.Fragment>
+              <OverdueSection />
+              <Section.Separator />
+            </React.Fragment>
+          ),
+        })}
       <ScrollView
         alwaysBounceHorizontal={false}
         alwaysBounceVertical={false}
@@ -249,6 +255,8 @@ export const TodayScreen = () => {
                   ))}
 
                   <Task
+                    id=""
+                    context="today"
                     variant="add"
                     onTaskPress={() => {
                       const ref = createTaskRef();
