@@ -4,6 +4,7 @@ import { Divider, Menu } from "react-native-paper";
 import { useTheme } from "styled-components/native";
 import { Button } from "../Button";
 import { Typography } from "../Typography";
+import { TaskActionButtonMenuItem } from "./TaskActionButtonMenuItem";
 import { TaskActionButtonProps } from "./types";
 import { useTaskMenu } from "./utils/useTaskMenu";
 
@@ -32,7 +33,10 @@ export const TaskActionButton: React.FC<TaskActionButtonProps> = ({
           borderWidth: 1,
           borderColor: colors.section.separator,
           borderRadius: 8,
-          padding: 0,
+          padding: 8,
+          paddingTop: 0,
+          paddingBottom: 0,
+          minWidth: 146,
           backgroundColor: "transparent",
           ...Platform.select({
             web: { backdropFilter: "blur(24px)" },
@@ -48,30 +52,17 @@ export const TaskActionButton: React.FC<TaskActionButtonProps> = ({
         {menu.map((item) => {
           if (item.id === "separator") {
             return (
-              <Divider style={{ margin: 4, marginLeft: 16, marginRight: 16 }} />
+              <Divider style={{ margin: 8, marginLeft: 12, marginRight: 12 }} />
             );
           }
 
           return (
-            <Menu.Item
-              style={styles.menuItemStyle}
-              contentStyle={styles.menuItemStyle}
-              titleStyle={styles.menuItemStyle}
-              key={item.label}
-              title={<Typography.Body>{item.label}</Typography.Body>}
-              onPress={item.onPress}
-            />
+            <TaskActionButtonMenuItem key={item.label} onPress={item.onPress}>
+              {item.label}
+            </TaskActionButtonMenuItem>
           );
         })}
       </Menu>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  menuItemStyle: {
-    padding: 0,
-    margin: 0,
-    height: 24,
-  },
-});
