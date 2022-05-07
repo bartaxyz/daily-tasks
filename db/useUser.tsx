@@ -113,6 +113,16 @@ export const useUser = () => {
     });
   };
 
+  const insertTaskToEndOfOrder = async (taskId: string) => {
+    if (!user || !userData) return;
+
+    const todayOrder = userData.today_order;
+
+    const newTodayOrder = [...todayOrder, taskId];
+
+    return setTodayOrder(newTodayOrder);
+  };
+
   const moveTaskInOrderBeforeAfter = async (
     taskId: string,
     {
@@ -165,5 +175,6 @@ export const useUser = () => {
     insertTaskToOrder,
     moveTaskInOrderBeforeAfter,
     moveTaskInOrder,
+    insertTaskToEndOfOrder,
   };
 };
