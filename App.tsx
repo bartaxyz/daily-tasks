@@ -14,6 +14,7 @@ import { StatusBarProvider } from "./utils/providers/StatusBarProvider";
 import { useSystemAccentColor } from "./utils/useSystemAccentColor";
 import { Environment } from "./utils/Environment";
 import { ScreenProvider } from "./components";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App() {
   const isLoadingComplete = useCachedResources();
@@ -32,17 +33,19 @@ export default function App() {
   } else {
     return (
       <ScreenProvider>
-        <ThemeProvider
-          theme={colorScheme === "dark" ? darkTheme : defaultTheme}
-        >
-          <StatusBarProvider>
-            <Provider>
-              <Environment />
-              <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-              <Navigation colorScheme={colorScheme} />
-            </Provider>
-          </StatusBarProvider>
-        </ThemeProvider>
+        <GestureHandlerRootView style={{flex: 1}}>
+          <ThemeProvider
+            theme={colorScheme === "dark" ? darkTheme : defaultTheme}
+          >
+            <StatusBarProvider>
+              <Provider>
+                <Environment />
+                <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+                <Navigation colorScheme={colorScheme} />
+              </Provider>
+            </StatusBarProvider>
+          </ThemeProvider>
+        </GestureHandlerRootView>
       </ScreenProvider>
     );
   }
