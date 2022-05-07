@@ -1,22 +1,19 @@
-import React, { useEffect } from "react";
-import { ActivityIndicator } from "react-native-paper";
+import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useTheme } from "styled-components/native";
 import { RootStackParamList } from "../types";
 import { AuthStack } from "./AuthStack";
 import { HomeStack } from "./HomeStack";
-import { FinishModal, FinishModalProvider } from "./components/FinishModal";
-import { Platform, SafeAreaView, View } from "react-native";
-import { useAuth } from "../db/useAuth";
-import { useNavigation } from "@react-navigation/native";
+import { FinishModal } from "./components/FinishModal/FinishModal";
+import { Platform } from "react-native";
 import { WelcomeScreen } from "../screens/WelcomeScreen/WelcomeScreen";
 import { LoadingScreen } from "../screens/LoadingScreen";
+import { FinishModalProvider } from "./components/FinishModal/FinishProvider";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const RootStack = () => {
   const { colors } = useTheme();
-  const { user } = useAuth();
 
   return (
     <FinishModalProvider>
