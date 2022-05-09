@@ -2,23 +2,22 @@ import { addDays } from "date-fns";
 import { Timestamp } from "firebase/firestore";
 import { rgba } from "polished";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Animated, Platform, View } from "react-native";
-import { Modal, Portal } from "react-native-paper";
+import { Animated, Platform, ScrollView, View } from "react-native";
+import { Portal } from "react-native-paper";
 import { useTheme } from "styled-components/native";
-import BottomSheet, { BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import { IconButton } from "../../../components/IconButton";
-import { Checkbox, Section, Task, Typography } from "../../../components";
+import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BlurView } from "expo-blur";
+import { Section, Task, Typography } from "../../../components";
 import { useFinishModal } from "./FinishProvider";
 import { FinishModalBackdrop } from "./FinishModalBackdrop";
 import { FinishModalActions } from "./FinishModalActions";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export interface FinishModalProps {
   onDismiss: () => void;
 }
 
 export const FinishModal = () => {
-  const { name, colors } = useTheme();
+  const { colors } = useTheme();
   const {
     mode,
     visible,
@@ -95,7 +94,7 @@ export const FinishModal = () => {
     }
   }, [visible]);
 
-  const snapPoints = useMemo(() => [560], []);
+  const snapPoints = useMemo(() => [480], []);
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
     if (index === -1) {
@@ -110,16 +109,18 @@ export const FinishModal = () => {
         index={-1}
         snapPoints={snapPoints}
         style={{
-          backgroundColor: colors.background.default,
+          backgroundColor: Platform.select({
+            ios: rgba(colors.background.default, 0.5),
+            default: rgba(colors.background.default, 1),
+          }),
           shadowColor: rgba(colors.text.default, 0.05),
           shadowOffset: { width: 0, height: 0 },
           shadowOpacity: 1,
           shadowRadius: 10,
           borderRadius: 16,
+          overflow: "hidden",
         }}
-        backgroundStyle={{
-          backgroundColor: colors.background.default,
-        }}
+        backgroundComponent={BlurView}
         onChange={handleSheetChanges}
         enablePanDownToClose={true}
         backdropComponent={FinishModalBackdrop}
@@ -138,14 +139,25 @@ export const FinishModal = () => {
         </Section.Content>
 
         <Section separator="around" style={{ flex: 1 }}>
-          <Section.Content
-            inset="M"
-            style={{ justifyContent: "center", alignItems: "center" }}
+          <BottomSheetScrollView
+            alwaysBounceVertical={false}
+            contentContainerStyle={{
+              flexGrow: 1,
+            }}
           >
-            <Typography.Body textAlign="center">
-              {currentTask?.body}
-            </Typography.Body>
-          </Section.Content>
+            <View
+              style={{
+                marginVertical: 8,
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Task id={currentTask?.id!} context="none" variant="inactive">
+                {currentTask?.body}
+              </Task>
+            </View>
+          </BottomSheetScrollView>
         </Section>
 
         <FinishModalActions

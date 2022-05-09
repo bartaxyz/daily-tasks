@@ -129,9 +129,7 @@ export const BacklogScreen = () => {
             emptyBacklog
           ) : (
             <ScrollView>
-              <Section.Content inset="S">
-                <TaskList tasks={backlogTasks} context="backlog" />
-              </Section.Content>
+              <TaskList tasks={backlogTasks} context="backlog" />
             </ScrollView>
           ))}
 
