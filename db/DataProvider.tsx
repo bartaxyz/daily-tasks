@@ -47,6 +47,7 @@ export const DataContext = createContext<DataContextValue>({
   insertTaskToOrder: async () => {},
   moveTaskInOrderBeforeAfter: async () => {},
   moveTaskInOrder: async () => {},
+  insertTaskToEndOfOrder: async () => {},
   loading: true,
 });
 
