@@ -52,9 +52,17 @@ export const Button: React.FC<ButtonProps> = ({
     return (
       <RNPButton
         color={colors.primary}
-        mode={variant === "primary" ? "contained" : "contained"}
+        mode={variant === "primary" ? "contained" : "outlined"}
         onPress={props.onPress as any}
         disabled={!!disabled}
+        style={{
+          borderRadius: 8,
+          shadowColor: "transparent",
+        }}
+        labelStyle={{
+          textTransform: "none",
+          color: variant === "primary" ? "white" : colors.primary,
+        }}
         {...(props as any)}
       >
         {children}
@@ -66,9 +74,15 @@ export const Button: React.FC<ButtonProps> = ({
     return (
       <RNPButton
         color={colors.primary}
-        mode={variant === "primary" ? "contained" : "contained"}
+        mode={variant === "primary" ? "contained" : "outlined"}
         onPress={props.onPress as any}
         disabled={!!disabled}
+        style={{
+          borderRadius: 32,
+        }}
+        labelStyle={{
+          textTransform: "none",
+        }}
       >
         {children}
       </RNPButton>

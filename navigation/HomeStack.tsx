@@ -11,6 +11,7 @@ import { TabBar } from "./components/TabBar";
 import { useTheme } from "styled-components/native";
 import { Screen, Typography } from "../components";
 import React from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export type MainTabsParamList = {
   Today: undefined;
@@ -50,14 +51,24 @@ export const HomeStackWithoutData = () => {
             screenOptions={{
               tabBarStyle: {
                 backgroundColor: colors.background.default,
-                paddingBottom: 8,
-                paddingTop: 8,
-                height: 64,
-                shadowColor: "rgba(0, 0, 0, 0.25)",
+                paddingBottom: Platform.select({
+                  ios: useSafeAreaInsets().bottom,
+                  default: 8,
+                }),
+                height:
+                  48 +
+                  Platform.select({
+                    ios: useSafeAreaInsets().bottom,
+                    default: 0,
+                  }),
+                /* shadowColor: "rgba(0, 0, 0, 0.25)",
                 shadowOffset: { width: 0, height: -2 },
                 shadowOpacity: 0.5,
-                shadowRadius: 2,
+                shadowRadius: 2, */
+                borderTopColor: colors.section.separator,
+                borderTopWidth: 1,
               },
+              tabBarActiveTintColor: colors.primary,
             }}
           >
             <BottomTabs.Screen

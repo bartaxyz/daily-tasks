@@ -1,3 +1,4 @@
+import { rgba } from "polished";
 import React from "react";
 import { Platform, View, ViewProps } from "react-native";
 import styled, { useTheme } from "styled-components/native";
@@ -23,11 +24,12 @@ export const Section: React.FC<SectionProps> & {
   );
 
   const content =
-    separator === "around" ? (
-      <Border {...props}>{background}</Border>
-    ) : (
-      background
-    );
+    separator === "around"
+      ? Platform.select({
+          web: <Border {...props}>{background}</Border>,
+          default: background,
+        })
+      : background;
 
   return (
     <Root {...props}>
@@ -53,7 +55,15 @@ const Border = styled.View<SectionProps>`
 `;
 
 const Background = styled.View<SectionProps>`
-  background: ${({ theme }) => theme.colors.background.default};
+  border-radius: ${Platform.select({ web: "0px", default: "12px" })};
+  background: ${({ theme, separator }) =>
+    Platform.select({
+      web: theme.colors.background.default,
+      default:
+        separator === "around"
+          ? rgba(theme.colors.section.separator, 0.025)
+          : theme.colors.section.background,
+    })};
 `;
 
 const Separator = styled.View`

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Animated, Platform, View } from "react-native";
 import { useNavigationState } from "@react-navigation/native";
-import { Button, KeyboardKey, Section, Typography } from "../../components";
-import { TAB_BAR_ANIMATION_DURATION } from "./TabBar";
-import { useData } from "../../db/DataProvider";
-import { useFinishModal } from "./FinishModal";
-import { useStatusBar } from "../../utils/providers/StatusBarProvider";
 import { useTheme } from "styled-components/native";
+import { Button, KeyboardKey, Section, Typography } from "../../components";
+import { useData } from "../../db/DataProvider";
+import { useStatusBar } from "../../utils/providers/StatusBarProvider";
+import { TAB_BAR_ANIMATION_DURATION } from "./TabBar";
+import { useFinishModal } from "./FinishModal/FinishProvider";
 
 const MIN_HEIGHT = 38;
 

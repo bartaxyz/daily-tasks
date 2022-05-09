@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { PressableProps, View } from "react-native";
+import { Platform, PressableProps, View } from "react-native";
 import styled from "styled-components/native";
 import { useHover, useActive } from "react-native-web-hooks";
 import { Typography } from "../Typography";
@@ -34,7 +34,15 @@ export const Tabs: React.FC<TabsProps> = ({ tabs }) => {
   );
 };
 
-export const TAB_HEIGHT = 22;
+export const TAB_HEIGHT = Platform.select({
+  ios: 36,
+  default: 22,
+});
+
+export const TAB_BORDER_RADIUS = Platform.select({
+  ios: 8,
+  default: 5,
+});
 
 interface RootProps {
   hover: boolean;
@@ -45,7 +53,7 @@ const Root = styled.View<RootProps>`
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  border-radius: 5px;
+  border-radius: ${TAB_BORDER_RADIUS}px;
 `;
 const Background = styled.View<RootProps>`
   position: absolute;
@@ -57,7 +65,7 @@ const Background = styled.View<RootProps>`
   border: 1px solid
     ${({ theme, hover }) =>
       hover ? theme.colors.tabs.borderHover : theme.colors.tabs.border};
-  border-radius: 5px;
+  border-radius: ${TAB_BORDER_RADIUS}px;
 `;
 
 interface TabButtonProps extends PressableProps {
@@ -106,7 +114,7 @@ const TabButtonRoot = styled.Pressable<TabButtonStyledProps>`
       : selected
       ? theme.colors.tabs.button.backgroundSelected
       : theme.colors.tabs.button.background};
-  border-radius: 5px;
+  border-radius: ${TAB_BORDER_RADIUS}px;
 `;
 
 const TabButtonLabel = styled(Typography.Body)<TabButtonStyledProps>`
