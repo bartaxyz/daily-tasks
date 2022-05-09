@@ -15,9 +15,9 @@ import { useActive, useHover } from "react-native-web-hooks";
 import { rgba } from "polished";
 import { useStatusBar } from "../../utils/providers/StatusBarProvider";
 import { TaskActionButton } from "./TaskActionButton";
-import { AddSign } from "./components/AddSign";
+import { AddSign, addTaskPlaceholderText } from "./components/AddSign";
 import { MoreSign } from "./components/MoreSign";
-import { TaskProps, addTaskPlaceholderText } from "./Task";
+import { TaskProps } from "./Task";
 
 export const Task: React.FC<TaskProps> = ({
   id,

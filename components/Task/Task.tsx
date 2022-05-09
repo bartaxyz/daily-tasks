@@ -7,20 +7,23 @@ import {
   TextInputProps,
   View,
 } from "react-native";
-import styled from "styled-components/native";
+import styled, { useTheme } from "styled-components/native";
 import { Checkbox } from "../Checkbox/Checkbox";
 import { Typography } from "../Typography";
 import { useActive, useHover } from "react-native-web-hooks";
 import { TaskActionButton } from "./TaskActionButton";
-import { AddSign } from "./components/AddSign";
+import { AddSign, addTaskPlaceholderText } from "./components/AddSign";
 import { MoreSign } from "./components/MoreSign";
+import { InactiveSign } from "./components/InactiveSign";
+import { useTaskModal } from "../../navigation/components/TaskModal/TaskModalProvider";
+import { rgba } from "polished";
 
 export interface TaskProps {
   id: string;
   context: "today" | "overdue" | "backlog" | "trash" | "project" | "none";
   editable?: boolean;
   children?: string;
-  variant?: "normal" | "add" | "more";
+  variant?: "normal" | "add" | "more" | "inactive";
   status?: "none" | "done" | "error" | "deleted" | "backlog";
   textInputPropOverrides?: TextInputProps;
   textInputRef?: (ref: TextInput | null) => void;
@@ -37,8 +40,6 @@ export interface TaskProps {
   onOrderDown?: () => void;
 }
 
-export const addTaskPlaceholderText = "Add a task";
-
 export const Task: React.FC<TaskProps> = ({
   id,
   context,
@@ -49,12 +50,15 @@ export const Task: React.FC<TaskProps> = ({
   onTaskPress,
   onStatusChange,
 }) => {
+  const { colors } = useTheme();
   const rootRef = useRef<View | null>(null);
   const active = useActive(rootRef);
   const hover = useHover(rootRef);
   const [selected] = useState(false);
 
   const [heightAnimatedValue] = useState(new Animated.Value(0));
+
+  const { showTaskModal } = useTaskModal();
 
   const onCheckboxChange = (checked: boolean) => {
     if (onStatusChange) onStatusChange(checked ? "done" : "none");
@@ -67,8 +71,23 @@ export const Task: React.FC<TaskProps> = ({
       hover={hover}
       variant={variant}
       status={status}
+      android_ripple={{
+        color: rgba(colors.text.default, 0.05),
+      }}
+      style={Platform.select({
+        ios: ({ pressed }) => [{ opacity: pressed ? 0.5 : 1.0 }],
+      })}
       onPress={() => {
-        if (onTaskPress) onTaskPress();
+        if (onTaskPress) {
+          onTaskPress();
+        }
+
+        if (children && status) {
+          showTaskModal({
+            task: { id: id, body: children, status: status! },
+            mode: "today",
+          });
+        }
       }}
     >
       <View
@@ -96,9 +115,11 @@ export const Task: React.FC<TaskProps> = ({
             />
           ) : variant === "add" ? (
             <AddSign />
-          ) : (
+          ) : variant === "more" ? (
             <MoreSign />
-          )}
+          ) : variant === "inactive" ? (
+            <InactiveSign />
+          ) : null}
         </CheckboxRoot>
 
         <Typography.Task.Label

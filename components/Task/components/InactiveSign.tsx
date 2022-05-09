@@ -1,10 +1,8 @@
-import Svg, { Path } from "react-native-svg";
+import Svg, { Circle, Path } from "react-native-svg";
 import styled, { useTheme } from "styled-components/native";
 import { CHECKBOX_SIZE } from "../../Checkbox";
 
-export const addTaskPlaceholderText = "Add a task";
-
-const AddIcon = ({ ...props }) => {
+const InactiveIcon = ({ ...props }) => {
   const { colors } = useTheme();
 
   return (
@@ -15,9 +13,12 @@ const AddIcon = ({ ...props }) => {
       fill="none"
       {...props}
     >
-      <Path
-        d="M1 7.5H14M7.5 1V14"
+      <Circle
+        cx="8"
+        cy="8"
+        r="7"
         stroke={colors.checkbox.unchecked.outline}
+        strokeOpacity="0.25"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -25,7 +26,7 @@ const AddIcon = ({ ...props }) => {
   );
 };
 
-export const AddSign = styled(AddIcon)`
+export const InactiveSign = styled(InactiveIcon)`
   width: 16px;
   height: 16px;
   position: relative;

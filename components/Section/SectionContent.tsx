@@ -2,7 +2,7 @@ import { Platform, ViewProps } from "react-native";
 import styled from "styled-components/native";
 
 export interface SectionContentProps extends ViewProps {
-  inset: "XXS" | "XS" | "S" | "M";
+  inset: "none" | "XXS" | "XS" | "S" | "M";
   maxWidth?: 560;
 }
 
@@ -17,7 +17,9 @@ const Root = styled.View<SectionContentProps>`
     typeof maxWidth !== "undefined" ? "100%" : "auto"};
   margin: ${({ maxWidth }) => (typeof maxWidth !== "undefined" ? "auto" : 0)};
   padding: ${({ inset }) =>
-    inset === "XXS"
+    inset === "none"
+      ? 0
+      : inset === "XXS"
       ? "4px"
       : inset === "XS"
       ? Platform.select({ web: "8px", default: "12px" })
