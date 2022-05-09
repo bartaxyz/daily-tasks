@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Daily Tasks",
+    "name": "Daily Tasks App",
     "slug": "daily-tasks",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,15 +13,20 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/b29c30c7-a69c-43ff-ac9c-64232c73109c"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ondrejbarta.daily-tasks",
+      "buildNumber": "1.0.0"
     },
     "android": {
+      "package": "com.ondrejbarta.dailytasks",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -29,6 +34,9 @@
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }
