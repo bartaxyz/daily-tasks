@@ -1,6 +1,6 @@
+import "react-native-gesture-handler";
 import { ThemeProvider } from "styled-components/native";
 import { StatusBar } from "expo-status-bar";
-import "react-native-gesture-handler";
 import { Provider } from "react-native-paper";
 
 import useCachedResources from "./hooks/useCachedResources";
