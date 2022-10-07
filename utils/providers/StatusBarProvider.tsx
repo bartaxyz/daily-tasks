@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { KeyboardKeyProps } from "../../components";
 
 export interface KeyboardShortcut {
@@ -23,7 +23,9 @@ export const StatusBarContext = createContext<StatusBarContextType>({
 
 export const useStatusBar = () => useContext(StatusBarContext);
 
-export const StatusBarProvider: React.FC = ({ children }) => {
+export const StatusBarProvider: React.FC<PropsWithChildren> = ({
+  children,
+}) => {
   const [keyboardShortcuts, setKeyboardShortcuts] = useState<
     KeyboardShortcut[]
   >([]);
